@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="/static/css/login-page.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <title>Taxi company</title>
+    </head>
+</head>
+<body>
+    <div class="container" id="login-page-container">
+        <div class="nav" id="login-page-header">
+            <div class="col-2">
+                {{#already-logged-in}}
+                    <label>{{sentence.already-logged}} {{username}} {{user-role}}</label>
+                {{/already-logged-in}}
+            </div>
+            <div class="col-7"></div>
+            <div class="col-1">
+                <form method="POST" action="/logout">
+                    <input type="submit" value="Logout"/>
+                    <div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-2">
+                <div class="dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown link
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {{^already-logged-in}}
+        <div class="row" id="login-page-login">
+            <div class="col-md-4"></div>
+            <div class="col-md-4" id="login-page-login-form">
+                <div class="panel panel-default">
+                    <div class="panel-heading>">
+                        <h3>{{sentence.login-appeal}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- login form content -->
+                        <form method="POST" action="/login">
+                            <div class="form-group">
+                                <div><label for="exampleInputEmail1"></label></div>
+                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={{word.login}} name="login">
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder={{word.password}} name="password">
+                            </div>
+                            <div>
+                                <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                            </div>
+
+                            <button value="login" type="submit" class="btn btn-primary">{{word.submit}}</button>
+                            <br>
+                        </form>
+                        <!--     register button -->
+                        <form method="POST" action="/register">
+                            <label>{{word.or}}</label>
+                            <div>
+                                <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                            </div>
+                            <br>
+                            <button value="register" type="submit" class="btn btn-primary">{{word.register}}</button>
+                        </form>
+                        <br>
+                        {{#register-alert}}
+                            <div class="alert alert-danger" role="alert">
+                                This is a danger alert—check it out!
+                            </div>
+                        {{/register-alert}}
+                        <br>
+                        {{#logout-alert}}
+                            <div class="alert alert-warning" role="alert">
+                                This is a warning alert
+                            </div>
+                        {{/logout-alert}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    {{/already-logged-in}}
+
+
+    </div>
+</body>
+</html>
