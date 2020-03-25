@@ -1,6 +1,7 @@
 package ua.axiom.model.objects;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "orders")
 public class Order {
     @Id

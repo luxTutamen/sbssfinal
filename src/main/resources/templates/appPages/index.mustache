@@ -71,14 +71,12 @@
                             <br>
                         </form>
                         <!--     register button -->
-                        <form method="POST" action="/register">
-                            <label>{{word.or}}</label>
-                            <div>
-                                <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
-                            </div>
-                            <br>
-                            <button value="register" type="submit" class="btn btn-primary">{{word.register}}</button>
-                        </form>
+                        <label>{{word.or}}</label>
+                        <div>
+                            <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                        </div>
+                        <br>
+                        <button href="/register" value="register" type="submit" class="btn btn-primary">{{word.register}}</button>
                         <br>
                         {{#register-alert}}
                             <div class="alert alert-danger" role="alert">

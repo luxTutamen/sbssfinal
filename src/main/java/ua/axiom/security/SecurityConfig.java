@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] ADMIN_ENDPOINTS = {"/", "/login", "/adminpage", "/cabinet", "/logout"};
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvide;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,6 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(GUEST_ENDPOINTS).permitAll()
                     .anyRequest().authenticated()
                 .and()
-                    .apply(new JwtConfigurer(jwtTokenProvide));
+                .formLogin().
+                    loginPage("/login")
+                    .passwordParameter("password")
+                    .usernameParameter("login")
+                .and()
+                    .apply(new JwtConfigurer(jwtTokenProvider));
     }
 }

@@ -1,10 +1,13 @@
 package ua.axiom.model.objects;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,8 +15,9 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "CLEINT")
-class Client extends User {
+@Table(name = "CLIENT")
+@NoArgsConstructor
+public class Client extends User {
 
     @NotNull
     @Temporal(TemporalType.DATE)

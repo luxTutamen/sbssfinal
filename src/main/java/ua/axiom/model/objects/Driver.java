@@ -1,6 +1,7 @@
 package ua.axiom.model.objects;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,9 +13,12 @@ import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "DRIVER")
 public class Driver extends User {
 
+    @OneToOne
+    private Car car;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

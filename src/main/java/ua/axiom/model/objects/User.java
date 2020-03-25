@@ -1,23 +1,18 @@
 package ua.axiom.model.objects;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
 @Table(name = "UUSER")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
@@ -25,7 +20,7 @@ public abstract class User implements UserDetails {
     private String username;
 
     @NotNull
-    @Column(length = 40)
+    @Column(length = 255)
     private String password;
 
     @Override

@@ -1,10 +1,11 @@
 package ua.axiom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.service.LocalisationService;
 
@@ -40,7 +41,18 @@ public class MainPageController {
                 "word.or"
         );
 
+        System.out.println("main as: " + SecurityContextHolder.getContext().getAuthentication().getName());
+
         return new ModelAndView("index", model);
+    }
+
+    @PostMapping("/")
+    public ModelAndView login(Map<String, Object> model, @RequestParam String login, @RequestParam String password) {
+        System.out.println("post login " + login + " " + password);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        return new ModelAndView("index", model);
+
     }
 
     /*
