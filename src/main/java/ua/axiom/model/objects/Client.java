@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "CLIENT")
+@Table(name = "CLIENTS")
 @NoArgsConstructor
 public class Client extends User {
 

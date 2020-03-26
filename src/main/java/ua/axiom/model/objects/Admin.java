@@ -1,15 +1,24 @@
 package ua.axiom.model.objects;
 
 import lombok.Data;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 
 @Data
 @Entity
-@Table(name = "UUSER")
-public abstract class Admin implements UserDetails {
+@Table(name = "ADMINS")
+@NoArgsConstructor
+public class Admin extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(Role.ADMIN);
+    }
 }

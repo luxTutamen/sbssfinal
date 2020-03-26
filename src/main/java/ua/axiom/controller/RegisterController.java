@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 import java.util.Map;
 
+import ua.axiom.model.objects.Admin;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.Client;
+import ua.axiom.model.objects.UserLocale;
+import ua.axiom.repository.AdminRepository;
 import ua.axiom.repository.ClientRepository;
+import ua.axiom.repository.DriverRepository;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,6 +39,12 @@ public class RegisterController {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private DriverRepository driverRepository;
+
     @Bean
     private PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(8);
@@ -51,14 +61,13 @@ public class RegisterController {
             Map<String, Object> model,
             @RequestParam String password,
             @RequestParam String login) {
-        Client user = new Client();
+        Admin user = new Admin();
         user.setUsername(login);
-        user.setBirthDate(new Date(6234213L));
-        user.setMoney(0.F);
         user.setPassword(passwordEncoder.encode(password));
+        user.setLocale(UserLocale.ENG);
         System.out.println(user.getPassword().length());
 
-        clientRepository.save(user);
+        adminRepository.save(user);
 
         return "/";
 

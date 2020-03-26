@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-@Table(name = "UUSER")
+@Table(name = "UUSERS")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User implements UserDetails {
     @Id
@@ -22,6 +22,11 @@ public abstract class User implements UserDetails {
     @NotNull
     @Column(length = 255)
     private String password;
+
+    @NotNull
+    @Enumerated
+    @Column(length = 4)
+    private UserLocale locale;
 
     @Override
     public String getPassword() {

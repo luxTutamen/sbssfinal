@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "DRIVER")
+@Table(name = "DRIVERS")
 public class Driver extends User {
 
     @OneToOne
