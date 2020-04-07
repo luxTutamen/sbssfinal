@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "DRIVERS")
 public class Driver extends User {
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL)
     private Car car;
 
     @Override

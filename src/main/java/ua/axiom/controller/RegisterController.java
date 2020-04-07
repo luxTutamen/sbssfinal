@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,20 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 import java.util.Map;
 
-import ua.axiom.model.objects.Admin;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.objects.*;
 import ua.axiom.repository.AdminRepository;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DriverRepository;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
-//  import ua.sbtaskf.repository.UserRepository;
-
+import ua.axiom.repository.UserRepository;
 
 @Controller
 @RequestMapping("/register")
@@ -45,31 +37,37 @@ public class RegisterController {
     @Autowired
     private DriverRepository driverRepository;
 
-    @Bean
-    private PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(8);
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping
     public String registerRequestMapping(Map<String, Object> model) {
         model.put("lang", "ENG");
+        System.out.println("register request");
         return "appPages/register";
     }
 
     @PostMapping
+    @Deprecated
     public String registerPost(
             Map<String, Object> model,
             @RequestParam String password,
-            @RequestParam String login) {
-        Admin user = new Admin();
-        user.setUsername(login);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setLocale(UserLocale.ENG);
-        System.out.println(user.getPassword().length());
+            @RequestParam String login,
+            @RequestParam String role
+    ) {
+        if(userRepository.findByUsername(login).isPresent()) {
+            model.put("error", "Username is already present");
+            return "appPages/register";
+        };
 
-        adminRepository.save(user);
+        User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
+        newUser.setLocale(UserLocale.ENG);
 
-        return "/";
+        System.out.println("registering " + login + " as " + role);
+
+        userRepository.save(newUser);
+
+        return "redirect:/";
 
     }
 

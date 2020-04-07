@@ -17,7 +17,11 @@
         <div class="nav" id="login-page-header">
             <div class="col-2">
                 {{#already-logged-in}}
-                    <label>{{sentence.already-logged}} {{username}} {{user-role}}</label>
+                    <div class="card">
+                        <div class="card-header">
+                            <label>{{sentence.already-logged}} {{username}} {{user-role}}</label>
+                        </div>
+                    </div>
                 {{/already-logged-in}}
             </div>
             <div class="col-7"></div>
@@ -57,7 +61,7 @@
                         <form method="POST" action="/login">
                             <div class="form-group">
                                 <div><label for="exampleInputEmail1"></label></div>
-                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={{word.login}} name="login">
+                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={{word.login}} name="username">
                                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                             </div>
                             <div class="form-group">
@@ -70,6 +74,9 @@
                             <button value="login" type="submit" class="btn btn-primary">{{word.submit}}</button>
                             <br>
                         </form>
+                        {{#error}}
+                            <h1>error lol</h1>
+                        {{/error}}
                         <!--     register button -->
                         <label>{{word.or}}</label>
                         <div>

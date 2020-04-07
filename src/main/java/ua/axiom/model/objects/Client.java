@@ -1,5 +1,6 @@
 package ua.axiom.model.objects;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "CLIENTS")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Client extends User {
 
     @NotNull

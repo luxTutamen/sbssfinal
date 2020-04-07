@@ -3,11 +3,13 @@ package ua.axiom.controller.appController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Map;
+
 @Controller
-@RequestMapping("/adminpage")
-public class AdminpageController {
+@RequestMapping("/driverpage")
+public class DriverPageController {
     @RequestMapping
-    public String getAdminpageControllerMapping() {
-        return "appPages/adminpage";
+    public String getDriverPage(Map<String, Object> model) {
+        return "appPages/driverpage";
     }
 }

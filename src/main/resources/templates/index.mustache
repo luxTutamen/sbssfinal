@@ -19,8 +19,15 @@
             {{#already-logged-in}}
                 <label>{{sentence.already-logged}}{{username}} {{user-role}}</label>
             {{/already-logged-in}}
+            {{^already-logged-in}}
+                <p>not logged</p>
+            {{/already-logged-in}}
+
         </div>
         <div class="col-7"></div>
+        <div class="col-2">
+
+        </div>
         <div class="col-1">
             <form method="POST" action="/logout">
                 <input type="submit" value="Logout"/>
@@ -28,20 +35,6 @@
                     <!-- csrf token  -->
                 </div>
             </form>
-        </div>
-        <div class="col-2">
-            <div class="dropdown show">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown link
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </div>
-
         </div>
     </div>
     {{^already-logged-in}}
@@ -61,23 +54,21 @@
                                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                             </div>
                             <div class="form-group">
+                                <label for="exampleInputPassword1"></label>
                                 <input type="password" class="form-control" id="exampleInputPassword1" placeholder={{word.password}} name="password">
                             </div>
                             <div>
                                 <!-- csrf token  -->
                             </div>
 
-                            <button value="login" type="submit" class="btn btn-primary">{{word.submit}}</button>
+                            <button type="submit" class="btn btn-primary">{{word.submit}}</button>
                             <br>
                         </form>
                         <!--     register button -->
-                        <form method="POST" action="/register">
+                        <form method="GET" action="/register">
                             <label>{{word.or}}</label>
-                            <div>
-                                <!-- csrf token  -->
-                            </div>
                             <br>
-                            <button value="register" type="submit" class="btn btn-primary">{{word.register}}</button>
+                            <button type="submit" class="btn btn-primary" href="/register">{{word.register}}</button>
                         </form>
                         <br>
                         {{#register-alert}}

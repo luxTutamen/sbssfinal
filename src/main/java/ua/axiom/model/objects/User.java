@@ -28,6 +28,32 @@ public abstract class User implements UserDetails {
     @Column(length = 4)
     private UserLocale locale;
 
+    public static User userFactory(String login, String password, String role) throws RuntimeException {
+        User user;
+        switch (role) {
+            case ("client"):{
+                user = new Client();
+                break;
+            }
+            case ("driver"): {
+                user = new Driver();
+                break;
+            }
+            case ("admin"):{
+                user = new Admin();
+                break;
+            }
+            default: {
+                throw new RuntimeException("role string <" + role + "> doesn't name any role");
+            }
+        }
+
+        user.setUsername(login);
+        user.setPassword(password);
+
+        return user;
+    }
+
     @Override
     public String getPassword() {
         return password;

@@ -2,43 +2,69 @@ package ua.axiom.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import ua.axiom.security.jwt.JwtConfigurer;
-import ua.axiom.security.jwt.JwtTokenProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] GUEST_ENDPOINTS = {"/", "/login", "/register"};
-    private static final String[] USER_ENDPOINTS = {"/", "/login", "/register", "/userpage", "/logout"};
-    private static final String[] DRIVER_ENDPOINTS = {"/", "/login", "/register", "/cabinet", "/logout"};
-    private static final String[] ADMIN_ENDPOINTS = {"/", "/login", "/adminpage", "/cabinet", "/logout"};
+    private static final String[] GUEST_ENDPOINTS = {"/", "/login", "/register", "/logout"};
+    private static final String[] UNSECURED_ENDPOINTS ={"/userdesc"};
+    private static final String[] USER_ENDPOINTS = {"/userpage"};
+    private static final String[] DRIVER_ENDPOINTS = {"/cabinet"};
+    private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                    .httpBasic().disable()
-                    .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .cors()
                 .and()
                     .authorizeRequests()
-                    .antMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
-                    .antMatchers(DRIVER_ENDPOINTS).hasRole("DRIVER")
-                    .antMatchers(USER_ENDPOINTS).hasRole("USER")
+                    .antMatchers(DRIVER_ENDPOINTS).hasAuthority("DRIVER")
+                    .antMatchers(USER_ENDPOINTS).hasAuthority("USER")
+                    .antMatchers(ADMIN_ENDPOINTS).hasAuthority("ADMIN")
+                    .antMatchers(UNSECURED_ENDPOINTS).permitAll()
                     .antMatchers(GUEST_ENDPOINTS).permitAll()
-                    .anyRequest().authenticated()
+                    //  .anyRequest().authenticated()
                 .and()
-                .formLogin().
-                    loginPage("/login")
+                    .formLogin()
+                    .loginProcessingUrl("/login")
                     .passwordParameter("password")
                     .usernameParameter("login")
+                    .successForwardUrl("/misc/plrdr")
+                    .failureForwardUrl("/?error=true")
                 .and()
-                    .apply(new JwtConfigurer(jwtTokenProvider));
+                    .logout()
+                    .logoutSuccessUrl("/")
+                .and()
+                    .csrf()
+                    .disable()
+                    .userDetailsService(userDetailsService);
+
+//                    .apply(new JwtConfigurer(jwtTokenProvider))
+//                .and()
+//                    .httpBasic()
+//                    .realmName(getRealmName())
+//                .and()
     }
+
+    @Override
+    public void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .jdbcAuthentication()
+                .usersByUsernameQuery("SELECT username, password, true FROM UUSERS WHERE username=?")
+                .passwordEncoder(passwordEncoder);
+    }
+
+
 }

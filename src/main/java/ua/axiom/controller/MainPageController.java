@@ -1,34 +1,59 @@
 package ua.axiom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
+import ua.axiom.model.objects.Role;
+import ua.axiom.model.objects.User;
+import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
+import ua.axiom.service.SecurityConfigService;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+
+import static ua.axiom.model.objects.Role.GUEST;
 
 @Controller
 public class MainPageController {
 
     private final static Locale LOCALE_DEFAULT = new Locale("UA");
 
-    //  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private LocalisationService localisationService;
 
-//    @Autowired
-//    public MainPageController(UserRepository userRepository, LocalisationService localisationService) {
-//        this.userRepository = userRepository;
-//        this.localisationService = localisationService;
-//    }
-
     @RequestMapping("/")
     public ModelAndView getMainPage(Map<String, Object> model) {
+        System.out.println("main as: auth " + SecurityContextHolder.getContext().getAuthentication());
+        Authentication auth =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+        if(auth == null) System.err.println(auth);
+        System.out.println("main as: principal " + auth.getPrincipal());
+        System.out.println("main as: authorities " + auth.getAuthorities());
+
+
+        model.put("already-logged-in", SecurityConfigService.isLogged());
+        model.put("username", auth.getPrincipal());
+        model.put("user-role", auth.getAuthorities());
+
         localisationService.setLocalisedMessages(
                 model,
                 LOCALE_DEFAULT,
@@ -41,19 +66,33 @@ public class MainPageController {
                 "word.or"
         );
 
-        System.out.println("main as: " + SecurityContextHolder.getContext().getAuthentication().getName());
-
         return new ModelAndView("index", model);
     }
 
+    /*
     @PostMapping("/")
     public ModelAndView login(Map<String, Object> model, @RequestParam String login, @RequestParam String password) {
         System.out.println("post login " + login + " " + password);
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        System.out.println("main post as " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        //  todo error fix
+
+        localisationService.setLocalisedMessages(
+                model,
+                LOCALE_DEFAULT,
+                "sentence.already-logged",
+                "sentence.login-appeal",
+                "word.password",
+                "word.register",
+                "word.submit",
+                "word.login",
+                "word.or"
+        );
 
         return new ModelAndView("index", model);
 
     }
+    */
+
 
     /*
     @PostMapping(params="register")

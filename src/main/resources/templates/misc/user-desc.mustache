@@ -12,28 +12,10 @@
         <title>Taxi company</title>
     </head>
 </head>
-
 <body>
-<div>
-    <div id="user-list">
-        <h3>Users list</h3>
-        <ul>
-            {{#user-list}}
-                {{username}}
-                <br>
-            {{/user-list}}
-        </ul>
-    </div>
-    <div id="admin-list">
-        <h3>Admins list</h3>
-        <ul>
-            {{#admin-list}}
-                {{username}}
-                <br>
-            {{/admin-list}}
-        </ul>
-    </div>
+<div class="container" id="login-page-container">
+    <h1>USERPAGE</h1>
+    <p>{{username}}</p>
+    <p>{{is-logged-in}}</p>
+    <p>{{role}}</p>
 </div>
-
-</body>
-</html>
