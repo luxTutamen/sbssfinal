@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] GUEST_ENDPOINTS = {"/", "/login", "/register", "/logout"};
     private static final String[] UNSECURED_ENDPOINTS ={"/userdesc"};
-    private static final String[] USER_ENDPOINTS = {"/userpage"};
-    private static final String[] DRIVER_ENDPOINTS = {"/cabinet"};
+    private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder"};
+    private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
     private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
 
     @Autowired
@@ -31,17 +31,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers(DRIVER_ENDPOINTS).hasAuthority("DRIVER")
-                    .antMatchers(USER_ENDPOINTS).hasAuthority("USER")
+                    .antMatchers(USER_ENDPOINTS).hasAuthority("CLIENT")
                     .antMatchers(ADMIN_ENDPOINTS).hasAuthority("ADMIN")
                     .antMatchers(UNSECURED_ENDPOINTS).permitAll()
                     .antMatchers(GUEST_ENDPOINTS).permitAll()
+                    .antMatchers("/public/resources/**").permitAll()
                     //  .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginProcessingUrl("/login")
                     .passwordParameter("password")
                     .usernameParameter("login")
-                    .successForwardUrl("/misc/plrdr")
+                    .successForwardUrl("/api/plrdr")
                     .failureForwardUrl("/?error=true")
                 .and()
                     .logout()
@@ -51,11 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .disable()
                     .userDetailsService(userDetailsService);
 
-//                    .apply(new JwtConfigurer(jwtTokenProvider))
-//                .and()
-//                    .httpBasic()
-//                    .realmName(getRealmName())
-//                .and()
     }
 
     @Override

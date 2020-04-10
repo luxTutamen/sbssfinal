@@ -30,7 +30,7 @@ public class Client extends User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(Role.USER);
+        return Collections.singletonList(Role.CLIENT);
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
+import ua.axiom.controller.exceptions.UserNotPresentException;
 import ua.axiom.model.objects.Client;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
@@ -34,7 +35,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void getLocaleFromRepositoryTest() {
+    public void getLocaleFromRepositoryTest() throws UserNotPresentException {
         UserLocale locale = userRepository.findLocaleById(6666L);
         Assert.assertEquals(locale, UserLocale.UKR);
     }

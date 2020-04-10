@@ -16,8 +16,6 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
         return String.format("<html><body><h2>Error Page</h2><div>Status code: <b>%s</b></div>"
                         + "<div>Exception Message: <b>%s</b></div><body></html>",
                 statusCode, exception==null? "N/A": exception.getMessage());
-
-
     }
 
     @Override

@@ -28,11 +28,11 @@ public class LocalisationService {
         }
     }
 
-    public String getLocalisedMessage(String messageKey, Locale locale) {
+    private String getLocalisedMessage(String messageKey, Locale locale) {
         Map<String, String> dictionary = localeToDictionaryMap.get(locale);
 
         if(dictionary == null) {
-            throw new IllegalStateException("Locale not present in the " + this.getClass());
+            throw new IllegalStateException("Locale <" + locale + "> not present in the " + this.getClass());
         }
 
         String result = dictionary.get(messageKey);
@@ -50,13 +50,13 @@ public class LocalisationService {
         }
     }
 
-    public Map<String, String> getDictionary(Locale locale) {
+    private Map<String, String> getDictionary(Locale locale) {
         Map<String, String> dictionary = localeToDictionaryMap.get(locale);
 
         return MiscNulls.getOrThrow(dictionary, new IllegalStateException("Locale " + locale + " is not present in " + this.getClass()));
     }
 
-    public void addLocale(Locale locale) {
+    private void addLocale(Locale locale) {
         if(localeToDictionaryMap.containsKey(locale)) {
             throw new WrongArgumentException("Locale " + locale + "is already present in " + this.getClass());
         }
@@ -64,7 +64,7 @@ public class LocalisationService {
         localeToDictionaryMap.put(locale, new HashMap<>());
     }
 
-    public void loadProperties(String filePath, Locale toLoad) throws IOException {
+    private void loadProperties(String filePath, Locale toLoad) throws IOException {
         Properties properties = new Properties();
         properties.load(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8));
 
@@ -79,5 +79,4 @@ public class LocalisationService {
             localDictionary.put(key, properties.getProperty(key));
         }
     }
-
 }

@@ -22,22 +22,26 @@ import ua.axiom.repository.UserRepository;
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
-//    @Autowired
-//    private UserRepository userRepository;
 
     @Autowired
+    public RegisterController(
+            PasswordEncoder passwordEncoder,
+            ClientRepository clientRepository,
+            AdminRepository adminRepository,
+            DriverRepository driverRepository,
+            UserRepository userRepository
+    ) {
+        this.passwordEncoder = passwordEncoder;
+        this.clientRepository = clientRepository;
+        this.adminRepository = adminRepository;
+        this.driverRepository = driverRepository;
+        this.userRepository = userRepository;
+    }
+
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ClientRepository clientRepository;
-
-    @Autowired
     private AdminRepository adminRepository;
-
-    @Autowired
     private DriverRepository driverRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @RequestMapping
@@ -63,21 +67,9 @@ public class RegisterController {
         User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
         newUser.setLocale(UserLocale.ENG);
 
-        System.out.println("registering " + login + " as " + role);
-
         userRepository.save(newUser);
 
         return "redirect:/";
 
     }
-
-
-    /*
-    @PostMapping
-    public String processRegistration(RegistrationForm form) {
-        userRepository.save(form.toUser(passwordEncoder));
-        return "redirect:/login";
-    }
-
-     */
 }

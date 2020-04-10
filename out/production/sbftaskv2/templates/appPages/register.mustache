@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/static/css/login-page.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Taxi company</title>
+</head>
+<body>
+    <div class="container">
+        <div class="card card-1">
+            <div class="card-heading">
+                <h1> Register page </h1>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="/register" >
+                    <label>
+                        <input type="text" name="login">
+                        <input type="password" name="password">
+                        <div>
+                            <input type="radio" name="role" value="client">
+                            <label for="client">client</label>
+                            <input type="radio" name="role" value="driver">
+                            <label for="driver">driver</label>
+                            <input type="radio" name="role" value="admin">
+                            <label for="admin">admin</label>
+                        </div>
+                        <button value="login" type="submit" class="btn btn-primary">submit</button>
+                    </label>
+                </form>
+                {{#error}}
+                    <p>{{error}}</p>
+                {{/error}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
