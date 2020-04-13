@@ -10,6 +10,7 @@ import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
@@ -21,7 +22,7 @@ public class UserRepositoryTest {
 
     @BeforeClass
     public static void init() {
-        User user = new Client(new Date(), 444.1F );
+        User user = new Client(new Date(), new BigDecimal("444.1"));
         user.setId(6666L);
         user.setUsername("6666EKR");
         user.setLocale(UserLocale.UKR);

@@ -21,4 +21,9 @@ public class Admin extends User {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(Role.ADMIN);
     }
+
+    @Override
+    protected void setNotNullableFields(Object... data) {
+
+    }
 }

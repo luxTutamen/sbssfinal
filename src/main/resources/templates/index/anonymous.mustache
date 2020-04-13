@@ -24,6 +24,11 @@
                 <div class="panel-heading>">
                     <h3>{{sentence.login-appeal}}</h3>
                 </div>
+                {{#sentence.wrong-credential-msg}}
+                    <div class="alert alert-danger">
+                        <strong>{{word.error}}</strong> {{sentence.wrong-credential-msg}}
+                    </div>
+                {{/sentence.wrong-credential-msg}}
                 <div class="panel-body">
                     <!-- login form content -->
                     <form method="POST" action="/login">
@@ -62,7 +67,7 @@
                     </div>
                     {{/logout-alert}}
                 </div>
-            </div>
+            </>
         </div>
         <div class="col-md-4"></div>
 

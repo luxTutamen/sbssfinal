@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +27,7 @@ public class Client extends User {
     private Date birthDate;
 
     @NotNull
-    private Float money;
+    private BigDecimal money;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -51,5 +52,11 @@ public class Client extends User {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    protected void setNotNullableFields(Object... data) {
+        this.money = new BigDecimal("0.");
+        this.birthDate = new Date();
     }
 }

@@ -24,11 +24,11 @@ public abstract class User implements UserDetails {
     private String password;
 
     @NotNull
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(length = 4)
     private UserLocale locale;
 
-    public static User userFactory(String login, String password, String role) throws RuntimeException {
+    public static User userFactory(String login, String password, String role, Object ... userSpecificData) throws RuntimeException {
         User user;
         switch (role) {
             case ("client"):{
@@ -51,8 +51,12 @@ public abstract class User implements UserDetails {
         user.setUsername(login);
         user.setPassword(password);
 
+        user.setNotNullableFields(userSpecificData);
+
         return user;
     }
+
+    protected abstract void setNotNullableFields(Object ... data);
 
     @Override
     public String getPassword() {

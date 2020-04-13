@@ -17,12 +17,17 @@ import java.util.List;
 @Table(name = "DRIVERS")
 public class Driver extends User {
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     private Car car;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(Role.DRIVER);
+    }
+
+    @Override
+    protected void setNotNullableFields(Object... data) {
+        this.car = new Car("generic car", 0.75F);
     }
 
     @Override

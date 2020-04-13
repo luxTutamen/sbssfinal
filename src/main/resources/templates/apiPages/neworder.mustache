@@ -50,27 +50,72 @@
     </div>
 </nav>
 
-<body class="container">
-<div class="row">
-    <div class="card" style="width: 18rem;">
-        <div class="card-header">
-            <p>{{sentence.new-order-request-msg}}</p>
-        </div>
-        <div class="card-body">
-            <form method="POST" action="/api/neworder">
-                <ul class="list-group list-group-flush">
-                    {{#new-order-details}}
+<body>
+<div class="container">
+    <div class="row">
+        <div class="card col-4" style="width: 18rem;">
+            <div class="card-header">
+                <p>{{sentence.new-order-request-msg}}</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/api/neworder">
+                    <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <label>{{name}}:</label>
-                            <input type="{{type}}" id="{{name}}" name="{{name}}/">
+                            <label>From</label>
+                            <input type="type" name="departure"/>
                         </li>
-                    {{/new-order-details}}
-                </ul>
-
-                <button type="submit" class="btn btn-primary">{{word.submit}}</button>
-            </form>
+                        <li class="list-group-item">
+                            <label>Destination</label>
+                            <input type="text" name="destination"/>
+                        </li>
+                        <li class="dropdown list-group-item pagination-centered">
+                            <label>
+                                Car class
+                            </label>
+                            {{#car-classes}}
+                                <div class="radio">
+                                    <label><input type="radio" name="aClass" value="{{aClass}}">{{aClass}}</label>
+                                </div>
+                            {{/car-classes}}
+                        </li>
+                        <li class="list-group-item pagination-centered">
+                            <button type="submit" class="btn btn-primary">{{word.submit}}</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
         </div>
-
+        <!--    right part of the screen, balance and orders    -->
+        <div class="card col-8">
+            <div class="card-header">
+                <h1> Your orders </h1>
+                <label>
+                    Balance:{{client-balance}}
+                </label>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                   <li class="list-group-item">
+                       {{#pending-orders}}    <!--    orders in form of DTO   -->
+                           <div class="card">
+                               <div class="card-body">
+                                   {{departure}} - {{destination}} for {{price}}
+                               </div>
+                           </div>
+                       {{/pending-orders}}
+                    </li>
+                    <li class="list-group-item">
+                        {{#taken-orders}}    <!--    orders in form of DTO   -->
+                            <div class="card">
+                                <div class="card-body">
+                                    {{departure}} - {{destination}} for {{price}}
+                                </div>
+                            </div>
+                        {{/taken-orders}}
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 

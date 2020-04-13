@@ -14,9 +14,8 @@ import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 @Controller
 public class MainPageController extends MultiViewController {
@@ -37,13 +36,17 @@ public class MainPageController extends MultiViewController {
 
     @RequestMapping("/")
     public ModelAndView mapRequest() {
-        return super.getRequestMapping();
+        return super.getRequestMapping(new ModelAndView("/"));
     }
 
-    private class AnonymousMainPageController implements Supplier<ModelAndView> {
+    private class AnonymousMainPageController implements Function<ModelAndView, ModelAndView> {
+
         @Override
-        public ModelAndView get() {
-            return new ModelAndView("index/anonymous", fillContent());
+        public ModelAndView apply(ModelAndView modelAndView) {
+            Map<String, Object> model = modelAndView.getModel();
+            model.putAll(fillContent());
+
+            return new ModelAndView("index/anonymous", model);
         }
 
         //  todo make singletone
@@ -66,12 +69,13 @@ public class MainPageController extends MultiViewController {
 
             return model;
         }
+
     }
 
-    private class AuthorisedMainPageController implements Supplier<ModelAndView> {
+    private class AuthorisedMainPageController implements Function<ModelAndView, ModelAndView> {
         @Override
-        public ModelAndView get() {
-            Map<String, Object> model = new HashMap<>();
+        public ModelAndView apply(ModelAndView modelAndView) {
+            Map<String, Object> model = modelAndView.getModel();
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             model.put("info.username", user.getUsername());
@@ -106,12 +110,20 @@ public class MainPageController extends MultiViewController {
 
     @ExceptionHandler(NullPointerException.class)
     public ModelAndView exceptionHandler() {
-        Map<String, Object> model = new HashMap<>();
-        System.out.println("exceptiion! NPE");
+        Map<String, Object> model = super
+                .getRequestMapping(new ModelAndView("/"), new SimpleGrantedAuthority("ROLE_ANONYMOUS"))
+                .getModel();
 
-        model.put("error", "wrong credentials");
+        model.put("error", true);
 
-        return new ModelAndView("index", model);
+        localisationService.setLocalisedMessages(
+                model,
+                LOCALE_DEFAULT,
+                "word.error",
+                "sentence.wrong-credential-msg"
+        );
+
+        return new ModelAndView("index/anonymous", model);
     }
 
     /*

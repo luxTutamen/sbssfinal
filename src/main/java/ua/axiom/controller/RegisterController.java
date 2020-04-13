@@ -60,6 +60,7 @@ public class RegisterController {
             @RequestParam String role
     ) {
         if(userRepository.findByUsername(login).isPresent()) {
+            //  todo exception
             model.put("error", "Username is already present");
             return "appPages/register";
         };

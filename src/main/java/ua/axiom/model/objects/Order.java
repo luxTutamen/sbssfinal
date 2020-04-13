@@ -1,5 +1,7 @@
 package ua.axiom.model.objects;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +16,13 @@ import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
+@Builder
 @Table(name = "ORDERS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
+    public enum Status{PENDING, TAKEN, FINISHED};
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,9 +31,12 @@ public class Order {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     private User user;
 
-    @NotNull
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     private User driver;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @NotNull
     @Digits(integer=9, fraction=2)
@@ -36,6 +45,15 @@ public class Order {
     @NotNull
     private Date date;
 
+    @NotNull
+    private Car.Class cClass;
+
+    @NotNull
+    private String departure;
+
+    @NotNull
+    private String destination;
+
     public static List<OrderInputDescription> getOrderInputDescriptions() {
         return OrderInputDescription.inputDescription;
     }
@@ -43,9 +61,7 @@ public class Order {
     private static class OrderInputDescription {
         static List<OrderInputDescription> inputDescription = Arrays.asList(
                 new OrderInputDescription("from", "text"),
-                new OrderInputDescription("where", "text"),
-                new OrderInputDescription("class", "text")
-
+                new OrderInputDescription("where", "text")
         );
 
         public String name;
