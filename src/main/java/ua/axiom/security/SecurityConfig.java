@@ -18,11 +18,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
     private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
 
-    @Autowired
     private UserDetailsService userDetailsService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -36,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(UNSECURED_ENDPOINTS).permitAll()
                     .antMatchers(GUEST_ENDPOINTS).permitAll()
                     .antMatchers("/public/resources/**").permitAll()
-                    //  .anyRequest().authenticated()
+                    .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginProcessingUrl("/login")

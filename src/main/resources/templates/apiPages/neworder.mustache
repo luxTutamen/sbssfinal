@@ -11,6 +11,8 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
     <title>{{sentence.new-order-page-desc}}</title>
 </head>
@@ -58,7 +60,7 @@
                 <p>{{sentence.new-order-request-msg}}</p>
             </div>
             <div class="card-body">
-                <form method="POST" action="/api/neworder">
+                <form method="POST" action="/api/neworder" name="new-order">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <label>From</label>
@@ -74,13 +76,18 @@
                             </label>
                             {{#car-classes}}
                                 <div class="radio">
-                                    <label><input type="radio" name="aClass" value="{{aClass}}">{{aClass}}</label>
+                                    <label><input type="radio" name="aClass" checked value="{{aClass}}">{{aClass}}</label>
                                 </div>
                             {{/car-classes}}
                         </li>
                         <li class="list-group-item pagination-centered">
                             <button type="submit" class="btn btn-primary">{{word.submit}}</button>
                         </li>
+                        {{#error}}
+                            <div class="alert alert-danger" role="alert">
+                                {{error}}
+                            </div>
+                        {{/error}}
                     </ul>
                 </form>
             </div>
@@ -97,21 +104,39 @@
                 <ul class="list-group">
                    <li class="list-group-item">
                        {{#pending-orders}}    <!--    orders in form of DTO   -->
-                           <div class="card">
+                           <div class="card text-white bg-primary">
                                <div class="card-body">
-                                   {{departure}} - {{destination}} for {{price}}
+                                   <label class="card-text col-3">From: {{departure}}</label>
+                                   <label class="card-text col-3">To: {{destination}}</label>
+                                   <label class="card-text col-3">Fee: {{price}}</label>
                                </div>
                            </div>
                        {{/pending-orders}}
                     </li>
                     <li class="list-group-item">
                         {{#taken-orders}}    <!--    orders in form of DTO   -->
-                            <div class="card">
+                            <div class="card text-white bg-success">
                                 <div class="card-body">
-                                    {{departure}} - {{destination}} for {{price}}
+                                    <label class="card-text col-3">From: {{departure}}</label>
+                                    <label class="card-text col-3">To: {{destination}}</label>
+                                    <label class="card-text col-3">Fee: {{price}}</label>
                                 </div>
                             </div>
                         {{/taken-orders}}
+                    </li>
+                    <li class="list-group-item">
+                        <div class="text-center">
+                            <form action="/api/neworder/nextpage" method="post">
+                                <button type="submit" class="btn btn-light btn-lg">
+                                    &#8592
+                                </button>
+                            </form>
+                            <form action="/api/neworder/prevpage" method="post">
+                                <button type="submit" class="btn btn-light btn-lg">
+                                    &#8594
+                                </button>
+                            </form>
+                        </div>
                     </li>
                 </ul>
             </div>
