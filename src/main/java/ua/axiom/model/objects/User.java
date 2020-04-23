@@ -28,6 +28,8 @@ public abstract class User implements UserDetails {
     @Column(length = 4)
     private UserLocale locale;
 
+    private boolean isBanned;
+
     public static User userFactory(String login, String password, String role, Object ... userSpecificData) throws RuntimeException {
         User user;
         switch (role) {
@@ -75,7 +77,7 @@ public abstract class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isBanned;
     }
 
     @Override
@@ -85,6 +87,6 @@ public abstract class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isBanned;
     }
 }

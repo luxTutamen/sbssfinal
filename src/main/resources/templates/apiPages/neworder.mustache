@@ -94,52 +94,7 @@
         </div>
         <!--    right part of the screen, balance and orders    -->
         <div class="card col-8">
-            <div class="card-header">
-                <h1> Your orders </h1>
-                <label>
-                    Balance:{{client-balance}}
-                </label>
-            </div>
-            <div class="card-body">
-                <ul class="list-group">
-                   <li class="list-group-item">
-                       {{#pending-orders}}    <!--    orders in form of DTO   -->
-                           <div class="card text-white bg-primary">
-                               <div class="card-body">
-                                   <label class="card-text col-3">From: {{departure}}</label>
-                                   <label class="card-text col-3">To: {{destination}}</label>
-                                   <label class="card-text col-3">Fee: {{price}}</label>
-                               </div>
-                           </div>
-                       {{/pending-orders}}
-                    </li>
-                    <li class="list-group-item">
-                        {{#taken-orders}}    <!--    orders in form of DTO   -->
-                            <div class="card text-white bg-success">
-                                <div class="card-body">
-                                    <label class="card-text col-3">From: {{departure}}</label>
-                                    <label class="card-text col-3">To: {{destination}}</label>
-                                    <label class="card-text col-3">Fee: {{price}}</label>
-                                </div>
-                            </div>
-                        {{/taken-orders}}
-                    </li>
-                    <li class="list-group-item">
-                        <div class="text-center">
-                            <form action="/api/neworder/nextpage" method="post">
-                                <button type="submit" class="btn btn-light btn-lg">
-                                    &#8592
-                                </button>
-                            </form>
-                            <form action="/api/neworder/prevpage" method="post">
-                                <button type="submit" class="btn btn-light btn-lg">
-                                    &#8594
-                                </button>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <p> taxes and promotions </p>
         </div>
     </div>
 </div>

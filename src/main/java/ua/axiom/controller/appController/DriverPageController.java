@@ -1,15 +1,138 @@
 package ua.axiom.controller.appController;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import ua.axiom.controller.MultiViewController;
+import ua.axiom.controller.exceptions.JustTakenException;
 
+import ua.axiom.model.objects.*;
+import ua.axiom.repository.DriverRepository;
+import ua.axiom.repository.OrderRepository;
+import ua.axiom.service.GuiService;
+import ua.axiom.service.misc.MiscNulls;
+
+import javax.jws.WebParam;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/driverpage")
-public class DriverPageController {
+public class DriverPageController extends MultiViewController {
+    private GuiService guiService;
+
+    private OrderRepository orderRepository;
+    private DriverRepository driverRepository;
+
+    private class DriverNoOrderController implements Function<Model, ModelAndView> {
+        @Override
+        public ModelAndView apply(Model model) {
+            Driver driver = (Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            model.asMap().put("balance", driver.getBalance());
+            populateWithSpecificData(model.asMap(), driver);
+
+            return new ModelAndView("appPages/driverpages/noOrderDriverpage", model.asMap());
+        }
+    }
+
+    private class DriverWithOrderController implements Function<Model, ModelAndView> {
+        @Override
+        public ModelAndView apply(Model model) {
+            Driver driver = (Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            populateWithSpecificData(model.asMap(), driver);
+            populateWithOrderData(model.asMap(), driver);
+            model.asMap().put("balance", driver.getBalance());
+
+            return new ModelAndView("appPages/driverpages/withOrderDriverPage", model.asMap());
+        }
+
+        private void populateWithOrderData(Map<String, Object> model, Driver driver) {
+            driver = driverRepository.getOne(driver.getId());
+            Order order = orderRepository.getOne(driver.getCurrentOrder().getId());
+
+            model.put("departure", order.getDeparture());
+            model.put("destination", order.getDestination());
+
+            model.put("tax", order.getPrice());
+        }
+    }
+
+    @Autowired
+    public DriverPageController(
+            GuiService guiService,
+            OrderRepository orderRepository,
+            DriverRepository driverRepository
+    ) {
+        this.guiService = guiService;
+        this.orderRepository = orderRepository;
+        this.driverRepository = driverRepository;
+
+        super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, new DriverNoOrderController());
+        super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, new DriverWithOrderController());
+    }
+
     @RequestMapping
-    public String getDriverPage(Map<String, Object> model) {
-        return "appPages/driverpage";
+    public ModelAndView getDriverPage(Map<String, Object> model) {
+        guiService.populateModelWithNavbarData(model);
+
+        return super.getRequestMapping(new ConcurrentModel(model));
+
+    }
+
+    @PostMapping("/takeorder")
+    public ModelAndView takeOrderController(@RequestParam("orderId") long orderId) throws JustTakenException {
+        Map<String, Object> model = new HashMap<>();
+        guiService.populateModelWithNavbarData(model);
+
+        long id = ((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Driver driver = driverRepository.findById(id).get();
+
+        Optional<Order> takenOrder = orderRepository.findById(orderId);
+        Order validOrder = MiscNulls.getOrThrow(takenOrder.get(), new JustTakenException());
+
+        validOrder.setStatus(Order.Status.TAKEN);
+        validOrder.setDriver(driver);
+        driver.setCurrentOrder(validOrder);
+        driverRepository.save(driver);
+
+        return new ModelAndView("redirect:/driverpage", model);
+    }
+
+    @PostMapping("/confirmation")
+    public String confirmationPost() {
+        Map<String, Object> model = new HashMap<>();
+        guiService.populateModelWithNavbarData(model);
+
+        long id = ((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+        Order order = orderRepository.findByDriverAndStatus(driverRepository.getOne(id), Order.Status.TAKEN);
+        order.setConfirmedByDriver(true);
+        orderRepository.save(order);
+
+        Driver driver = driverRepository.findById(id).get();
+        driver.setCurrentOrder(null);
+        driverRepository.save(driver);
+
+        return "redirect:/driverpage";
+    }
+
+    private void populateWithSpecificData(Map<String, Object> model, Driver driver) {
+        model.put("orders", orderRepository.findByCClassAndStatus(driver.getCar().getAClass(), Order.Status.PENDING));
+        model.put("car", Car.CarTDO.carToDTO(driver.getCar()));
+
     }
 }
+
+/*
+{orders} done
+{money}
+{car}
+*/

@@ -26,10 +26,10 @@ public class ReplenishMoneyController {
         Map<String, Object> model= new HashMap<>();
 
         Long id =  ((Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
         Client client = clientRepository.findById(id).get();
         client.setMoney(client.getMoney().add(new BigDecimal("1000.00")));
-
-        clientRepository.flush();
+        clientRepository.save(client);
 
         System.out.println("repleished!");
 

@@ -58,22 +58,22 @@ public class NewOrderController {
             @RequestParam String destination,
             @RequestParam String aClass
     ) throws NotEnoughMoneyException {
-        System.out.println("posted new-order" + destination);
 
-        Client user = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Client client = clientRepository.getOne(id);
         BigDecimal price = new BigDecimal(priceGenerator.nextInt() % 500 + 500 + ".00");
 
-        if(price.compareTo(user.getMoney()) == 1) {
+        if(price.compareTo(client.getMoney()) == 1) {
             throw new NotEnoughMoneyException();
         }
 
-        user.setMoney(user.getMoney().subtract(price));
+        client.setMoney(client.getMoney().subtract(price));
 
         Order newOrder = Order.builder()
                 .date(new Date())
                 .departure(departure)
                 .destination(destination)
-                .user(user)
+                .client(client)
                 .status(Order.Status.PENDING)
                 .price(price)
                 .cClass(Car.Class.valueOf(aClass))
@@ -81,7 +81,6 @@ public class NewOrderController {
 
         orderRepository.save(newOrder);
 
-        Client client = (Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Map<String, Object> model = new HashMap<>();
 
         fillUserSpecificContent(model, client);
@@ -89,24 +88,6 @@ public class NewOrderController {
 
         return new ModelAndView("/apiPages/neworder", model);
     }
-
-
-    @PostMapping("/nextpage")
-    public ModelAndView postNextOrderPage() {
-        System.out.println("posted pagination to next page");
-        ordersPage++;
-
-        return orderRequest();
-    }
-
-    @PostMapping("/prevpage")
-    public ModelAndView postPrevOrderPage() {
-        System.out.println("posted pagination to prev page");
-        ordersPage = (ordersPage > 0) ? ordersPage-- : ordersPage;
-
-        return orderRequest();
-    }
-
 
     @ExceptionHandler(NotEnoughMoneyException.class)
     public ModelAndView notEnoughMoneyException() {
@@ -124,9 +105,8 @@ public class NewOrderController {
 
     private void fillUserSpecificContent(Map<String, Object> model, Client client) {
         model.put("new-order-details", Order.getOrderInputDescriptions());
-        model.put("car-classes", Car.getCarClassTDOList());
+        model.put("car-classes", Car.ClassTDO.getCarClassTDOList());
         model.put("client-balance", client.getMoney());
-        model.put("pending-orders", orderRepository.findByStatusAndUser(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));
         model.put("username", client.getUsername());
         model.put("current-locale", client.getLocale());
 

@@ -51,71 +51,56 @@
         </form>
     </div>
 </nav>
+
+
 <body>
 <div class="container">
     <div class="row">
+        <div class="card col-4" style="width: 18rem;">
+            <div class="card-header">
+                {{#car}}
+                    <p>class: {{aClass}}</p>
+                    <p>name: {{modelName}}</p>
 
-        <div class="col-4">
-            <row>
-                <form action="/adminpage/prevpage" method="post">
-                    <button class="btn btn-light" type="submit" name="what" value="clientPage">prev clientPage</button>
-                </form>
-                <form action="/adminpage/nextpage" method="post">
-                    <button class="btn btn-light" type="submit" name="what" value="clientPage">next clientPage</button>
-                </form>
-                <label class="col-1">Page: {{clientPage}}</label>
-            </row>
-            <div class="card">
-                <div class="card-header">
-                    <p>clients </p>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                    {{#clients-list}}
-                        <li class="list-group-item">
-                            <p>name: {{username}}</p>
-                            <p>balance: {{money}}</p>
-                            <form method="post" action="adminpage/ban">
-                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
-                            </form>
-                        </li>
-                    {{/clients-list}}
-                    </ul>
-                </div>
+                {{/car}}
+
+                <p>Balance: {{balance}}</p>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        todo your cars list
+                    </li>
+                    <li class="list-group-item">
+                        todo your balance
+
+                        todo withdraw
+                    </li>
+                    <li class="list-group-item">
+                        todo add car
+                    </li>
+                </ul>
             </div>
         </div>
-
-        <div class="col-4">
-            <row>
-                <form action="/adminpage/prevpage" method="post">
-                    <button class="btn btn-light" type="submit" name="what" value="driverPage">prev clientPage</button>
-                </form>
-                <form action="/adminpage/nextpage" method="post">
-                    <button class="btn btn-light" type="submit" name="what" value="driverPage">next clientPage</button>
-                </form>
-                <label class="col-1">Page: {{driverPage}}</label>
-            </row>
-            <div class="card">
-                <div class="card-header">
-                    <p>clients </p>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        {{#drivers-list}}
-                            <li class="list-group-item">
-                                <p>name: {{username}}</p>
-                                <p>balance: {{balance}}</p>
-                                <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
-                                </form>
-                            </li>
-                        {{/drivers-list}}
-                    </ul>
-                </div>
+        <div class="card col-8">
+            <div class="card-header">
+                accessible orders
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {{#orders}}
+                        <li class="list-group-item">
+                            <p>{{departure}}</p>
+                            <p>{{destination}}</p>
+                            <form method="post" action="/driverpage/takeorder">
+                                <button type="submit" class="btn btn-warning" value="{{id}}" name="orderId">take order</button>
+                            </form>
+                        </li>
+                    {{/orders}}
+                </ul>
             </div>
         </div>
     </div>
-
 </div>
 </body>
 </html>

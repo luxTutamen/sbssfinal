@@ -1,14 +1,14 @@
 package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
-import ua.axiom.model.objects.Role;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
@@ -16,11 +16,31 @@ import ua.axiom.service.LocalisationService;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Controller
+@RequestMapping("/")
 public class MainPageController extends MultiViewController {
     //  todo remove
     private static final Locale LOCALE_DEFAULT = new Locale("UA");
+
+    private static final Supplier<Boolean> anonymousViewPredicate =
+            () -> SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getAuthorities()
+                        .stream()
+                        .anyMatch(a -> a.toString().equals("ROLE_ANONYMOUS"));
+
+    private static final Supplier<Boolean> loggedViewPredicates =
+            () -> SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getAuthorities()
+                        .stream()
+                        .anyMatch(a -> { return a.toString().equals("DRIVER")
+                                                || a.toString().equals("CLIENT")
+                                                || a.toString().equals("ADMIN"); });
 
     private UserRepository userRepository;
     private LocalisationService localisationService;
@@ -30,26 +50,24 @@ public class MainPageController extends MultiViewController {
         this.userRepository = userRepository;
         this.localisationService = localisationService;
 
-        addController(new HashSet<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))), new AnonymousMainPageController());
-        addController(new HashSet<>(Arrays.asList(Role.DRIVER, Role.ADMIN, Role.CLIENT)), new AuthorisedMainPageController());
+        addController(anonymousViewPredicate, new AnonymousMainPageController());
+        addController(loggedViewPredicates, new AuthorisedMainPageController());
     }
 
-    @RequestMapping("/")
+    @RequestMapping
     public ModelAndView mapRequest() {
-        return super.getRequestMapping(new ModelAndView("/"));
+        return super.getRequestMapping(new ConcurrentModel());
     }
 
-    private class AnonymousMainPageController implements Function<ModelAndView, ModelAndView> {
-
+    private class AnonymousMainPageController implements Function<Model, ModelAndView> {
         @Override
-        public ModelAndView apply(ModelAndView modelAndView) {
-            Map<String, Object> model = modelAndView.getModel();
-            model.putAll(fillContent());
+        public ModelAndView apply(Model model) {
 
-            return new ModelAndView("index/anonymous", model);
+            model.addAllAttributes(fillContent());
+
+            return new ModelAndView("index/anonymous", model.asMap());
         }
 
-        //  todo make singletone
         private Map<String, Object> fillContent() {
             Map<String, Object> model = new HashMap<>();
 
@@ -72,26 +90,25 @@ public class MainPageController extends MultiViewController {
 
     }
 
-    private class AuthorisedMainPageController implements Function<ModelAndView, ModelAndView> {
+    private class AuthorisedMainPageController implements Function<Model, ModelAndView> {
         @Override
-        public ModelAndView apply(ModelAndView modelAndView) {
-            Map<String, Object> model = modelAndView.getModel();
+        public ModelAndView apply(Model model) {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-            model.put("info.username", user.getUsername());
-            model.put("locales", UserLocale.getLocalesList());
-            model.put("current-locale", user.getLocale());
+            model.addAttribute("info.username", user.getUsername());
+            model.addAttribute("locales", UserLocale.getLocalesList());
+            model.addAttribute("current-locale", user.getLocale());
 
             localisationService.setLocalisedMessages(
-                    model,
+                    model.asMap(),
                     user.getLocale().toJavaLocale(),
                     "sentence.to-app-button",
                     "sentence.login-page-desc"
             );
 
-            fillHeader(model, user);
+            fillHeader(model.asMap(), user);
 
-            return new ModelAndView("index/logged", model);
+            return new ModelAndView("index/logged", model.asMap());
         }
 
         private void fillHeader(Map<String, Object> model, User user) {
@@ -111,7 +128,7 @@ public class MainPageController extends MultiViewController {
     @ExceptionHandler(NullPointerException.class)
     public ModelAndView exceptionHandler() {
         Map<String, Object> model = super
-                .getRequestMapping(new ModelAndView("/"), new SimpleGrantedAuthority("ROLE_ANONYMOUS"))
+                .getRequestMapping(new ConcurrentModel())
                 .getModel();
 
         model.put("error", true);
@@ -125,72 +142,5 @@ public class MainPageController extends MultiViewController {
 
         return new ModelAndView("index/anonymous", model);
     }
-
-    /*
-        @PostMapping(value = "/", params = "login")
-        public String mainPagePost(
-                @RequestParam String login,
-                @RequestParam String password,
-                @RequestParam(required = false, defaultValue = "eng") String lang,
-                Map<String, Object> model) {
-
-            System.out.println(login + " " + password + " " + lang);
-            model.put("timestamp", new Timestamp(1111L));
-
-            return "application";
-
-            User user;
-            try {
-                user = userRepository.findByUsername(login).get();
-            } catch (NoSuchElementException nsee) {
-                System.out.println("errr lol");
-                return "error";
-            }
-
-            if(user.getRole() == Role.USER) {
-                return "app";
-            } else if(user.getRole() == Role.ADMIN) {
-                return "admin";
-            } else if(user.getRole() == Role.DRIVER) {
-                return "cabinet";
-            } else {
-                return "error";
-            }
-        }
-    */
-    /*
-    private String getLoginLoginPage(Map<String, Object> model,
-                                     @RequestParam(value = "error", required = false) String error,
-                                     @RequestParam(value = "logout", required = false) String logout) {
-        Locale locale = new Locale("UA");
-
-        model.put("logout-alert", error != null);
-        model.put("register-alert", logout != null);
-
-        model.put("selected_language", localisationService.getLocalisedMessage("word.language_name", locale));
-        model.put("or-word", localisationService.getLocalisedMessage("word.or", locale));
-        model.put("login-appeal", localisationService.getLocalisedMessage("sentence.login-appeal", locale));
-        model.put("password-word", localisationService.getLocalisedMessage("word.password", locale));
-        model.put("register-word", localisationService.getLocalisedMessage("word.register", locale));
-        model.put("submit-word", localisationService.getLocalisedMessage("word.submit", locale));
-        model.put("login-word", localisationService.getLocalisedMessage("word.login", locale));
-
-        return "index";
-    }
-
-    private String getUserLoginPage(Map<String, Object> model) {
-        //  User o = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Locale locale = new Locale("UA");
-
-        model.put("show-login", true);
-        model.put("already-login-msg", localisationService.getLocalisedMessage("sentences.already-login-msg", locale));
-        model.put("username", "dummy");
-        model.put("user-role", "dummy");
-
-        return "index";
-    }
-
-     */
-
 
 }

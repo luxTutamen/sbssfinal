@@ -29,7 +29,7 @@ public class Order {
 
     @NotNull
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    private User user;
+    private User client;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     private User driver;
@@ -53,6 +53,10 @@ public class Order {
 
     @NotNull
     private String destination;
+
+    private boolean confirmedByClient;
+
+    private boolean confirmedByDriver;
 
     public static List<OrderInputDescription> getOrderInputDescriptions() {
         return OrderInputDescription.inputDescription;

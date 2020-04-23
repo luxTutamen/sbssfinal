@@ -17,19 +17,6 @@
     </head>
 </head>
 
-<!--
-<nav class="navbar navbar-dark bg-primary">
-    <div class="col-4">
-        <h1>{{word.hello}}, {{username}}</h1>
-    </div>
-    <div class="col-6"></div>
-    <div class="col-2">
-        <form action="/logout" method="POST">
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">{{word.logout}}</button>
-        </form>
-    </div>
-</nav>
--->
 <nav class="navbar navbar-dark bg-primary">
     <a class="navbar-brand" href="#">
         <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
@@ -83,8 +70,68 @@
             </div>
         </div>
         <div class="card col-8">
+            <div class="card-header">
+                <h1> Your orders </h1>
+                <label>
+                    Balance:{{client-balance}}
+                </label>
+            </div>
             <div class="card-body">
-                <p> adafsd </p>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{#pending-orders}}    <!--    orders in form of DTO   -->
+                            <div class="card text-white bg-primary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <label class="card-text col-3">From: {{departure}}</label>
+                                        <label class="card-text col-3">To: {{destination}}</label>
+                                        <label class="card-text col-3">Class:{{cClass}}</label>
+                                        <label class="card-text col-3">Fee: {{price}}</label>
+                                    </div>
+                                    <div class="row">
+                                        <form method="post" action="/userpage/cancelorder">
+                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/pending-orders}}
+                    </li>
+                    <li class="list-group-item">
+                        {{#taken-orders}}    <!--    orders in form of DTO   -->
+                            <div class="card text-white bg-success">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <label class="card-text col-3">From: {{departure}}</label>
+                                        <label class="card-text col-3">To: {{destination}}</label>
+                                        <label class="card-text col-3">Class:{{cClass}}</label>
+                                        <label class="card-text col-3">Fee: {{price}}</label>
+                                    </div>
+                                    <div class="row">
+                                        <form method="post" action="/userpage/confirm">
+                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">Confirm order</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/taken-orders}}
+                    </li>
+                    <li class="list-group-item">
+                        <p>Page:{{page}}</p>
+                        <div class="row text-center">
+                            <form action="/userpage/nextpage" method="post">
+                                <button type="submit" class="btn btn-light btn-lg">
+                                    &#8592
+                                </button>
+                            </form>
+                            <form action="/userpage/prevpage" method="post">
+                                <button type="submit" class="btn btn-light btn-lg">
+                                    &#8594
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
 
