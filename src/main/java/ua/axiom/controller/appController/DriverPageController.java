@@ -14,10 +14,12 @@ import ua.axiom.model.objects.*;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
+import ua.axiom.service.LocalisationService;
 import ua.axiom.service.misc.MiscNulls;
 
 import javax.jws.WebParam;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -26,6 +28,7 @@ import java.util.function.Function;
 @RequestMapping("/driverpage")
 public class DriverPageController extends MultiViewController {
     private GuiService guiService;
+    private LocalisationService localisationService;
 
     private OrderRepository orderRepository;
     private DriverRepository driverRepository;
@@ -38,7 +41,27 @@ public class DriverPageController extends MultiViewController {
             model.asMap().put("balance", driver.getBalance());
             populateWithSpecificData(model.asMap(), driver);
 
+            fillWithLocalisedMsg(model.asMap(), driver.getLocale().toJavaLocale());
+
             return new ModelAndView("appPages/driverpages/noOrderDriverpage", model.asMap());
+        }
+
+        private void fillWithLocalisedMsg(Map<String, Object> model, Locale locale) {
+            localisationService.setLocalisedMessages(
+                    model,
+                    locale,
+                    "sentence.take-order",
+                    "sentence.accessible-orders",
+                    "word.withdraw",
+                    "sentence.your-cars",
+                    "word.balance",
+                    "word.withdraw",
+                    "sentence.change-car",
+                    "word.class",
+                    "word.car-model",
+                    "word.from",
+                    "word.to"
+            );
         }
     }
 
@@ -58,10 +81,26 @@ public class DriverPageController extends MultiViewController {
             driver = driverRepository.getOne(driver.getId());
             Order order = orderRepository.getOne(driver.getCurrentOrder().getId());
 
+            fillWithLocalisedMsg(model, driver.getLocale().toJavaLocale());
+
             model.put("departure", order.getDeparture());
             model.put("destination", order.getDestination());
 
             model.put("tax", order.getPrice());
+        }
+
+        private void fillWithLocalisedMsg(Map<String, Object> model, Locale locale) {
+            localisationService.setLocalisedMessages(
+                    model,
+                    locale,
+            "sentence.current-order-description-msg",
+                    "word.from",
+                    "word.to",
+                    "sentence.sentence-confirm-msg",
+                    "word.balance",
+                    "word.class",
+                    "word.car-model"
+            );
         }
     }
 
@@ -69,11 +108,13 @@ public class DriverPageController extends MultiViewController {
     public DriverPageController(
             GuiService guiService,
             OrderRepository orderRepository,
-            DriverRepository driverRepository
+            DriverRepository driverRepository,
+            LocalisationService localisationService
     ) {
         this.guiService = guiService;
         this.orderRepository = orderRepository;
         this.driverRepository = driverRepository;
+        this.localisationService = localisationService;
 
         super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, new DriverNoOrderController());
         super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, new DriverWithOrderController());

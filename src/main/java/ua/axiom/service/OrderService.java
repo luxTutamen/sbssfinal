@@ -29,7 +29,6 @@ public class OrderService {
     public void processFinishedOrder(long orderId) {
         Order order = orderRepository.getOne(orderId);
         Driver driver = (Driver)order.getDriver();
-        Client client = (Client)order.getClient();
 
         if(order.isConfirmedByClient() && order.isConfirmedByDriver()) {
             order.setStatus(Order.Status.FINISHED);
@@ -37,13 +36,10 @@ public class OrderService {
             return;
         }
 
-        //  todo substract money before
-        client.setMoney(client.getMoney().subtract(order.getPrice()));
         driver.setBalance(driver.getBalance().add(order.getPrice()));
         driver.setCurrentOrder(null);
 
         driverRepository.save(driver);
-        clientRepository.save(client);
         orderRepository.save(order);
 
     }

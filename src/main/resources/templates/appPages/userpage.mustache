@@ -73,7 +73,7 @@
             <div class="card-header">
                 <h1> Your orders </h1>
                 <label>
-                    Balance:{{client-balance}}
+                    {{word.balance}}:{{client-balance}}
                 </label>
             </div>
             <div class="card-body">
@@ -83,14 +83,14 @@
                             <div class="card text-white bg-primary">
                                 <div class="card-body">
                                     <div class="row">
-                                        <label class="card-text col-3">From: {{departure}}</label>
-                                        <label class="card-text col-3">To: {{destination}}</label>
-                                        <label class="card-text col-3">Class:{{cClass}}</label>
-                                        <label class="card-text col-3">Fee: {{price}}</label>
+                                        <label class="card-text col-3">{{word.from}}: {{departure}}</label>
+                                        <label class="card-text col-3">{{word.to}}: {{destination}}</label>
+                                        <label class="card-text col-3">{{word.class}}: {{cClass}}</label>
+                                        <label class="card-text col-3">{{word.fee}}: {{price}}</label>
                                     </div>
                                     <div class="row">
                                         <form method="post" action="/userpage/cancelorder">
-                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">Cancel</button>
+                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">{{word.cancel}}</button>
                                         </form>
                                     </div>
                                 </div>
@@ -102,14 +102,14 @@
                             <div class="card text-white bg-success">
                                 <div class="card-body">
                                     <div class="row">
-                                        <label class="card-text col-3">From: {{departure}}</label>
-                                        <label class="card-text col-3">To: {{destination}}</label>
-                                        <label class="card-text col-3">Class:{{cClass}}</label>
-                                        <label class="card-text col-3">Fee: {{price}}</label>
+                                        <label class="card-text col-3">{{word.from}}: {{departure}}</label>
+                                        <label class="card-text col-3">{{word.to}}: {{destination}}</label>
+                                        <label class="card-text col-3">{{word.class}}: {{cClass}}</label>
+                                        <label class="card-text col-3">{{word.fee}}: {{price}}</label>
                                     </div>
                                     <div class="row">
                                         <form method="post" action="/userpage/confirm">
-                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">Confirm order</button>
+                                            <button type="submit" class="btn btn-warning" value={{id}} name="orderId">{{sentence.sentence-confirm-msg}}</button>
                                         </form>
                                     </div>
                                 </div>

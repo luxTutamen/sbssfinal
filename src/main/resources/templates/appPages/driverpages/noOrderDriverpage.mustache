@@ -37,7 +37,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {{#locales}}
-                        <input type="submit" class="dropdown-item" value="{{name}}" name="name" onClick="window.location.reload();"/>
+                        <input type="submit" class="dropdown-item" value="{{name}}" name="name" onClick="window.location.reload(false);"/>
                     {{/locales}}
                 </div>
             </div>
@@ -52,49 +52,49 @@
     </div>
 </nav>
 
-
 <body>
 <div class="container">
     <div class="row">
         <div class="card col-4" style="width: 18rem;">
             <div class="card-header">
                 {{#car}}
-                    <p>class: {{aClass}}</p>
-                    <p>name: {{modelName}}</p>
-
+                    <p>{{word.class}}: {{aClass}}</p>
+                    <p>{{word.car-model}}: {{modelName}}</p>
                 {{/car}}
 
-                <p>Balance: {{balance}}</p>
+                <p>{{word.balance}}: {{balance}}</p>
             </div>
             <div class="card-body">
                 <ul class="list-group">
                     <li class="list-group-item">
-                        todo your cars list
+                        {{sentence.your-cars}}
                     </li>
                     <li class="list-group-item">
-                        todo your balance
-
-                        todo withdraw
+                        {{word.withdraw}}
                     </li>
                     <li class="list-group-item">
-                        todo add car
+                        {{sentence.change-car}}
                     </li>
                 </ul>
             </div>
         </div>
         <div class="card col-8">
             <div class="card-header">
-                accessible orders
+                {{sentence.accessible-orders}}
             </div>
             <div class="card-body">
                 <ul class="list-group">
                     {{#orders}}
                         <li class="list-group-item">
-                            <p>{{departure}}</p>
-                            <p>{{destination}}</p>
-                            <form method="post" action="/driverpage/takeorder">
-                                <button type="submit" class="btn btn-warning" value="{{id}}" name="orderId">take order</button>
-                            </form>
+                            <div class="row">
+                                <div class="col-4">{{word.from}} {{departure}} </div>
+                                <div class="col-4">{{word.to}} {{destination}} </div>
+                                <div class="col-4">
+                                    <form method="post" action="/driverpage/takeorder">
+                                        <button type="submit" class="btn btn-warning" value="{{id}}" name="orderId">{{sentence.take-order}}</button>
+                                    </form>
+                                </div>
+                            </div>
                         </li>
                     {{/orders}}
                 </ul>

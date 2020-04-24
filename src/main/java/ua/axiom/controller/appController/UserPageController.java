@@ -124,7 +124,12 @@ public class UserPageController {
                 "sentence.delete-account",
                 "word.company-name",
                 "sentence.logged-as",
-                "info.username"
+                "info.username",
+                "word.from",
+                "word.to",
+                "word.class",
+                "word.fee",
+                "word.balance"
         );
     }
 

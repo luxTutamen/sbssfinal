@@ -56,12 +56,12 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Your current path: from {{departure}} to {{destination}}
+            {{sentence.current-order-description-msg}} {{word.from}} {{departure}} {{word.to}} {{destination}}
         </div>
         <div class="card-body">
             <p>Price: {{tax}}</p>
             <form method="post" action="driverpage/confirmation">
-                <button type="submit" class="btn btn-primary">Confirm finished travel</button>
+                <button type="submit" class="btn btn-primary">{{sentence.sentence-confirm-msg}}</button>
             </form>
         </div>
     </div>
