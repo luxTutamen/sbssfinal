@@ -8,11 +8,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] GUEST_ENDPOINTS = {"/", "/login", "/register", "/logout"};
+    private static final String[] GUEST_ENDPOINTS = {"/", "/**", "/login", "/register", "/logout"};
     private static final String[] UNSECURED_ENDPOINTS ={"/userdesc"};
     private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder"};
     private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
@@ -20,10 +21,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
+    private AuthenticationFailureHandler failureHandler;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder,
+            AuthenticationFailureHandler failureHandler
+    ) {
         this.userDetailsService = userDetailsService;
+        this.failureHandler = failureHandler;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .passwordParameter("password")
                     .usernameParameter("login")
                     .successForwardUrl("/api/plrdr")
-                    .failureForwardUrl("/?error=true")
+                    .failureHandler(failureHandler)
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")

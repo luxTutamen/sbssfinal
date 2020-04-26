@@ -1,12 +1,17 @@
 package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.model.objects.User;
@@ -14,13 +19,18 @@ import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Controller
+@Service
 @RequestMapping("/")
-public class MainPageController extends MultiViewController {
+public class MainPageController extends MultiViewController implements AuthenticationFailureHandler {
     //  todo remove
     private static final Locale LOCALE_DEFAULT = new Locale("UA");
 
@@ -55,8 +65,11 @@ public class MainPageController extends MultiViewController {
     }
 
     @RequestMapping
-    public ModelAndView mapRequest() {
-        return super.getRequestMapping(new ConcurrentModel());
+    public ModelAndView mapRequest(@RequestParam(required = false) boolean error) {
+        Model model = new ConcurrentModel();
+        model.asMap().put("error", error);
+
+        return super.getRequestMapping(model);
     }
 
     private class AnonymousMainPageController implements Function<Model, ModelAndView> {
@@ -79,6 +92,8 @@ public class MainPageController extends MultiViewController {
                     "word.password",
                     "word.register",
                     "word.submit",
+                    "word.error",
+                    "sentence.wrong-credential-msg",
                     "word.login",
                     "word.or",
                     "sentence.login-page-desc",
@@ -124,14 +139,14 @@ public class MainPageController extends MultiViewController {
         }
     }
 
-
-    @ExceptionHandler(NullPointerException.class)
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ModelAndView exceptionHandler() {
         Map<String, Object> model = super
                 .getRequestMapping(new ConcurrentModel())
                 .getModel();
 
         model.put("error", true);
+        model.put("register-alert", true);
 
         localisationService.setLocalisedMessages(
                 model,
@@ -141,6 +156,14 @@ public class MainPageController extends MultiViewController {
         );
 
         return new ModelAndView("index/anonymous", model);
+    }
+
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws
+            IOException,
+            ServletException {
+        System.err.println("login fail");
+        response.sendRedirect("/?error=true");
     }
 
 }

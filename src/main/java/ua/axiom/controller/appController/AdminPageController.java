@@ -73,7 +73,7 @@ public class AdminPageController {
     }
 
     @PostMapping("/prevpage")
-    public String nextPaginationPage(@RequestParam String what) {
+    public String prevPaginationPage(@RequestParam String what) {
         switch (what) {
             case("clientPage") : {
                 if(clientPage > 0)
@@ -83,7 +83,7 @@ public class AdminPageController {
             }
             case("driverPage") : {
                 if(driverPage > 0)
-                    clientPage--;
+                    driverPage--;
 
                 break;
             }
@@ -91,6 +91,29 @@ public class AdminPageController {
                 if(adminPage > 0)
                     adminPage--;
 
+                break;
+            }
+            default:{
+                throw new IllegalArgumentException();
+            }
+        }
+
+        return "redirect:/adminpage";
+    }
+
+    @PostMapping("/nextpage")
+    public String nextPaginationPage(@RequestParam String what) {
+        switch (what) {
+            case("clientPage") : {
+                clientPage++;
+                break;
+            }
+            case("driverPage") : {
+                driverPage++;
+                break;
+            }
+            case("adminPage") : {
+                adminPage++;
                 break;
             }
             default:{
