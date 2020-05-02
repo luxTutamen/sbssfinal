@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
     @RequestMapping("/error")
     @ResponseBody

@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] GUEST_ENDPOINTS = {"/", "/**", "/login", "/register", "/logout"};
     private static final String[] UNSECURED_ENDPOINTS ={"/userdesc"};
-    private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder"};
+    private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder", "api/orderHistory"};
     private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
     private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
 

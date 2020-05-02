@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @Entity
@@ -17,10 +19,10 @@ public abstract class User implements UserDetails {
 
     @NotNull
     @Column(length = 40)
+    @NotBlank(message = "username is required")
     private String username;
 
     @NotNull
-    @Column(length = 255)
     private String password;
 
     @NotNull
@@ -59,6 +61,8 @@ public abstract class User implements UserDetails {
     }
 
     protected abstract void setNotNullableFields(Object ... data);
+
+    public void onLoginIn() {}
 
     @Override
     public String getPassword() {

@@ -47,7 +47,7 @@
     <!--  logout    -->
     <div class="col-2">
         <form action="/logout" method="POST">
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">{{word.logout}}</button>
+            <button class="btn btn-info my-2 my-sm-0" type="submit">{{word.logout}}</button>
         </form>
     </div>
 </nav>
@@ -63,12 +63,10 @@
                 <form method="POST" action="/api/neworder" name="new-order">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <label>From</label>
-                            <input type="type" name="departure"/>
+                            <input type="type" name="departure" placeholder="From:"/>
                         </li>
                         <li class="list-group-item">
-                            <label>Destination</label>
-                            <input type="text" name="destination"/>
+                            <input type="text" name="destination" placeholder="Destination:"/>
                         </li>
                         <li class="dropdown list-group-item pagination-centered">
                             <label>
@@ -94,7 +92,20 @@
         </div>
         <!--    right part of the screen, balance and orders    -->
         <div class="card col-8">
-            <p> taxes and promotions </p>
+            {{#promos-list}}
+                <div class="card text-white bg-primary">
+                    <div class="card-header">Discount - {{multiplier}} percent off!</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <form action="/api/neworder/discount">
+                                <button class="btn btn-secondary" type="submit" value="{{id}}" name="discountId">
+                                    Use
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {{/promos-list}}
         </div>
     </div>
 </div>

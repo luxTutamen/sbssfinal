@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import ua.axiom.controller.exceptions.IllegalCredentialsException;
 import ua.axiom.model.objects.*;
 import ua.axiom.repository.AdminRepository;
 import ua.axiom.repository.ClientRepository;
@@ -22,6 +24,10 @@ import ua.axiom.repository.UserRepository;
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
+
+    private static final String usernamePattern = "([\\w\\d]){5,40}";
+    private static final String passwordPattern = "([\\w\\d]){8,40}";
+
 
     @Autowired
     public RegisterController(
@@ -47,7 +53,6 @@ public class RegisterController {
     @RequestMapping
     public String registerRequestMapping(Map<String, Object> model) {
         model.put("lang", "ENG");
-        System.out.println("register request");
         return "appPages/register";
     }
 
@@ -58,12 +63,24 @@ public class RegisterController {
             @RequestParam String password,
             @RequestParam String login,
             @RequestParam String role
-    ) {
+    ) throws IllegalCredentialsException {
         if(userRepository.findByUsername(login).isPresent()) {
             //  todo exception
             model.put("error", "Username is already present");
             return "appPages/register";
-        };
+        }
+
+        if(!password.matches(passwordPattern)) {
+            model.put("error", true);
+            model.put("error-msg", "password doesn't match the requirements!");
+            return registerRequestMapping(model);
+        }
+
+        if(!login.matches(usernamePattern)) {
+            model.put("error", true);
+            model.put("error-msg", "username doesn't match the requirements!");
+            return registerRequestMapping(model);
+        }
 
         User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
         newUser.setLocale(UserLocale.ENG);

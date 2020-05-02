@@ -11,7 +11,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Car {
-    public enum Class{BUDGET, BUSINESS, PREMIUM};
+    public enum Class{
+        BUDGET(0.75F),
+        BUSINESS(1.F),
+        PREMIUM(1.5F);
+
+        public float multiplier;
+
+        Class(float multiplier) {
+            this.multiplier = multiplier;
+        }
+    };
 
     public static class ClassTDO {
         public Class aClass;
@@ -24,9 +34,9 @@ public class Car {
 
         public static List<ClassTDO> getCarClassTDOList() {
             return Arrays.asList(
-                    new ClassTDO(Class.BUDGET, 0.75F),
-                    new ClassTDO(Class.BUSINESS, 1.1F),
-                    new ClassTDO(Class.PREMIUM, 1.6F)
+                    new ClassTDO(Class.BUDGET, Class.BUDGET.multiplier),
+                    new ClassTDO(Class.BUSINESS, Class.BUSINESS.multiplier),
+                    new ClassTDO(Class.PREMIUM, Class.PREMIUM.multiplier)
             );
         }
     }

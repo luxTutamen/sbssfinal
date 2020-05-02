@@ -29,8 +29,6 @@ public class LocaleController {
 
         ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setLocale(UserLocale.valueOf(name));
 
-
-
     }
 
 

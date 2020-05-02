@@ -3,17 +3,16 @@ package ua.axiom.model.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 
 @Data
 @Entity
@@ -27,7 +26,16 @@ public class Client extends User {
     private Date birthDate;
 
     @NotNull
+    @Temporal(TemporalType.DATE)
+    private Date lastDiscountGiven;
+
+    @NotNull
     private BigDecimal money;
+
+    @OneToMany(targetEntity = Discount.class, fetch = FetchType.LAZY)
+    private Collection<Discount> discount;
+
+    private boolean receivedBDayPromoToday;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -58,5 +66,7 @@ public class Client extends User {
     protected void setNotNullableFields(Object... data) {
         this.money = new BigDecimal("0.");
         this.birthDate = new Date();
+        this.lastDiscountGiven = new Date();
+        discount = new LinkedList<>();
     }
 }

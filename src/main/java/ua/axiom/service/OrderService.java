@@ -2,18 +2,21 @@ package ua.axiom.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Driver;
-import ua.axiom.model.objects.Order;
-import ua.axiom.repository.ClientRepository;
-import ua.axiom.repository.DriverRepository;
-import ua.axiom.repository.OrderRepository;
+import ua.axiom.controller.exceptions.NotEnoughMoneyException;
+import ua.axiom.model.objects.*;
+import ua.axiom.repository.*;
+
+import java.math.BigDecimal;
+import java.util.Random;
 
 @Service
 public class OrderService {
     private OrderRepository orderRepository;
     private ClientRepository clientRepository;
     private DriverRepository driverRepository;
+
+
+    private static final Random priceGenerator = new Random();
 
     @Autowired
     public OrderService(
@@ -24,6 +27,24 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.clientRepository = clientRepository;
         this.driverRepository = driverRepository;
+    }
+
+    public void processNewOrder(Order order) throws NotEnoughMoneyException {
+
+        BigDecimal price = new BigDecimal(priceGenerator.nextInt() % 500 + 500 + ".00");
+        price = price.multiply(new BigDecimal(order.getCClass().multiplier));
+
+        Client client = (Client)order.getClient();
+
+        if(price.compareTo(client.getMoney()) == 1) {
+            throw new NotEnoughMoneyException();
+        }
+
+        order.setPrice(price);
+
+        client.setMoney(client.getMoney().subtract(price));
+
+        orderRepository.save(order);
     }
 
     public void processFinishedOrder(long orderId) {

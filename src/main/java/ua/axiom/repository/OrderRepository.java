@@ -14,6 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSo
 
     List<Order> findByStatusAndClient(Pageable pageable, Order.Status status, Client client);
 
+    List<Order> findByStatusAndClientId(Pageable pageable, Order.Status status, long clientId);
+
     Order findByDriver(Driver driver);
 
     Order findByDriverAndStatus(Driver driver, Order.Status status);

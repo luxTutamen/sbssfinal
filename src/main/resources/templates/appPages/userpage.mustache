@@ -18,7 +18,7 @@
 </head>
 
 <nav class="navbar navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/">
         <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
         {{word.company-name}}
     </a>
@@ -47,7 +47,7 @@
     <!--  logout    -->
     <div class="col-2">
         <form action="/logout" method="POST">
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">{{word.logout}}</button>
+            <button class="btn btn-info" type="submit">{{word.logout}}</button>
         </form>
     </div>
 </nav>
@@ -62,7 +62,7 @@
             <div class="card-body">
                 <div class="list-group">
                     <a href="/api/neworder" class="list-group-item list-group-item-action">{{sentence.new-order}}</a>
-                    <a href="#" class="list-group-item list-group-item-action">{{sentence.cancel-order}}</a>
+                    <a href="/api/orderHistory" class="list-group-item list-group-item-action">{{sentence.order-history}}</a>
                     <a href="#" class="list-group-item list-group-item-action">{{sentence.promocodes}}</a>
                     <a href="/api/replenish" class="list-group-item list-group-item-action">{{sentence.replenish-balance}}</a>
                     <a href="#" class="list-group-item list-group-item-action">{{sentence.delete-account}}</a>
@@ -71,7 +71,7 @@
         </div>
         <div class="card col-8">
             <div class="card-header">
-                <h1> Your orders </h1>
+                <h1> {{sentence.your-orders}}</h1>
                 <label>
                     {{word.balance}}:{{client-balance}}
                 </label>

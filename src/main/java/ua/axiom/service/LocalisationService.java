@@ -28,6 +28,16 @@ public class LocalisationService {
         }
     }
 
+    public void setLocalisedMessages(Map<String, Object> model, Locale locale, String... messages) {
+        for (String s : messages) {
+            model.put(s, getLocalisedMessage(s, locale));
+        }
+    }
+
+    public String getRegex(String key, Locale locale) {
+        return localeToDictionaryMap.get(locale).get("regex." + key);
+    }
+
     private String getLocalisedMessage(String messageKey, Locale locale) {
         Map<String, String> dictionary = localeToDictionaryMap.get(locale);
 
@@ -41,12 +51,6 @@ public class LocalisationService {
             return "Cannot find entry for key " + messageKey + ", for locale " + locale;
         } else {
             return result;
-        }
-    }
-
-    public void setLocalisedMessages(Map<String, Object> model, Locale locale, String... messages) {
-        for (String s : messages) {
-            model.put(s, getLocalisedMessage(s, locale));
         }
     }
 
