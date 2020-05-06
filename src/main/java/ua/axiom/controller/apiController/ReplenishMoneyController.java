@@ -31,8 +31,6 @@ public class ReplenishMoneyController {
         client.setMoney(client.getMoney().add(new BigDecimal("1000.00")));
         clientRepository.save(client);
 
-        System.out.println("repleished!");
-
         return "redirect:/";
     }
 }

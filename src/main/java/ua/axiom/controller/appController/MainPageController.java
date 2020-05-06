@@ -162,7 +162,6 @@ public class MainPageController extends MultiViewController implements Authentic
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws
             IOException,
             ServletException {
-        System.err.println("login fail");
         response.sendRedirect("/?error=true");
     }
 
