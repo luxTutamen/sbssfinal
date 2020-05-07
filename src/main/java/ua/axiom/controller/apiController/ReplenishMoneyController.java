@@ -23,8 +23,6 @@ public class ReplenishMoneyController {
     @RequestMapping
     @Transactional
     public String getReplenishRequest() {
-        Map<String, Object> model= new HashMap<>();
-
         Long id =  ((Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
         Client client = clientRepository.findById(id).get();

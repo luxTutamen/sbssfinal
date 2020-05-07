@@ -37,7 +37,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {{#locales}}
-                        <input type="submit" class="dropdown-item" value="{{name}}" name="name" onClick="window.location.reload();"/>
+                        <input type="submit" class="dropdown-item" value="{{toString}}" name="name" onClick="window.location.reload();"/>
                     {{/locales}}
                 </div>
             </div>
@@ -116,15 +116,15 @@
                             </div>
                         {{/taken-orders}}
                     </li>
-                    <li class="list-group-item">
-                        <p>Page:{{page}}</p>
+                    <li class="list-group-item align-content-center">
+                        <p>{{word.page}}:{{page}} / {{max-pages}}</p>
                         <div class="row text-center">
-                            <form action="/userpage/nextpage" method="post">
+                            <form action="/userpage/prevpage" method="post">
                                 <button type="submit" class="btn btn-light btn-lg">
                                     &#8592
                                 </button>
                             </form>
-                            <form action="/userpage/prevpage" method="post">
+                            <form action="/userpage/nextpage" method="post">
                                 <button type="submit" class="btn btn-light btn-lg">
                                     &#8594
                                 </button>

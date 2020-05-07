@@ -24,4 +24,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSo
     
     List<Order> findByCClassAndStatus(Car.Class cClass, Order.Status status);
 
+    long countByClientAndStatus(Client client, Order.Status status);
+
 }

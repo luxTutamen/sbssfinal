@@ -10,8 +10,6 @@ import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
 
-import java.util.Arrays;
-
 @Controller
 @RequestMapping("/api/locale")
 public class LocaleController {
@@ -31,14 +29,6 @@ public class LocaleController {
 
     }
 
-
-    private UserLocale strToLocale(String string) {
-        return Arrays
-                .stream(UserLocale.values())
-                .filter(l -> l.toString().equals(string))
-                .findAny()
-                .get();
-    }
 }
 
 

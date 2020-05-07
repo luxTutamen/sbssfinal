@@ -11,6 +11,7 @@ import ua.axiom.service.GuiService;
 import java.util.HashMap;
 import java.util.Map;
 
+//  todo
 @Controller
 @RequestMapping("/api/orderHistory")
 public class OrdersHistoryController {
@@ -29,10 +30,6 @@ public class OrdersHistoryController {
     @RequestMapping
     public ModelAndView getRequest() {
         Map<String, Object> model = new HashMap<>();
-
-        //  long id = ((Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-
-        //List<Order> finishedOrders = orderRepository.findByStatusAndClient(PageRequest.of(0, 10), Order.Status.FINISHED, )
 
         guiService.populateModelWithNavbarData(model);
 

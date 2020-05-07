@@ -10,21 +10,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.exceptions.IllegalDataFormatException;
 import ua.axiom.controller.exceptions.NotEnoughMoneyException;
-import ua.axiom.model.objects.*;
+import ua.axiom.model.objects.Car;
+import ua.axiom.model.objects.Client;
+import ua.axiom.model.objects.Order;
+import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DiscountRepository;
+import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.OrderService;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/api/neworder")
 public class NewOrderController {
     private LocalisationService localisationService;
+    private GuiService guiService;
     private OrderService orderService;
 
     private ClientRepository clientRepository;
@@ -35,9 +39,11 @@ public class NewOrderController {
             ClientRepository clientRepository,
             LocalisationService localisationService,
             DiscountRepository discountRepository,
-            OrderService orderService
+            OrderService orderService,
+            GuiService guiService
     ) {
         this.localisationService = localisationService;
+        this.guiService = guiService;
         this.orderService = orderService;
 
         this.clientRepository = clientRepository;
@@ -48,11 +54,12 @@ public class NewOrderController {
     public ModelAndView orderRequest() {
         Map<String, Object> model = new HashMap<>();
 
-        Long id = ((Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Long id = ((Client)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
         Client user = clientRepository.findById(id).get();
 
         fillUserSpecificContent(model, user);
-        fillLocalisedTextContent(model, user.getLocale().toJavaLocale());
+        fillLocalisedContent(model, user.getLocale());
+        guiService.populateModelWithNavbarData(model);
 
         return new ModelAndView("/appPages/neworder", model);
     }
@@ -85,33 +92,28 @@ public class NewOrderController {
         orderService.processNewOrder(newOrder);
 
         fillUserSpecificContent(model, client);
-        fillLocalisedTextContent(model, client.getLocale().toJavaLocale());
+        fillLocalisedContent(model, client.getLocale());
+        guiService.populateModelWithNavbarData(model);
 
         return new ModelAndView("/appPages/neworder", model);
     }
 
     @ExceptionHandler(NotEnoughMoneyException.class)
     public ModelAndView notEnoughMoneyException() {
-        Map<String, Object> model = new HashMap<>();
-        Client client = (Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Map<String, Object> model = orderRequest().getModel();
 
         model.put("error", "Not enough money!");
-
-        fillUserSpecificContent(model, client);
-        fillLocalisedTextContent(model, client.getLocale().toJavaLocale());
 
         return new ModelAndView("/appPages/neworder", model);
     }
 
+
+    //  error
     @ExceptionHandler(IllegalDataFormatException.class)
     public ModelAndView illegalInputHandler() {
-        Map<String, Object> model = new HashMap<>();
-        Client client = (Client)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Map<String, Object> model = orderRequest().getModel();
 
         model.put("error", "Illegal input format");
-
-        fillUserSpecificContent(model, client);
-        fillLocalisedTextContent(model, client.getLocale().toJavaLocale());
 
         return new ModelAndView("/appPages/neworder", model);
     }
@@ -126,18 +128,17 @@ public class NewOrderController {
 
     }
 
-    private void fillLocalisedTextContent(Map<String, Object> model, Locale locale) {
+    private void fillLocalisedContent(Map<String, Object> model, UserLocale locale) {
         localisationService.setLocalisedMessages(
                 model,
-                locale,
+                locale.toJavaLocale(),
                 "sentence.new-order-page-desc",
-                "sentence.new-order-request-msg",
-                "word.submit",
-                "word.logout",
-                "sentence.logged-welcome",
-                "sentence.logged-as",
-                "word.logout",
-                "word.company-name"
+                "word.class",
+                "word.from",
+                "word.to",
+                "sentence.new-order-page-desc"
         );
     }
+
+
 }

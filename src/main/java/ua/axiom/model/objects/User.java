@@ -35,15 +35,15 @@ public abstract class User implements UserDetails {
     public static User userFactory(String login, String password, String role, Object ... userSpecificData) throws RuntimeException {
         User user;
         switch (role) {
-            case ("client"):{
+            case ("CLIENT"):{
                 user = new Client();
                 break;
             }
-            case ("driver"): {
+            case ("DRIVER"): {
                 user = new Driver();
                 break;
             }
-            case ("admin"):{
+            case ("ADMIN"):{
                 user = new Admin();
                 break;
             }

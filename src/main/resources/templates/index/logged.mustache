@@ -35,7 +35,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {{#locales}}
-                        <input type="submit" class="dropdown-item" value="{{name}}" name="name" onClick="window.location.reload();"/>
+                        <input type="submit" class="dropdown-item" value="{{toString}}" name="name" onClick="window.location.reload();"/>
                     {{/locales}}
                 </div>
             </div>
@@ -58,7 +58,7 @@
         </div>
         <form action="/api/plrdr" method="post">
             <div class="card-body">
-                <button type="submit" class="btn-primary">{{sentence.to-app-button}}</button>
+                <button class="btn btn-primary" type="submit" class="btn-primary">{{sentence.to-app-button}}</button>
             </div>
         </form>
     </div>

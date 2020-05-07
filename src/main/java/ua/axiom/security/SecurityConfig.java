@@ -13,8 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] GUEST_ENDPOINTS = {"/", "/**", "/login", "/register", "/logout"};
-    private static final String[] UNSECURED_ENDPOINTS ={"/userdesc"};
+    private static final String[] GUEST_ENDPOINTS = {"/", "/**", "/login", "/register"};
     private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder", "api/orderHistory"};
     private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
     private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
@@ -43,7 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(DRIVER_ENDPOINTS).hasAuthority("DRIVER")
                     .antMatchers(USER_ENDPOINTS).hasAuthority("CLIENT")
                     .antMatchers(ADMIN_ENDPOINTS).hasAuthority("ADMIN")
-                    .antMatchers(UNSECURED_ENDPOINTS).permitAll()
                     .antMatchers(GUEST_ENDPOINTS).permitAll()
                     .antMatchers("/public/resources/**").permitAll()
                     .anyRequest().authenticated()

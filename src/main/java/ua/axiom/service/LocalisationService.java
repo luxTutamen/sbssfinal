@@ -34,6 +34,10 @@ public class LocalisationService {
         }
     }
 
+    public String getLocalisedMessage(Locale locale, String msg) {
+        return localeToDictionaryMap.get(locale).get(msg);
+    }
+
     public String getRegex(String key, Locale locale) {
         return localeToDictionaryMap.get(locale).get("regex." + key);
     }

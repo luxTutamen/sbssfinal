@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.model.objects.*;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
+import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.OrderService;
 import ua.axiom.service.PromoService;
@@ -22,6 +23,8 @@ import java.util.Map;
 @RequestMapping("/userpage")
 public class ClientPageController {
     private LocalisationService localisationService;
+    private GuiService guiService;
+
     private OrderService orderService;
     private PromoService promoService;
 
@@ -35,13 +38,15 @@ public class ClientPageController {
             OrderRepository orderRepository,
             ClientRepository clientRepository,
             OrderService orderService,
-            PromoService promoService
+            PromoService promoService,
+            GuiService guiService
     ) {
         this.localisationService = localisationService;
         this.orderRepository = orderRepository;
         this.clientRepository = clientRepository;
         this.orderService = orderService;
         this.promoService = promoService;
+        this.guiService = guiService;
     }
 
     @RequestMapping
@@ -52,6 +57,7 @@ public class ClientPageController {
 
         fillPage(model, client.getLocale());
         fillUserSpecificData(model, client);
+        guiService.populateModelWithNavbarData(model);
 
         promoService.onClientLoad(client);
 
@@ -60,8 +66,10 @@ public class ClientPageController {
 
     @PostMapping("/nextpage")
     public ModelAndView postNextOrderPage() {
-        System.out.println("posted pagination to next page");
-        ordersPage++;
+        Client client = (Client)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if(ordersPage >= orderRepository.countByClientAndStatus(client, Order.Status.PENDING) + orderRepository.countByClientAndStatus(client, Order.Status.TAKEN)) {
+            ordersPage++;
+        }
 
         return getCabinetControllerRequest();
     }
@@ -100,14 +108,15 @@ public class ClientPageController {
     }
 
     private void fillUserSpecificData(Map<String, Object> model, Client client) {
-        model.put("username", client.getUsername());
         model.put("balance", client.getMoney());
         model.put("current-locale", client.getLocale());
         model.put("client-balance", client.getMoney());
 
         model.put("pending-orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));
         model.put("taken-orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.TAKEN, client));
-        model.put("page", ordersPage);
+
+        model.put("page", ordersPage + 1);
+        model.put("max-pages", orderRepository.countByClientAndStatus(client, Order.Status.PENDING));
     }
 
     private void fillPage(Map<String, Object> model, UserLocale locale) {
@@ -116,20 +125,18 @@ public class ClientPageController {
                 locale.toJavaLocale(),
                 "word.hello",
                 "word.menu",
-                "word.logout",
                 "sentence.new-order",
                 "sentence.your-balance",
                 "sentence.cancel-order",
                 "sentence.promocodes",
                 "sentence.replenish-balance",
                 "sentence.delete-account",
-                "word.company-name",
-                "sentence.logged-as",
                 "info.username",
                 "word.from",
                 "word.to",
                 "word.class",
                 "word.fee",
+                "word.page",
                 "word.cancel",
                 "word.balance",
                 "sentence.your-orders",
@@ -137,7 +144,6 @@ public class ClientPageController {
         );
 
         model.put("order-history", orderRepository.findAll(PageRequest.of(0, 10)));
-        model.put("locales",  UserLocale.getLocalesList());
         model.put("new-order-details", Order.getOrderInputDescriptions());
         model.put("car-classes", Car.ClassTDO.getCarClassTDOList());
     }

@@ -37,7 +37,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {{#locales}}
-                        <input type="submit" class="dropdown-item" value="{{name}}" name="name" onClick="window.location.reload();"/>
+                        <input type="submit" class="dropdown-item" value="{{toString}}" name="name" onClick="window.location.reload();"/>
                     {{/locales}}
                 </div>
             </div>
@@ -63,14 +63,14 @@
                 <form method="POST" action="/api/neworder" name="new-order">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <input type="type" name="departure" placeholder="From:"/>
+                            <input type="type" name="departure" placeholder="{{word.from}}:"/>
                         </li>
                         <li class="list-group-item">
-                            <input type="text" name="destination" placeholder="Destination:"/>
+                            <input type="text" name="destination" placeholder="{{word.to}}:"/>
                         </li>
                         <li class="dropdown list-group-item pagination-centered">
                             <label>
-                                Car class
+                                {{word.class}}
                             </label>
                             {{#car-classes}}
                                 <div class="radio">

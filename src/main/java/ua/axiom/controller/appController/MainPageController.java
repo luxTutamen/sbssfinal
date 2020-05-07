@@ -111,7 +111,7 @@ public class MainPageController extends MultiViewController implements Authentic
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             model.addAttribute("info.username", user.getUsername());
-            model.addAttribute("locales", UserLocale.getLocalesList());
+            model.addAttribute("locales", UserLocale.values());
             model.addAttribute("current-locale", user.getLocale());
 
             localisationService.setLocalisedMessages(
