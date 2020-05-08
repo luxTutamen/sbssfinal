@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.exceptions.IllegalDataFormatException;
 import ua.axiom.controller.exceptions.NotEnoughMoneyException;
-import ua.axiom.model.objects.Car;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Order;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.objects.*;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DiscountRepository;
 import ua.axiom.service.GuiService;
@@ -107,8 +104,6 @@ public class NewOrderController {
         return new ModelAndView("/appPages/neworder", model);
     }
 
-
-    //  error
     @ExceptionHandler(IllegalDataFormatException.class)
     public ModelAndView illegalInputHandler() {
         Map<String, Object> model = orderRequest().getModel();
@@ -120,7 +115,7 @@ public class NewOrderController {
 
     private void fillUserSpecificContent(Map<String, Object> model, Client client) {
         model.put("new-order-details", Order.getOrderInputDescriptions());
-        model.put("car-classes", Car.ClassTDO.getCarClassTDOList());
+        model.put("car-classes", Car.Class.values());
         model.put("client-balance", client.getMoney());
         model.put("username", client.getUsername());
         model.put("current-locale", client.getLocale());

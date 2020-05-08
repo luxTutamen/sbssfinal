@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.axiom.controller.exceptions.IllegalCredentialsException;
-import ua.axiom.model.objects.Role;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
-import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
 
 import java.util.Map;
@@ -51,7 +49,8 @@ public class RegisterController {
             Map<String, Object> model,
             @RequestParam String password,
             @RequestParam String login,
-            @RequestParam String role
+            @RequestParam String role,
+            @RequestParam String locale
     ) throws IllegalCredentialsException {
         if(userRepository.findByUsername(login).isPresent()) {
             model.put("error", true);
@@ -71,13 +70,8 @@ public class RegisterController {
             return registerRequestMapping(model);
         }
 
-        if(Role.valueOf(role) == Role.DRIVER) {
-            return "appPages/driverpages/driverRegisterDetails";
-        }
-
         User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
-        newUser.setLocale(UserLocale.ENG);
-
+        newUser.setLocale(UserLocale.valueOf(locale));
         userRepository.save(newUser);
 
         return "redirect:/";

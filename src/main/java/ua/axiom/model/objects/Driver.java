@@ -37,7 +37,7 @@ public class Driver extends User {
 
     @Override
     protected void setNotNullableFields(Object... data) {
-        this.car = new Car("generic car", Car.Class.BUSINESS, 0.75F);
+        this.car = new Car("generic car", Car.Class.BUSINESS);
         this.balance = new BigDecimal("0.00");
     }
 

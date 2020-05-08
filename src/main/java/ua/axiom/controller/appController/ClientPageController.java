@@ -11,13 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.model.objects.*;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
-import ua.axiom.service.GuiService;
-import ua.axiom.service.LocalisationService;
-import ua.axiom.service.OrderService;
-import ua.axiom.service.PromoService;
+import ua.axiom.service.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+//  todo discount use
 
 @Controller
 @RequestMapping("/userpage")
@@ -145,6 +144,5 @@ public class ClientPageController {
 
         model.put("order-history", orderRepository.findAll(PageRequest.of(0, 10)));
         model.put("new-order-details", Order.getOrderInputDescriptions());
-        model.put("car-classes", Car.ClassTDO.getCarClassTDOList());
     }
 }

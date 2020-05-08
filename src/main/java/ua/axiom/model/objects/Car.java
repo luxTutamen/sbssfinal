@@ -23,39 +23,6 @@ public class Car {
         }
     };
 
-    public static class ClassTDO {
-        public Class aClass;
-        public float multiplier;
-
-        public ClassTDO(Class name, float multiplier) {
-            this.aClass = name;
-            this.multiplier = multiplier;
-        }
-
-        public static List<ClassTDO> getCarClassTDOList() {
-            return Arrays.asList(
-                    new ClassTDO(Class.BUDGET, Class.BUDGET.multiplier),
-                    new ClassTDO(Class.BUSINESS, Class.BUSINESS.multiplier),
-                    new ClassTDO(Class.PREMIUM, Class.PREMIUM.multiplier)
-            );
-        }
-    }
-
-    public static class CarTDO {
-        public String modelName;
-        public float multiplier;
-        public String aClass;
-
-        public static CarTDO carToDTO(Car car) {
-            CarTDO tdo = new CarTDO();
-            tdo.aClass = car.aClass.toString();
-            tdo.modelName = car.modelName;
-            tdo.multiplier = car.multiplier;
-
-            return tdo;
-        }
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,9 +35,9 @@ public class Car {
     @Enumerated(EnumType.ORDINAL)
     private Class aClass;
 
-    public Car(String name, Class aClass, float mult) {
+    public Car(String name, Class aClass) {
         this.modelName = name;
         this.aClass = aClass;
-        this.multiplier = mult;
+        this.multiplier = aClass.multiplier;
     }
 }

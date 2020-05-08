@@ -1,4 +1,4 @@
-package ua.axiom.controller.appController;
+package ua.axiom.controller.driverControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +17,6 @@ import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.misc.MiscNulls;
 
-import javax.jws.WebParam;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,11 +35,10 @@ public class DriverPageController extends MultiViewController {
     private class DriverNoOrderController implements Function<Model, ModelAndView> {
         @Override
         public ModelAndView apply(Model model) {
-            Driver driver = (Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            Driver driver = driverRepository.findById(id).get();
 
-            model.asMap().put("balance", driver.getBalance());
             populateWithSpecificData(model.asMap(), driver);
-
             fillWithLocalisedMsg(model.asMap(), driver.getLocale().toJavaLocale());
 
             return new ModelAndView("appPages/driverpages/noOrderDriverpage", model.asMap());
@@ -167,7 +165,8 @@ public class DriverPageController extends MultiViewController {
 
     private void populateWithSpecificData(Map<String, Object> model, Driver driver) {
         model.put("orders", orderRepository.findByCClassAndStatus(driver.getCar().getAClass(), Order.Status.PENDING));
-        model.put("car", Car.CarTDO.carToDTO(driver.getCar()));
+        model.put("balance", driver.getBalance());
+        model.put("car", driver.getCar());
 
     }
 }

@@ -3,20 +3,14 @@ package ua.axiom.controller.appController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.axiom.model.objects.User;
-import ua.axiom.repository.AdminRepository;
-import ua.axiom.repository.ClientRepository;
-import ua.axiom.repository.DriverRepository;
-import ua.axiom.repository.UserRepository;
+import ua.axiom.repository.*;
 import ua.axiom.service.GuiService;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/adminpage")
