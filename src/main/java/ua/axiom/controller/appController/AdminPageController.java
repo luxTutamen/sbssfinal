@@ -2,11 +2,16 @@ package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import ua.axiom.controller.MustacheController;
+import ua.axiom.model.objects.Admin;
 import ua.axiom.model.objects.User;
+import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.*;
 import ua.axiom.service.GuiService;
 
@@ -14,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/adminpage")
-public class AdminPageController {
+public class AdminPageController extends MustacheController<Admin> {
     private UserRepository userRepository;
     private AdminRepository adminRepository;
     private ClientRepository clientRepository;
@@ -41,20 +46,38 @@ public class AdminPageController {
         this.guiService = guiService;
     }
 
-    @RequestMapping
-    public String getAdminPageControllerMapping(Map<String, Object> model) {
+    @Override
+    protected Admin getPersistedUser() {
+        long adminID = ((Admin)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
+        return adminRepository.findById(adminID).get();
+    }
 
-        guiService.populateModelWithNavbarData(model);
+    @Override
+    protected ModelAndView formResponse(Map<String, Object> model) {
+        return new ModelAndView("/appPages/adminpage", model);
+    }
 
+    @Override
+    public void processRequest(Admin user) {
+        //  empty
+    }
+
+    @Override
+    public void fillUserSpecificData(Map<String, Object> model, Admin user) {
         model.put("clients-list", clientRepository.findAll(PageRequest.of(clientPage, 10)));
         model.put("drivers-list", driverRepository.findAll(PageRequest.of(driverPage, 10)));
         model.put("admins-list", adminRepository.findAll(PageRequest.of(adminPage, 10)));
+
+    }
+
+    @Override
+    public void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale) {
+        guiService.populateModelWithNavbarData(model);
 
         model.put("clientPage",  clientPage);
         model.put("driverPage", driverPage);
         model.put("adminPage", adminPage);
 
-        return "/appPages/adminpage";
     }
 
     @PostMapping("/ban")
@@ -118,11 +141,4 @@ public class AdminPageController {
         return "redirect:/adminpage";
     }
 
-    /*
-    @PostMapping
-    public void postBlockUser(@RequestParam String username) {
-        System.out.println("block user: " + username);
-    }
-
-     */
 }
