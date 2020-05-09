@@ -30,9 +30,8 @@ import java.util.function.Supplier;
 @Controller
 @Service
 @RequestMapping("/")
+//  todo remove FailureHandler
 public class MainPageController extends MultiViewController implements AuthenticationFailureHandler {
-    //  todo remove
-    private static final Locale LOCALE_DEFAULT = new Locale("UA");
 
     private static final Supplier<Boolean> anonymousViewPredicate =
             () -> SecurityContextHolder
@@ -86,7 +85,7 @@ public class MainPageController extends MultiViewController implements Authentic
 
             localisationService.setLocalisedMessages(
                     model,
-                    LOCALE_DEFAULT,
+                    UserLocale.DEFAULT_LOCALE.toJavaLocale(),
                     "sentence.already-logged",
                     "sentence.login-appeal",
                     "word.password",
@@ -150,7 +149,7 @@ public class MainPageController extends MultiViewController implements Authentic
 
         localisationService.setLocalisedMessages(
                 model,
-                LOCALE_DEFAULT,
+                UserLocale.DEFAULT_LOCALE.toJavaLocale(),
                 "word.error",
                 "sentence.wrong-credential-msg"
         );

@@ -7,9 +7,7 @@ import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 
 import java.util.Collection;
-import java.util.Optional;
 
-//  todo refactor optionals
 public interface UserRepository extends JpaRepository<User, Long> {
     default UserLocale findLocaleById(Long id) throws UserNotPresentException {
         return this.findById(id).map(op -> op == null ? UserLocale.DEFAULT_LOCALE : op.getLocale()).get();
@@ -20,12 +18,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     }
 
     default Collection<? extends GrantedAuthority> findRoleByUsername(String username) {
-        return this.findByUsername(username).get().getAuthorities();
+        return this.findByUsername(username).getAuthorities();
     }
 
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
 
-    Optional<User> findByUsernameAndPassword(String username, String password);
+    User findByUsernameAndPassword(String username, String password);
 
 
 }

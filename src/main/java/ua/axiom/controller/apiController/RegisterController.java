@@ -52,7 +52,7 @@ public class RegisterController {
             @RequestParam String role,
             @RequestParam String locale
     ) throws IllegalCredentialsException {
-        if(userRepository.findByUsername(login).isPresent()) {
+        if(userRepository.findByUsername(login) != null) {
             model.put("error", true);
             model.put("error-msg", localisationService.getLocalisedMessage(UserLocale.DEFAULT_LOCALE.toJavaLocale(), "sentence.already-present-username"));
             return "appPages/register";

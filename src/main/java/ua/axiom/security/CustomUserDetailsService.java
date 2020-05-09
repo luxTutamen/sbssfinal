@@ -22,8 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        //  todo encode psw ??!
-        return MiscNulls.getOrThrow(userRepository.findByUsername(s).orElse(null), new UsernameNotFoundException(s));
+        return MiscNulls.getOrThrow(userRepository.findByUsername(s), new UsernameNotFoundException(s));
 
     }
 }

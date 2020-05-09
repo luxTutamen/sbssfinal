@@ -12,7 +12,6 @@ public enum UserLocale {
     UKR(new Locale("UA"))
     ;
 
-
     public static final UserLocale DEFAULT_LOCALE = ENG;
 
     private Locale javaLocale;
@@ -24,21 +23,5 @@ public enum UserLocale {
     public Locale toJavaLocale() {
         return javaLocale;
     }
-/*
-    public static List<LocaleDTO> getLocalesList() {
-        //  todo singletone
-        return Arrays
-                .stream(UserLocale.values())
-                .map(ul -> new LocaleDTO(ul.toString()))
-                .collect(Collectors.toList());
-    }
 
-    //  todo move into separate file
-    public static class LocaleDTO {
-        public String name;
-
-        public LocaleDTO(String name) {
-            this.name = name;
-        }
-    }*/
 }
