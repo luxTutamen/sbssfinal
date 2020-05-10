@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
 import ua.axiom.model.objects.Client;
 import ua.axiom.model.objects.Order;
+import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
@@ -20,7 +21,6 @@ import ua.axiom.service.OrderService;
 import ua.axiom.service.PromoService;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 //  todo discount use
@@ -85,12 +85,12 @@ public class ClientPageController extends MustacheController<Client> {
     }
 
     @Override
-    protected void fillLocalisedPageData(Map<String, Object> model, UserLocale locale) {
+    protected void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale) {
         guiService.populateModelWithNavbarData(model);
 
         localisationService.setLocalisedMessages(
                 model,
-                locale.toJavaLocale(),
+                userLocale.toJavaLocale(),
                 "word.hello",
                 "word.menu",
                 "sentence.new-order",

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
+import ua.axiom.controller.MustacheController;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
@@ -71,18 +72,26 @@ public class MainPageController extends MultiViewController implements Authentic
         return super.getRequestMapping(model);
     }
 
-    private class AnonymousMainPageController implements Function<Model, ModelAndView> {
+    //  todo move out
+    private class AnonymousMainPageController extends MustacheController<User> {
         @Override
-        public ModelAndView apply(Model model) {
-
-            model.addAllAttributes(fillContent());
-
-            return new ModelAndView("index/anonymous", model.asMap());
+        protected ModelAndView formResponse(Map<String, Object> model) {
+            return new ModelAndView("index/anonymous", model);
         }
 
-        private Map<String, Object> fillContent() {
-            Map<String, Object> model = new HashMap<>();
+        @Override
+        public void processRequest(User user) {}
 
+        @Override
+        protected User getPersistedUser() {
+            return null;
+        }
+
+        @Override
+        protected void fillUserSpecificData(Map<String, Object> model, User user) {}
+
+        @Override
+        protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
             localisationService.setLocalisedMessages(
                     model,
                     UserLocale.DEFAULT_LOCALE.toJavaLocale(),
@@ -98,46 +107,55 @@ public class MainPageController extends MultiViewController implements Authentic
                     "sentence.login-page-desc",
                     "sentence.confidentiality-promise"
             );
-
-            return model;
         }
-
     }
 
-    private class AuthorisedMainPageController implements Function<Model, ModelAndView> {
+    //  todo move out
+    private class AuthorisedMainPageController extends MustacheController<User> {
         @Override
-        public ModelAndView apply(Model model) {
-            User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        protected ModelAndView formResponse(Map<String, Object> model) {
+            return new ModelAndView("index/logged", model);
+        }
 
-            model.addAttribute("info.username", user.getUsername());
-            model.addAttribute("locales", UserLocale.values());
-            model.addAttribute("current-locale", user.getLocale());
+        @Override
+        public void processRequest(User user) { }
+
+        @Override
+        protected User getPersistedUser() {
+            long id = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            return userRepository.findById(id).get();
+        }
+
+        @Override
+        protected void fillUserSpecificData(Map<String, Object> model, User user) {
+            model.put("info.username", user.getUsername());
+            model.put("locales", UserLocale.values());
+            model.put("current-locale", user.getLocale());
 
             localisationService.setLocalisedMessages(
-                    model.asMap(),
+                    model,
                     user.getLocale().toJavaLocale(),
                     "sentence.to-app-button",
                     "sentence.login-page-desc"
             );
-
-            fillHeader(model.asMap(), user);
-
-            return new ModelAndView("index/logged", model.asMap());
         }
 
-        private void fillHeader(Map<String, Object> model, User user) {
+        @Override
+        protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
             localisationService.setLocalisedMessages(
                     model,
-                    user.getLocale().toJavaLocale(),
+                    user.toJavaLocale(),
                     "word.logout",
                     "sentence.logged-welcome",
                     "sentence.logged-as",
                     "word.logout",
                     "word.company-name"
             );
+
         }
     }
 
+    //  todo move out
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ModelAndView exceptionHandler() {
         Map<String, Object> model = super
@@ -157,6 +175,7 @@ public class MainPageController extends MultiViewController implements Authentic
         return new ModelAndView("index/anonymous", model);
     }
 
+    //  todo move out
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws
             IOException,

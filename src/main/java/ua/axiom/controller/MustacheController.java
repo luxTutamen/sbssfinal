@@ -1,18 +1,26 @@
 package ua.axiom.controller;
 
+import org.springframework.lang.Nullable;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Abstract representation of a mustache VC, contains major events in a dynamic webpage creation
  * Only works with logged in users
  * @param <T>
  */
-public abstract class MustacheController <T extends User> {
+public abstract class MustacheController <T extends User> implements Function<Model, ModelAndView> {
+    @Override
+    public final ModelAndView apply(Model model) {
+        return serveRequest(model.asMap());
+    }
+
     /**
      * Return new ModelAndView from here with needed template file and given model
      * @param model constructed model, populated with localised GUI text, and user data
@@ -35,16 +43,16 @@ public abstract class MustacheController <T extends User> {
     /**
      * Populates model with data, that needs USer object to be calculated (like locale, username, etc)
      * @param model model to put data into
-     * @param user
+     * @param user, may be null for non-authorised pages
      */
-    protected abstract void fillUserSpecificData(Map<String, Object> model, T user);
+    protected abstract void fillUserSpecificData(Map<String, Object> model, @Nullable T user);
 
     /**
      * Populates model with template-specific, localised date (button text, etc)
      * @param model model to put data into
-     * @param locale
+     * @param userLocale
      */
-    protected abstract void fillLocalisedPageData(Map<String, Object> model, UserLocale locale);
+    protected abstract void fillLocalisedPageData(Map<String, Object> model, @Nullable UserLocale userLocale);
 
     /**
      * processes request.  Containing class must be annotated with @RequestMapping with specific URI!
@@ -54,7 +62,7 @@ public abstract class MustacheController <T extends User> {
     @RequestMapping
     public final ModelAndView serveRequest(Map<String, Object> model) {
         T user = getPersistedUser();
-        fillLocalisedPageData(model, user.getLocale());
+        fillLocalisedPageData(model, user != null ? user.getLocale() : null);
         fillUserSpecificData(model, user);
         processRequest(user);
 
