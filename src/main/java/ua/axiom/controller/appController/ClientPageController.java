@@ -11,14 +11,10 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
 import ua.axiom.model.objects.Client;
 import ua.axiom.model.objects.Order;
-import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
-import ua.axiom.service.GuiService;
-import ua.axiom.service.LocalisationService;
-import ua.axiom.service.OrderService;
-import ua.axiom.service.PromoService;
+import ua.axiom.service.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +22,7 @@ import java.util.Map;
 //  todo discount use
 
 @Controller
-@RequestMapping("/userpage")
+@RequestMapping("/clientpage")
 public class ClientPageController extends MustacheController<Client> {
     private LocalisationService localisationService;
     private GuiService guiService;
@@ -57,18 +53,12 @@ public class ClientPageController extends MustacheController<Client> {
 
     @Override
     protected ModelAndView formResponse(Map<String, Object> model) {
-        return new ModelAndView("appPages/userpage", model);
+        return new ModelAndView("appPages/clientpage", model);
     }
 
     @Override
     public void processRequest(Client client) {
         promoService.onClientLoad(client);
-    }
-
-    @Override
-    protected Client getPersistedUser() {
-        Long id = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        return clientRepository.findById(id).get();
     }
 
     @Override
@@ -145,7 +135,7 @@ public class ClientPageController extends MustacheController<Client> {
 
         orderService.processFinishedOrder(orderId);
 
-        return "redirect:/userpage";
+        return "redirect:/clientpage";
     }
 
     @PostMapping("/cancelorder")
@@ -155,7 +145,7 @@ public class ClientPageController extends MustacheController<Client> {
         order.setStatus(Order.Status.FINISHED);
         orderRepository.save(order);
 
-        return "redirect:/userpage";
+        return "redirect:/clientpage";
     }
 
 }

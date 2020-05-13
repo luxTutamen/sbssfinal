@@ -121,12 +121,6 @@ public class MainPageController extends MultiViewController implements Authentic
         public void processRequest(User user) { }
 
         @Override
-        protected User getPersistedUser() {
-            long id = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-            return userRepository.findById(id).get();
-        }
-
-        @Override
         protected void fillUserSpecificData(Map<String, Object> model, User user) {
             model.put("info.username", user.getUsername());
             model.put("locales", UserLocale.values());

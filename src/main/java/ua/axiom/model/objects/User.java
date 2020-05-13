@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @Data
 @Entity
@@ -61,8 +60,6 @@ public abstract class User implements UserDetails {
     }
 
     protected abstract void setNotNullableFields(Object ... data);
-
-    public void onLoginIn() {}
 
     @Override
     public String getPassword() {

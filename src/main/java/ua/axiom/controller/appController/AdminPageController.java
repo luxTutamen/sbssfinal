@@ -47,12 +47,6 @@ public class AdminPageController extends MustacheController<Admin> {
     }
 
     @Override
-    protected Admin getPersistedUser() {
-        long adminID = ((Admin)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
-        return adminRepository.findById(adminID).get();
-    }
-
-    @Override
     protected ModelAndView formResponse(Map<String, Object> model) {
         return new ModelAndView("/appPages/adminpage", model);
     }

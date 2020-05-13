@@ -10,14 +10,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+import static ua.axiom.security.SecurityURIConfig.*;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] GUEST_ENDPOINTS = {"/", "/**", "/login", "/register"};
-    private static final String[] USER_ENDPOINTS = {"/userpage", "/apiPages/neworder", "api/orderHistory", "/api/neworder"};
-    private static final String[] DRIVER_ENDPOINTS = {"/driverpage"};
-    private static final String[] ADMIN_ENDPOINTS = {"/adminpage"};
-
+    //  todo move out
     private UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
     private AuthenticationFailureHandler failureHandler;

@@ -89,7 +89,7 @@
                                         <label class="card-text col-3">{{word.fee}}: {{price}}</label>
                                     </div>
                                     <div class="row">
-                                        <form method="post" action="/userpage/cancelorder">
+                                        <form method="post" action="/clientpage/cancelorder">
                                             <button type="submit" class="btn btn-warning" value={{id}} name="orderId">{{word.cancel}}</button>
                                         </form>
                                     </div>
@@ -108,7 +108,7 @@
                                         <label class="card-text col-3">{{word.fee}}: {{price}}</label>
                                     </div>
                                     <div class="row">
-                                        <form method="post" action="/userpage/confirm">
+                                        <form method="post" action="/clientpage/confirm">
                                             <button type="submit" class="btn btn-warning" value={{id}} name="orderId">{{sentence.sentence-confirm-msg}}</button>
                                         </form>
                                     </div>
@@ -119,12 +119,12 @@
                     <li class="list-group-item align-content-center">
                         <p>{{word.page}}:{{page}} / {{max-pages}}</p>
                         <div class="row text-center">
-                            <form action="/userpage/prevpage" method="post">
+                            <form action="/clientpage/prevpage" method="post">
                                 <button type="submit" class="btn btn-light btn-lg">
                                     &#8592
                                 </button>
                             </form>
-                            <form action="/userpage/nextpage" method="post">
+                            <form action="/clientpage/nextpage" method="post">
                                 <button type="submit" class="btn btn-light btn-lg">
                                     &#8594
                                 </button>

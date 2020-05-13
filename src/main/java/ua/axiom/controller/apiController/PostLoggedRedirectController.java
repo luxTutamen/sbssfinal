@@ -1,11 +1,12 @@
 package ua.axiom.controller.apiController;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ua.axiom.model.objects.Role;
+import ua.axiom.PostLoggedRedirectConfiguration;
 
+import java.util.Collection;
 import java.util.Map;
 
 @Controller
@@ -14,16 +15,9 @@ public class PostLoggedRedirectController {
 
     @RequestMapping
     public String userDescRequestMapping(Map<String, Object> model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-        if(auth.getAuthorities().contains(Role.ADMIN)) {
-            return "redirect:/adminpage";
-        } else if(auth.getAuthorities().contains(Role.DRIVER)) {
-            return "redirect:/driverpage";
-        } else if(auth.getAuthorities().contains(Role.CLIENT)) {
-            return "redirect:/userpage";
-        } else {
-            return "redirect:/";
-        }
+        return "redirect:" + PostLoggedRedirectConfiguration.configuration.get(authorities.iterator().next());
+
     }
 }

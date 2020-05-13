@@ -1,11 +1,14 @@
 package ua.axiom.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import ua.axiom.model.objects.Client;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
+import ua.axiom.service.userpersistance.UserProvider;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -16,6 +19,9 @@ import java.util.function.Function;
  * @param <T>
  */
 public abstract class MustacheController <T extends User> implements Function<Model, ModelAndView> {
+    @Autowired
+    private UserProvider<T> userProvider;
+
     @Override
     public final ModelAndView apply(Model model) {
         return serveRequest(model.asMap());
@@ -32,14 +38,17 @@ public abstract class MustacheController <T extends User> implements Function<Mo
      * Incapsulates specific on-request action (like check for bonuses, request count, etc)
      * @param user that is requesting the page
      */
-    public abstract void processRequest(T user);
+    public void processRequest(T user) {}
 
     /**
      * Gets current logged id from a context and uses it to get user from a database
      * @return USer object from a database
      */
-    protected abstract T getPersistedUser();
+    protected T getPersistedUser() {
+        return userProvider.getCurrentUserFromDB();
+    }
 
+    //  todo remove nullable
     /**
      * Populates model with data, that needs USer object to be calculated (like locale, username, etc)
      * @param model model to put data into
@@ -47,6 +56,7 @@ public abstract class MustacheController <T extends User> implements Function<Mo
      */
     protected abstract void fillUserSpecificData(Map<String, Object> model, @Nullable T user);
 
+    //  todo remove nullable
     /**
      * Populates model with template-specific, localised date (button text, etc)
      * @param model model to put data into
