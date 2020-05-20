@@ -14,7 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-    <title>{{sentence.new-order-page-desc}}</title>
+    <title>{{sentence.history-page-desc}}</title>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-primary">
@@ -24,7 +24,7 @@
     </a>
     <div class="col-3">
         {{sentence.logged-as}}
-        {{info.username}}
+        {{username}}
     </div>
     <div class="col-3"></div>
     <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
@@ -51,6 +51,18 @@
         </form>
     </div>
 </nav>
+
+<div class="container">
+    <div class="row">
+        <ul class="list-group">
+            {{#orders}}
+                <li class="list-group-item">Driver - {{getDriverUsername}}, price - {{getPrice}}, date - {{getDate}}</li>
+            {{/orders}}
+        </ul>
+
+    </div>
+    </div>
+</div>
 
 </body>
 </html>

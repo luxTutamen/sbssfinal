@@ -48,7 +48,6 @@ public abstract class MustacheController <T extends User> implements Function<Mo
         return userProvider.getCurrentUserFromDB();
     }
 
-    //  todo remove nullable
     /**
      * Populates model with data, that needs USer object to be calculated (like locale, username, etc)
      * @param model model to put data into
@@ -62,7 +61,7 @@ public abstract class MustacheController <T extends User> implements Function<Mo
      * @param model model to put data into
      * @param userLocale
      */
-    protected abstract void fillLocalisedPageData(Map<String, Object> model, @Nullable UserLocale userLocale);
+    protected abstract void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale);
 
     /**
      * processes request.  Containing class must be annotated with @RequestMapping with specific URI!

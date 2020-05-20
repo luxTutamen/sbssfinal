@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import ua.axiom.model.objects.User;
 
 public class UserProvider<T extends User> {
-    private JpaRepository<T, Long> repository;
+    private final JpaRepository<T, Long> repository;
 
     public UserProvider(JpaRepository<T, Long> repository) {
         this.repository = repository;

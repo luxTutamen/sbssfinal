@@ -15,7 +15,6 @@ import static ua.axiom.security.SecurityURIConfig.*;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    //  todo move out
     private UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
     private AuthenticationFailureHandler failureHandler;

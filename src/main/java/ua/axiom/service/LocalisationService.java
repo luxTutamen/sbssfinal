@@ -1,6 +1,5 @@
 package ua.axiom.service;
 
-import com.mysql.cj.exceptions.WrongArgumentException;
 import org.springframework.stereotype.Service;
 import ua.axiom.service.misc.MiscNulls;
 
@@ -11,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Meant to provide localised text for html pages
+ * Provides localised text for html pages, localised regexe's for input check
  */
 @Service
 public class LocalisationService {
@@ -29,9 +28,9 @@ public class LocalisationService {
     }
 
     public void setLocalisedMessages(Map<String, Object> model, Locale locale, String... messages) {
-        for (String s : messages) {
-            model.put(s, getLocalisedMessage(s, locale));
-        }
+        Arrays
+                .stream(messages)
+                .forEach(m -> model.put(m, getLocalisedMessage(m, locale)));
     }
 
     public String getLocalisedMessage(Locale locale, String msg) {
@@ -66,7 +65,7 @@ public class LocalisationService {
 
     private void addLocale(Locale locale) {
         if(localeToDictionaryMap.containsKey(locale)) {
-            throw new WrongArgumentException("Locale " + locale + "is already present in " + this.getClass());
+            throw new IllegalArgumentException("Locale " + locale + "is already present in " + this.getClass());
         }
 
         localeToDictionaryMap.put(locale, new HashMap<>());

@@ -2,7 +2,6 @@ package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
 import ua.axiom.model.objects.Admin;
-import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
-import ua.axiom.repository.*;
+import ua.axiom.repository.AdminRepository;
+import ua.axiom.repository.ClientRepository;
+import ua.axiom.repository.DriverRepository;
 import ua.axiom.service.GuiService;
 
 import java.util.Map;
@@ -20,7 +20,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/adminpage")
 public class AdminPageController extends MustacheController<Admin> {
-    private UserRepository userRepository;
     private AdminRepository adminRepository;
     private ClientRepository clientRepository;
     private DriverRepository driverRepository;
@@ -33,13 +32,11 @@ public class AdminPageController extends MustacheController<Admin> {
 
     @Autowired
     public AdminPageController(
-            UserRepository userRepository,
             AdminRepository adminRepository,
             ClientRepository clientRepository,
             DriverRepository driverRepository,
             GuiService guiService
     ) {
-        this.userRepository = userRepository;
         this.adminRepository = adminRepository;
         this.clientRepository = clientRepository;
         this.driverRepository = driverRepository;
@@ -49,11 +46,6 @@ public class AdminPageController extends MustacheController<Admin> {
     @Override
     protected ModelAndView formResponse(Map<String, Object> model) {
         return new ModelAndView("/appPages/adminpage", model);
-    }
-
-    @Override
-    public void processRequest(Admin user) {
-        //  empty
     }
 
     @Override
@@ -72,15 +64,6 @@ public class AdminPageController extends MustacheController<Admin> {
         model.put("driverPage", driverPage);
         model.put("adminPage", adminPage);
 
-    }
-
-    @PostMapping("/ban")
-    public String banMapping(@RequestParam long bannedId) {
-        User user = userRepository.getOne(bannedId);
-        user.setBanned(true);
-        userRepository.save(user);
-
-        return "redirect:/adminpage";
     }
 
     @PostMapping("/prevpage")
