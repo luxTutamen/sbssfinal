@@ -14,10 +14,12 @@ import ua.axiom.service.LocalisationService;
 
 import java.util.Map;
 
+//  todo refactor?
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
 
+    //  todo autowire
     private static final String usernamePattern = "([\\w\\d]){5,40}";
     private static final String passwordPattern = "([\\w\\d]){8,40}";
 

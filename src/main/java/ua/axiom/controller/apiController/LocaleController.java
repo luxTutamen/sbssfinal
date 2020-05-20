@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
+import ua.axiom.service.apiservice.LocaleService;
 
 @Controller
 @RequestMapping("/api/locale")
 public class LocaleController {
 
     @Autowired
-    private UserRepository userRepository;
+    private LocaleService localeService;
 
     @PostMapping
     public void setLocale(@RequestParam String name) {
-        long id =((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User user =((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        User user = userRepository.findById(id).get();
+        //  todo asc pass whole user or just an ID?
+        localeService.setLocale(name, user.getId());
+
         user.setLocale(UserLocale.valueOf(name));
-        userRepository.save(user);
-
-        ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setLocale(UserLocale.valueOf(name));
 
     }
 

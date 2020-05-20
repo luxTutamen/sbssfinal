@@ -4,6 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ua.axiom.model.objects.User;
 
+/**
+ * gets current logged user id from session context and returns this user from database
+ * @param <T>
+ */
 public class UserProvider<T extends User> {
     private final JpaRepository<T, Long> repository;
 

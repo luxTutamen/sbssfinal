@@ -1,4 +1,4 @@
-package ua.axiom.controller.driverControllers;
+package ua.axiom.controller.appController.driverControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

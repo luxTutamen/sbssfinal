@@ -15,6 +15,8 @@ import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.*;
+import ua.axiom.service.appservice.OrderService;
+import ua.axiom.service.appservice.PromoService;
 
 import java.util.HashMap;
 import java.util.Map;

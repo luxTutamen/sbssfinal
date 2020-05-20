@@ -1,4 +1,4 @@
-package ua.axiom.service;
+package ua.axiom.service.appservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

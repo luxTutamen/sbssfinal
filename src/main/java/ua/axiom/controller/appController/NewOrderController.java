@@ -15,7 +15,7 @@ import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DiscountRepository;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
-import ua.axiom.service.OrderService;
+import ua.axiom.service.appservice.OrderService;
 
 import java.util.Date;
 import java.util.HashMap;
