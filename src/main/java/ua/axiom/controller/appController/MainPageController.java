@@ -5,6 +5,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ConcurrentModel;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.controller.MustacheController;
+import ua.axiom.controller.appController.index.AnonymousMainPageController;
+import ua.axiom.controller.appController.index.AuthorisedMainPageController;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
+import ua.axiom.service.userpersistance.UserProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +33,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Controller
-@Service
 @RequestMapping("/")
 //  todo remove FailureHandler
 public class MainPageController extends MultiViewController implements AuthenticationFailureHandler {
@@ -52,16 +55,18 @@ public class MainPageController extends MultiViewController implements Authentic
                                                 || a.toString().equals("CLIENT")
                                                 || a.toString().equals("ADMIN"); });
 
-    private UserRepository userRepository;
     private LocalisationService localisationService;
 
     @Autowired
-    public MainPageController(UserRepository userRepository, LocalisationService localisationService) {
-        this.userRepository = userRepository;
+    public MainPageController(
+            LocalisationService localisationService,
+            AnonymousMainPageController anonymousMainPageController,
+            AuthorisedMainPageController authorisedMainPageController
+    ) {
         this.localisationService = localisationService;
 
-        addController(anonymousViewPredicate, new AnonymousMainPageController());
-        addController(loggedViewPredicates, new AuthorisedMainPageController());
+        addController(anonymousViewPredicate, anonymousMainPageController);
+        addController(loggedViewPredicates, authorisedMainPageController);
     }
 
     @RequestMapping
@@ -72,82 +77,6 @@ public class MainPageController extends MultiViewController implements Authentic
         return super.getRequestMapping(model);
     }
 
-    //  todo move out
-    private class AnonymousMainPageController extends MustacheController<User> {
-        @Override
-        protected ModelAndView formResponse(Map<String, Object> model) {
-            return new ModelAndView("index/anonymous", model);
-        }
-
-        @Override
-        public void processRequest(User user) {}
-
-        @Override
-        protected User getPersistedUser() {
-            return null;
-        }
-
-        @Override
-        protected void fillUserSpecificData(Map<String, Object> model, User user) {}
-
-        @Override
-        protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
-            localisationService.setLocalisedMessages(
-                    model,
-                    UserLocale.DEFAULT_LOCALE.toJavaLocale(),
-                    "sentence.already-logged",
-                    "sentence.login-appeal",
-                    "word.password",
-                    "word.register",
-                    "word.submit",
-                    "word.error",
-                    "sentence.wrong-credential-msg",
-                    "word.login",
-                    "word.or",
-                    "sentence.login-page-desc",
-                    "sentence.confidentiality-promise"
-            );
-        }
-    }
-
-    //  todo move out
-    private class AuthorisedMainPageController extends MustacheController<User> {
-        @Override
-        protected ModelAndView formResponse(Map<String, Object> model) {
-            return new ModelAndView("index/logged", model);
-        }
-
-        @Override
-        public void processRequest(User user) { }
-
-        @Override
-        protected void fillUserSpecificData(Map<String, Object> model, User user) {
-            model.put("info.username", user.getUsername());
-            model.put("locales", UserLocale.values());
-            model.put("current-locale", user.getLocale());
-
-            localisationService.setLocalisedMessages(
-                    model,
-                    user.getLocale().toJavaLocale(),
-                    "sentence.to-app-button",
-                    "sentence.login-page-desc"
-            );
-        }
-
-        @Override
-        protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
-            localisationService.setLocalisedMessages(
-                    model,
-                    user.toJavaLocale(),
-                    "word.logout",
-                    "sentence.logged-welcome",
-                    "sentence.logged-as",
-                    "word.logout",
-                    "word.company-name"
-            );
-
-        }
-    }
 
     //  todo move out
     @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -178,3 +107,5 @@ public class MainPageController extends MultiViewController implements Authentic
     }
 
 }
+
+//  todo error in ClientPage on pagination FIX

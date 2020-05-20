@@ -2,11 +2,14 @@ package ua.axiom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.model.objects.User;
 import ua.axiom.model.objects.UserLocale;
+import ua.axiom.service.TEstService;
 import ua.axiom.service.userpersistance.UserProvider;
 
 import java.util.Map;
@@ -17,9 +20,14 @@ import java.util.function.Function;
  * Only works with logged in users
  * @param <T>
  */
+@Service
 public abstract class MustacheController <T extends User> implements Function<Model, ModelAndView> {
+
     @Autowired
     private UserProvider<T> userProvider;
+
+    @Autowired
+    private TEstService tEstService;
 
     @Override
     public final ModelAndView apply(Model model) {
@@ -37,7 +45,9 @@ public abstract class MustacheController <T extends User> implements Function<Mo
      * Incapsulates specific on-request action (like check for bonuses, request count, etc)
      * @param user that is requesting the page
      */
-    public void processRequest(T user) {}
+    public void processRequest(T user) {
+        tEstService.invoke();
+    }
 
     /**
      * Gets current logged id from a context and uses it to get user from a database

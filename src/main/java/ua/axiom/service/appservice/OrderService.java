@@ -9,12 +9,12 @@ import ua.axiom.repository.*;
 import java.math.BigDecimal;
 import java.util.Random;
 
+//  todo refactor
 @Service
 public class OrderService {
     private OrderRepository orderRepository;
     private ClientRepository clientRepository;
     private DriverRepository driverRepository;
-
 
     private static final Random priceGenerator = new Random();
 
@@ -31,7 +31,7 @@ public class OrderService {
 
     public void processNewOrder(Order order) throws NotEnoughMoneyException {
 
-        BigDecimal price = new BigDecimal(priceGenerator.nextInt() % 500 + 500 + ".00");
+        BigDecimal price = new BigDecimal(priceGenerator.nextInt() % 500 + 500 + ".0");
         price = price.multiply(new BigDecimal(order.getCClass().multiplier));
 
         Client client = (Client)order.getClient();

@@ -10,14 +10,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+//  todo refactor
 @Service
 public class PromoService {
     private static final long week = 1000 * 60 * 60 * 24 * 7;
     private final Calendar calendar1 = Calendar.getInstance();
     private final Calendar calendar2 = Calendar.getInstance();
 
-    @Autowired
     private DiscountRepository discountRepository;
+
+    @Autowired
+    public PromoService(DiscountRepository discountRepository) {
+        this.discountRepository = discountRepository;
+    }
 
     public void onClientLoad(Client client) {
         Date currDate = new Date();
