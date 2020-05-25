@@ -23,8 +23,6 @@ public class GuiService {
         localisationService.setLocalisedMessages(
                 model,
                 user.getLocale().toJavaLocale(),
-                "sentence.driver-page-desc",    //  ?
-                "sentence.new-order-request-msg",
                 "word.submit",
                 "word.logout",
                 "sentence.logged-welcome",

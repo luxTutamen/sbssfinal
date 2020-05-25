@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.controller.exceptions.JustTakenException;
-
-import ua.axiom.model.objects.*;
+import ua.axiom.model.objects.Driver;
+import ua.axiom.model.objects.Order;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
@@ -18,10 +19,8 @@ import ua.axiom.service.LocalisationService;
 import ua.axiom.service.misc.MiscNulls;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Controller
 @RequestMapping("/driverpage")
@@ -32,7 +31,7 @@ public class DriverPageController extends MultiViewController {
     private OrderRepository orderRepository;
     private DriverRepository driverRepository;
 
-    private class DriverNoOrderController implements Function<Model, ModelAndView> {
+/*    private class DriverNoOrderController implements Function<Model, ModelAndView> {
         @Override
         public ModelAndView apply(Model model) {
             long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
@@ -91,7 +90,7 @@ public class DriverPageController extends MultiViewController {
             localisationService.setLocalisedMessages(
                     model,
                     locale,
-            "sentence.current-order-description-msg",
+                    "sentence.current-order-description-msg",
                     "word.from",
                     "word.to",
                     "sentence.sentence-confirm-msg",
@@ -100,22 +99,24 @@ public class DriverPageController extends MultiViewController {
                     "word.car-model"
             );
         }
-    }
+    }*/
 
     @Autowired
     public DriverPageController(
             GuiService guiService,
             OrderRepository orderRepository,
             DriverRepository driverRepository,
-            LocalisationService localisationService
+            LocalisationService localisationService,
+            WithOrderDriverController withOrderDriverController,
+            WithoutOrderDriverController withoutOrderDriverController
     ) {
         this.guiService = guiService;
         this.orderRepository = orderRepository;
         this.driverRepository = driverRepository;
         this.localisationService = localisationService;
 
-        super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, new DriverNoOrderController());
-        super.addController(() -> driverRepository.findById(((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, new DriverWithOrderController());
+        super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, withOrderDriverController);
+        super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, withoutOrderDriverController);
     }
 
     @RequestMapping
@@ -126,12 +127,13 @@ public class DriverPageController extends MultiViewController {
 
     }
 
+    //  todo service
     @PostMapping("/takeorder")
     public ModelAndView takeOrderController(@RequestParam("orderId") long orderId) throws JustTakenException {
         Map<String, Object> model = new HashMap<>();
         guiService.populateModelWithNavbarData(model);
 
-        long id = ((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        long id = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Driver driver = driverRepository.findById(id).get();
 
         Optional<Order> takenOrder = orderRepository.findById(orderId);
@@ -145,12 +147,13 @@ public class DriverPageController extends MultiViewController {
         return new ModelAndView("redirect:/driverpage", model);
     }
 
+    //  todo service
     @PostMapping("/confirmation")
     public String confirmationPost() {
         Map<String, Object> model = new HashMap<>();
         guiService.populateModelWithNavbarData(model);
 
-        long id = ((Driver)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        long id = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
         Order order = orderRepository.findByDriverAndStatus(driverRepository.getOne(id), Order.Status.TAKEN);
         order.setConfirmedByDriver(true);
@@ -163,12 +166,6 @@ public class DriverPageController extends MultiViewController {
         return "redirect:/driverpage";
     }
 
-    private void populateWithSpecificData(Map<String, Object> model, Driver driver) {
-        model.put("orders", orderRepository.findByCClassAndStatus(driver.getCar().getAClass(), Order.Status.PENDING));
-        model.put("balance", driver.getBalance());
-        model.put("car", driver.getCar());
-
-    }
 }
 
 /*

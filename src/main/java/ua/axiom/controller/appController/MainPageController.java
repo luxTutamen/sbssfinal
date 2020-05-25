@@ -77,7 +77,6 @@ public class MainPageController extends MultiViewController implements Authentic
         return super.getRequestMapping(model);
     }
 
-
     //  todo move out
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ModelAndView exceptionHandler() {

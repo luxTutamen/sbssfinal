@@ -51,7 +51,7 @@ public class NewOrderController {
     public ModelAndView orderRequest() {
         Map<String, Object> model = new HashMap<>();
 
-        Long id = ((Client)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
+        Long id = ((Client) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
         Client user = clientRepository.findById(id).get();
 
         fillUserSpecificContent(model, user);
@@ -72,7 +72,7 @@ public class NewOrderController {
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Client client = clientRepository.getOne(clientID);
 
-        if(     !departure.matches(localisationService.getRegex("location", client.getLocale().toJavaLocale())) ||
+        if (!departure.matches(localisationService.getRegex("location", client.getLocale().toJavaLocale())) ||
                 !destination.matches(localisationService.getRegex("location", client.getLocale().toJavaLocale()))) {
             throw new IllegalDataFormatException();
         }
@@ -131,7 +131,8 @@ public class NewOrderController {
                 "word.class",
                 "word.from",
                 "word.to",
-                "sentence.new-order-page-desc"
+                "sentence.new-order-page-desc",
+                "sentence.new-order-request-msg"
         );
     }
 

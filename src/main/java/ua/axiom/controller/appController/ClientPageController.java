@@ -12,9 +12,9 @@ import ua.axiom.controller.MustacheController;
 import ua.axiom.model.objects.Client;
 import ua.axiom.model.objects.Order;
 import ua.axiom.model.objects.UserLocale;
-import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.OrderRepository;
-import ua.axiom.service.*;
+import ua.axiom.service.GuiService;
+import ua.axiom.service.LocalisationService;
 import ua.axiom.service.appservice.OrderService;
 import ua.axiom.service.appservice.PromoService;
 
@@ -33,21 +33,18 @@ public class ClientPageController extends MustacheController<Client> {
     private PromoService promoService;
 
     private OrderRepository orderRepository;
-    private ClientRepository clientRepository;
     private int ordersPage = 0;
 
     @Autowired
     public ClientPageController(
             LocalisationService localisationService,
             OrderRepository orderRepository,
-            ClientRepository clientRepository,
             OrderService orderService,
             PromoService promoService,
             GuiService guiService
     ) {
         this.localisationService = localisationService;
         this.orderRepository = orderRepository;
-        this.clientRepository = clientRepository;
         this.orderService = orderService;
         this.promoService = promoService;
         this.guiService = guiService;
@@ -90,6 +87,7 @@ public class ClientPageController extends MustacheController<Client> {
                 "sentence.cancel-order",
                 "sentence.promocodes",
                 "sentence.replenish-balance",
+                "sentence.sentence-confirm-msg",
                 "sentence.delete-account",
                 "info.username",
                 "word.from",
