@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Order;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.Client;
+import ua.axiom.model.Order;
+import ua.axiom.model.UserLocale;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
@@ -79,7 +79,7 @@ public class ClientPageController extends MustacheController<Client> {
 
         localisationService.setLocalisedMessages(
                 model,
-                userLocale.toJavaLocale(),
+                userLocale,
                 "word.hello",
                 "word.menu",
                 "sentence.new-order",

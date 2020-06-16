@@ -1,11 +1,6 @@
-package ua.axiom.model.objects;
+package ua.axiom.model;
 
-import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public enum UserLocale {
     ENG(Locale.ENGLISH),

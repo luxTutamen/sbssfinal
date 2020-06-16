@@ -2,7 +2,7 @@ package ua.axiom.service.apiservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.Client;
+import ua.axiom.model.Client;
 import ua.axiom.repository.ClientRepository;
 
 import java.math.BigDecimal;

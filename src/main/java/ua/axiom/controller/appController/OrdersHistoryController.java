@@ -5,14 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
-import ua.axiom.model.dto.OrderDto;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Order;
-import ua.axiom.model.objects.UserLocale;
-import ua.axiom.repository.ClientRepository;
-import ua.axiom.repository.OrderRepository;
+import ua.axiom.model.Client;
+import ua.axiom.model.Order;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
+import ua.axiom.service.appservice.OrderHistoryService;
 
 import java.util.List;
 import java.util.Map;
@@ -20,23 +18,19 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/orderHistory")
 public class OrdersHistoryController extends MustacheController<Client> {
-    private ClientRepository clientRepository;
-    private OrderRepository orderRepository;
+    private OrderHistoryService historyController;
 
     private GuiService guiService;
     private LocalisationService localisationService;
 
     @Autowired
     public OrdersHistoryController(
-            ClientRepository clientRepository,
-            OrderRepository orderRepository,
+            OrderHistoryService historyController,
             GuiService guiService,
             LocalisationService localisationService
     ) {
-        this.clientRepository = clientRepository;
-        this.orderRepository = orderRepository;
-
         this.guiService = guiService;
+        this.historyController = historyController;
         this.localisationService = localisationService;
     }
 
@@ -47,8 +41,8 @@ public class OrdersHistoryController extends MustacheController<Client> {
 
     @Override
     protected void fillUserSpecificData(Map<String, Object> model, Client user) {
-        List<Order> orders = orderRepository.findByStatusAndClient(Order.Status.FINISHED, user);
-        model.put("orders", OrderDto.factory(orders));
+        List<Order> orders = historyController.getFinishedOrder(user);
+        model.put("orders", orders);
 
     }
 
@@ -58,7 +52,7 @@ public class OrdersHistoryController extends MustacheController<Client> {
 
         localisationService.setLocalisedMessages(
                 model,
-                userLocale.toJavaLocale(),
+                userLocale,
                 "localisationService",
                 "sentence.history-page-desc"
         );

@@ -2,13 +2,12 @@ package ua.axiom.service.appservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Discount;
+import ua.axiom.model.Client;
+import ua.axiom.model.Discount;
 import ua.axiom.repository.DiscountRepository;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 //  todo refactor
 @Service

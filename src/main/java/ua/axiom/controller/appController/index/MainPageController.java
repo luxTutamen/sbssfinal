@@ -1,13 +1,11 @@
-package ua.axiom.controller.appController;
+package ua.axiom.controller.appController.index;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,21 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
-import ua.axiom.controller.MustacheController;
-import ua.axiom.controller.appController.index.AnonymousMainPageController;
-import ua.axiom.controller.appController.index.AuthorisedMainPageController;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
-import ua.axiom.repository.UserRepository;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
-import ua.axiom.service.userpersistance.UserProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Controller
@@ -37,7 +28,7 @@ import java.util.function.Supplier;
 //  todo remove FailureHandler
 public class MainPageController extends MultiViewController implements AuthenticationFailureHandler {
 
-    private static final Supplier<Boolean> anonymousViewPredicate =
+    private static final Supplier<Boolean> ANONYMOUS_VIEW_PREDICATE =
             () -> SecurityContextHolder
                     .getContext()
                     .getAuthentication()
@@ -45,7 +36,7 @@ public class MainPageController extends MultiViewController implements Authentic
                         .stream()
                         .anyMatch(a -> a.toString().equals("ROLE_ANONYMOUS"));
 
-    private static final Supplier<Boolean> loggedViewPredicates =
+    private static final Supplier<Boolean> LOGGED_VIEW_PREDICATE =
             () -> SecurityContextHolder
                     .getContext()
                     .getAuthentication()
@@ -65,8 +56,8 @@ public class MainPageController extends MultiViewController implements Authentic
     ) {
         this.localisationService = localisationService;
 
-        addController(anonymousViewPredicate, anonymousMainPageController);
-        addController(loggedViewPredicates, authorisedMainPageController);
+        addController(ANONYMOUS_VIEW_PREDICATE, anonymousMainPageController);
+        addController(LOGGED_VIEW_PREDICATE, authorisedMainPageController);
     }
 
     @RequestMapping
@@ -89,7 +80,7 @@ public class MainPageController extends MultiViewController implements Authentic
 
         localisationService.setLocalisedMessages(
                 model,
-                UserLocale.DEFAULT_LOCALE.toJavaLocale(),
+                UserLocale.DEFAULT_LOCALE,
                 "word.error",
                 "sentence.wrong-credential-msg"
         );

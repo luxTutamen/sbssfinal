@@ -3,8 +3,8 @@ package ua.axiom.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class GuiService {
 
         localisationService.setLocalisedMessages(
                 model,
-                user.getLocale().toJavaLocale(),
+                user.getLocale(),
                 "word.submit",
                 "word.logout",
                 "sentence.logged-welcome",

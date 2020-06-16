@@ -8,10 +8,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.axiom.controller.exceptions.UserNotPresentException;
-import ua.axiom.model.objects.Client;
-import ua.axiom.model.objects.Discount;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.Client;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;
 
 import java.math.BigDecimal;

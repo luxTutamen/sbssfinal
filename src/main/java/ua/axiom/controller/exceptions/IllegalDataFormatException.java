@@ -1,4 +1,4 @@
 package ua.axiom.controller.exceptions;
 
-public class IllegalDataFormatException extends Throwable {
+public class IllegalDataFormatException extends LightException {
 }

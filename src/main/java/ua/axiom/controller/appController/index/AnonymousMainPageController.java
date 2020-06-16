@@ -2,15 +2,20 @@ package ua.axiom.controller.appController.index;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.controller.exceptions.IllegalCredentialsException;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@ControllerAdvice
 public class AnonymousMainPageController extends MustacheController<User> {
     private LocalisationService localisationService;
 
@@ -39,7 +44,7 @@ public class AnonymousMainPageController extends MustacheController<User> {
     protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
         localisationService.setLocalisedMessages(
                 model,
-                UserLocale.DEFAULT_LOCALE.toJavaLocale(),
+                UserLocale.DEFAULT_LOCALE,
                 "sentence.already-logged",
                 "sentence.login-appeal",
                 "word.password",
@@ -52,5 +57,12 @@ public class AnonymousMainPageController extends MustacheController<User> {
                 "sentence.login-page-desc",
                 "sentence.confidentiality-promise"
         );
+    }
+
+    @ExceptionHandler(IllegalCredentialsException.class)
+    public ModelAndView exception() {
+        Map<String, Object> model = new HashMap<>();
+        model.put("error", localisationService.getLocalisedMessage( "sentence.wrong-credentials", UserLocale.DEFAULT_LOCALE));
+        return super.serveRequest(model);
     }
 }

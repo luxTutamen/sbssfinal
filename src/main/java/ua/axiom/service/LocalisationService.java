@@ -1,6 +1,7 @@
 package ua.axiom.service;
 
 import org.springframework.stereotype.Service;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.misc.MiscNulls;
 
 import java.io.FileInputStream;
@@ -14,34 +15,20 @@ import java.util.*;
  */
 @Service
 public class LocalisationService {
-    private static Map<Locale, Map<String, String>> localeToDictionaryMap;
+    private static Map<UserLocale, Map<String, String>> localeToDictionaryMap;
 
     public LocalisationService() {
         localeToDictionaryMap = new HashMap<>();
         try {
-            loadProperties("src/main/resources/properties/pagecontent_eng.properties", Locale.ENGLISH);
-            loadProperties("src/main/resources/properties/pagecontent_ukr.properties", new Locale("UA"));
+            loadProperties("src/main/resources/properties/pagecontent_eng.properties", UserLocale.ENG);
+            loadProperties("src/main/resources/properties/pagecontent_ukr.properties", UserLocale.UKR);
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            System.exit(2);
+            System.exit(1);
         }
     }
 
-    public void setLocalisedMessages(Map<String, Object> model, Locale locale, String... messages) {
-        Arrays
-                .stream(messages)
-                .forEach(m -> model.put(m, getLocalisedMessage(m, locale)));
-    }
-
-    public String getLocalisedMessage(Locale locale, String msg) {
-        return localeToDictionaryMap.get(locale).get(msg);
-    }
-
-    public String getRegex(String key, Locale locale) {
-        return localeToDictionaryMap.get(locale).get("regex." + key);
-    }
-
-    private String getLocalisedMessage(String messageKey, Locale locale) {
+    public String getLocalisedMessage(String messageKey, UserLocale locale) {
         Map<String, String> dictionary = localeToDictionaryMap.get(locale);
 
         if(dictionary == null) {
@@ -57,13 +44,17 @@ public class LocalisationService {
         }
     }
 
-    private Map<String, String> getDictionary(Locale locale) {
-        Map<String, String> dictionary = localeToDictionaryMap.get(locale);
-
-        return MiscNulls.getOrThrow(dictionary, new IllegalStateException("Locale " + locale + " is not present in " + this.getClass()));
+    public String getRegex(String key, UserLocale locale) {
+        return localeToDictionaryMap.get(locale).get("regex." + key);
     }
 
-    private void addLocale(Locale locale) {
+    public void setLocalisedMessages(Map<String, Object> model, UserLocale locale, String... messages) {
+        Arrays
+                .stream(messages)
+                .forEach(m -> model.put(m, getLocalisedMessage(m, locale)));
+    }
+
+    private void assureLocaleExistance(UserLocale locale) {
         if(localeToDictionaryMap.containsKey(locale)) {
             throw new IllegalArgumentException("Locale " + locale + "is already present in " + this.getClass());
         }
@@ -71,15 +62,13 @@ public class LocalisationService {
         localeToDictionaryMap.put(locale, new HashMap<>());
     }
 
-    private void loadProperties(String filePath, Locale toLoad) throws IOException {
+    private void loadProperties(String filePath, UserLocale toLoad) throws IOException {
         Properties properties = new Properties();
         properties.load(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8));
 
-        Enumeration<Object> keys = properties.keys();
-        if(!localeToDictionaryMap.containsKey(toLoad)) {
-            addLocale(toLoad);
-        }
+        assureLocaleExistance(toLoad);
 
+        Enumeration<Object> keys = properties.keys();
         Map<String, String> localDictionary = localeToDictionaryMap.get(toLoad);
         while (keys.hasMoreElements()) {
             String key = (String)keys.nextElement();

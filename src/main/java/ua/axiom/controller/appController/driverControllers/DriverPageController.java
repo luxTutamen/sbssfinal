@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.controller.exceptions.JustTakenException;
-import ua.axiom.model.objects.Driver;
-import ua.axiom.model.objects.Order;
+import ua.axiom.model.Driver;
+import ua.axiom.model.Order;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
@@ -31,75 +31,7 @@ public class DriverPageController extends MultiViewController {
     private OrderRepository orderRepository;
     private DriverRepository driverRepository;
 
-/*    private class DriverNoOrderController implements Function<Model, ModelAndView> {
-        @Override
-        public ModelAndView apply(Model model) {
-            long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-            Driver driver = driverRepository.findById(id).get();
 
-            populateWithSpecificData(model.asMap(), driver);
-            fillWithLocalisedMsg(model.asMap(), driver.getLocale().toJavaLocale());
-
-            return new ModelAndView("appPages/driverpages/noOrderDriverpage", model.asMap());
-        }
-
-        private void fillWithLocalisedMsg(Map<String, Object> model, Locale locale) {
-            localisationService.setLocalisedMessages(
-                    model,
-                    locale,
-                    "sentence.take-order",
-                    "sentence.accessible-orders",
-                    "word.withdraw",
-                    "sentence.your-cars",
-                    "word.balance",
-                    "word.withdraw",
-                    "sentence.change-car",
-                    "word.class",
-                    "word.car-model",
-                    "word.from",
-                    "word.to"
-            );
-        }
-    }
-
-    private class DriverWithOrderController implements Function<Model, ModelAndView> {
-        @Override
-        public ModelAndView apply(Model model) {
-            Driver driver = (Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            populateWithSpecificData(model.asMap(), driver);
-            populateWithOrderData(model.asMap(), driver);
-            model.asMap().put("balance", driver.getBalance());
-
-            return new ModelAndView("appPages/driverpages/withOrderDriverPage", model.asMap());
-        }
-
-        private void populateWithOrderData(Map<String, Object> model, Driver driver) {
-            driver = driverRepository.getOne(driver.getId());
-            Order order = orderRepository.getOne(driver.getCurrentOrder().getId());
-
-            fillWithLocalisedMsg(model, driver.getLocale().toJavaLocale());
-
-            model.put("departure", order.getDeparture());
-            model.put("destination", order.getDestination());
-
-            model.put("tax", order.getPrice());
-        }
-
-        private void fillWithLocalisedMsg(Map<String, Object> model, Locale locale) {
-            localisationService.setLocalisedMessages(
-                    model,
-                    locale,
-                    "sentence.current-order-description-msg",
-                    "word.from",
-                    "word.to",
-                    "sentence.sentence-confirm-msg",
-                    "word.balance",
-                    "word.class",
-                    "word.car-model"
-            );
-        }
-    }*/
 
     @Autowired
     public DriverPageController(
@@ -137,7 +69,7 @@ public class DriverPageController extends MultiViewController {
         Driver driver = driverRepository.findById(id).get();
 
         Optional<Order> takenOrder = orderRepository.findById(orderId);
-        Order validOrder = MiscNulls.getOrThrow(takenOrder.get(), new JustTakenException());
+        Order validOrder = takenOrder.orElseThrow(JustTakenException::new);
 
         validOrder.setStatus(Order.Status.TAKEN);
         validOrder.setDriver(driver);

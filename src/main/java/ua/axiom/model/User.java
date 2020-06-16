@@ -1,4 +1,4 @@
-package ua.axiom.model.objects;
+package ua.axiom.model;
 
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;

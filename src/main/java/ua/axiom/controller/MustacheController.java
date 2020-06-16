@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.userpersistance.UserProvider;
 
 import java.util.Map;
@@ -61,7 +61,7 @@ public abstract class MustacheController <T extends User> implements Function<Mo
     /**
      * Populates model with template-specific, localised date (button text, etc)
      * @param model model to put data into
-     * @param userLocale
+     * @param userLocale locale of content to be placed
      */
     protected abstract void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale);
 

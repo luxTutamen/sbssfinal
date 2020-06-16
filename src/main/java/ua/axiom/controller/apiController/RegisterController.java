@@ -3,12 +3,13 @@ package ua.axiom.controller.apiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.axiom.controller.exceptions.IllegalCredentialsException;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
 
@@ -19,9 +20,8 @@ import java.util.Map;
 @RequestMapping("/register")
 public class RegisterController {
 
-    //  todo autowire
-    private static final String usernamePattern = "([\\w\\d]){5,40}";
-    private static final String passwordPattern = "([\\w\\d]){8,40}";
+    private final String usernamePattern;
+    private final String passwordPattern;
 
     @Autowired
     public RegisterController(
@@ -32,6 +32,9 @@ public class RegisterController {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.localisationService = localisationService;
+
+        usernamePattern = localisationService.getRegex("username", UserLocale.DEFAULT_LOCALE);
+        passwordPattern = localisationService.getRegex("password", UserLocale.DEFAULT_LOCALE);
     }
 
     private PasswordEncoder passwordEncoder;
@@ -54,22 +57,28 @@ public class RegisterController {
             @RequestParam String role,
             @RequestParam String locale
     ) throws IllegalCredentialsException {
-        if(userRepository.findByUsername(login) != null) {
+        //  refactor - move into service
+
+        if(userRepository.findByUsername(login).isPresent()) {
             model.put("error", true);
-            model.put("error-msg", localisationService.getLocalisedMessage(UserLocale.DEFAULT_LOCALE.toJavaLocale(), "sentence.already-present-username"));
+            model.put("error-msg", localisationService.getLocalisedMessage("sentence.already-present-username", UserLocale.DEFAULT_LOCALE));
             return "appPages/register";
         }
 
         if(!password.matches(passwordPattern)) {
-            model.put("error", true);
+            throw new IllegalCredentialsException("password doesn't match the requirements");
+
+            /*model.put("error", true);
             model.put("error-msg", "password doesn't match the requirements!");
-            return registerRequestMapping(model);
+            return registerRequestMapping(model);*/
         }
 
         if(!login.matches(usernamePattern)) {
-            model.put("error", true);
+            throw new IllegalCredentialsException("username doesn't match the requirements");
+
+            /*model.put("error", true);
             model.put("error-msg", "username doesn't match the requirements!");
-            return registerRequestMapping(model);
+            return registerRequestMapping(model);*/
         }
 
         User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
@@ -77,6 +86,13 @@ public class RegisterController {
         userRepository.save(newUser);
 
         return "redirect:/";
+    }
 
+    @ExceptionHandler(IllegalCredentialsException.class)
+    public String handleException(IllegalCredentialsException exception, Map<String, Object> model) {
+        model.put("error", true);
+        model.put("error-msg", exception.getDisplayMessage());
+
+        return registerRequestMapping(model);
     }
 }

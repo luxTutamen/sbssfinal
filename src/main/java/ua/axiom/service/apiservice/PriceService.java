@@ -1,7 +1,7 @@
 package ua.axiom.service.apiservice;
 
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.Order;
+import ua.axiom.model.Order;
 
 import java.math.BigDecimal;
 import java.util.Random;

@@ -1,6 +1,6 @@
 package ua.axiom.controller.exceptions;
 
-public class UserNotPresentException extends Exception {
+public class UserNotPresentException extends LightException {
     private String username;
 
     public UserNotPresentException(String username) {

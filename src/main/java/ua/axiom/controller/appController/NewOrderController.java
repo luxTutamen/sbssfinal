@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.exceptions.IllegalDataFormatException;
 import ua.axiom.controller.exceptions.NotEnoughMoneyException;
-import ua.axiom.model.objects.*;
+import ua.axiom.model.Car;
+import ua.axiom.model.Client;
+import ua.axiom.model.Order;
+import ua.axiom.model.UserLocale;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DiscountRepository;
 import ua.axiom.service.GuiService;
@@ -23,6 +26,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/neworder")
+//  todo refactor
 public class NewOrderController {
     private LocalisationService localisationService;
     private GuiService guiService;
@@ -72,8 +76,8 @@ public class NewOrderController {
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Client client = clientRepository.getOne(clientID);
 
-        if (!departure.matches(localisationService.getRegex("location", client.getLocale().toJavaLocale())) ||
-                !destination.matches(localisationService.getRegex("location", client.getLocale().toJavaLocale()))) {
+        if (!departure.matches(localisationService.getRegex("location", client.getLocale())) ||
+                !destination.matches(localisationService.getRegex("location", client.getLocale()))) {
             throw new IllegalDataFormatException();
         }
 
@@ -126,7 +130,7 @@ public class NewOrderController {
     private void fillLocalisedContent(Map<String, Object> model, UserLocale locale) {
         localisationService.setLocalisedMessages(
                 model,
-                locale.toJavaLocale(),
+                locale,
                 "sentence.new-order-page-desc",
                 "word.class",
                 "word.from",

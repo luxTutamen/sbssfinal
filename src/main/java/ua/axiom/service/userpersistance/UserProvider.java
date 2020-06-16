@@ -2,7 +2,7 @@ package ua.axiom.service.userpersistance;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ua.axiom.model.objects.User;
+import ua.axiom.model.User;
 
 /**
  * gets current logged user id from session context and returns this user from database

@@ -2,8 +2,8 @@ package ua.axiom.service.apiservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;
 
 @Service

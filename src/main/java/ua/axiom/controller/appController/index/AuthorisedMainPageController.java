@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
-import ua.axiom.model.objects.User;
-import ua.axiom.model.objects.UserLocale;
+import ua.axiom.model.User;
+import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 
 import java.util.Map;
@@ -35,7 +35,7 @@ public class AuthorisedMainPageController extends MustacheController<User> {
 
         localisationService.setLocalisedMessages(
                 model,
-                user.getLocale().toJavaLocale(),
+                user.getLocale(),
                 "sentence.to-app-button",
                 "sentence.login-page-desc"
         );
@@ -45,7 +45,7 @@ public class AuthorisedMainPageController extends MustacheController<User> {
     protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
         localisationService.setLocalisedMessages(
                 model,
-                user.toJavaLocale(),
+                user,
                 "word.logout",
                 "sentence.logged-welcome",
                 "sentence.logged-as",

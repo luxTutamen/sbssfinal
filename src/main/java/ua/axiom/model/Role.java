@@ -1,4 +1,4 @@
-package ua.axiom.model.objects;
+package ua.axiom.model;
 
 import org.springframework.security.core.GrantedAuthority;
 

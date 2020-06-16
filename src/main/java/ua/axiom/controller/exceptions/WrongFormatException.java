@@ -1,6 +1,6 @@
 package ua.axiom.controller.exceptions;
 
-public class WrongFormatException extends Exception {
+public class WrongFormatException extends LightException {
     private String fieldName;
 
     public WrongFormatException(String fieldName) {

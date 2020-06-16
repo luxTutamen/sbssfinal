@@ -2,10 +2,15 @@ package ua.axiom.service.userpersistance;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import ua.axiom.model.objects.*;
-import ua.axiom.repository.*;
+import ua.axiom.model.Admin;
+import ua.axiom.model.Client;
+import ua.axiom.model.Driver;
+import ua.axiom.model.User;
+import ua.axiom.repository.AdminRepository;
+import ua.axiom.repository.ClientRepository;
+import ua.axiom.repository.DriverRepository;
+import ua.axiom.repository.UserRepository;
 
 @Component
 public class UserProviderProvider {

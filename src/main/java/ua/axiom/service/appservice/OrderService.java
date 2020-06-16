@@ -3,8 +3,12 @@ package ua.axiom.service.appservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.axiom.controller.exceptions.NotEnoughMoneyException;
-import ua.axiom.model.objects.*;
-import ua.axiom.repository.*;
+import ua.axiom.model.Client;
+import ua.axiom.model.Driver;
+import ua.axiom.model.Order;
+import ua.axiom.repository.ClientRepository;
+import ua.axiom.repository.DriverRepository;
+import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.apiservice.PriceService;
 
 import java.math.BigDecimal;

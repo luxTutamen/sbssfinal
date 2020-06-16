@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.axiom.repository.UserRepository;
-import ua.axiom.service.misc.MiscNulls;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -22,7 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return MiscNulls.getOrThrow(userRepository.findByUsername(s), new UsernameNotFoundException(s));
-
+        return userRepository.findByUsername(s).orElseThrow(() -> new UsernameNotFoundException(s));
     }
 }
