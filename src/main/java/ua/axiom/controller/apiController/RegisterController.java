@@ -13,6 +13,7 @@ import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 //  todo refactor?
@@ -58,27 +59,18 @@ public class RegisterController {
             @RequestParam String locale
     ) throws IllegalCredentialsException {
         //  refactor - move into service
+        if(!password.matches(passwordPattern)) {
+            throw new IllegalCredentialsException("password doesn't match the requirements");
+        }
+
+        if(!login.matches(usernamePattern)) {
+            throw new IllegalCredentialsException("username doesn't match the requirements");
+        }
 
         if(userRepository.findByUsername(login).isPresent()) {
             model.put("error", true);
             model.put("error-msg", localisationService.getLocalisedMessage("sentence.already-present-username", UserLocale.DEFAULT_LOCALE));
             return "appPages/register";
-        }
-
-        if(!password.matches(passwordPattern)) {
-            throw new IllegalCredentialsException("password doesn't match the requirements");
-
-            /*model.put("error", true);
-            model.put("error-msg", "password doesn't match the requirements!");
-            return registerRequestMapping(model);*/
-        }
-
-        if(!login.matches(usernamePattern)) {
-            throw new IllegalCredentialsException("username doesn't match the requirements");
-
-            /*model.put("error", true);
-            model.put("error-msg", "username doesn't match the requirements!");
-            return registerRequestMapping(model);*/
         }
 
         User newUser = User.userFactory(login, passwordEncoder.encode(password), role);
@@ -88,8 +80,9 @@ public class RegisterController {
         return "redirect:/";
     }
 
-    @ExceptionHandler(IllegalCredentialsException.class)
-    public String handleException(IllegalCredentialsException exception, Map<String, Object> model) {
+    @ExceptionHandler({IllegalCredentialsException.class})
+    private String handleException(IllegalCredentialsException exception) {
+        Map<String, Object> model = new HashMap<>();
         model.put("error", true);
         model.put("error-msg", exception.getDisplayMessage());
 
