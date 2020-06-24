@@ -1,4 +1,4 @@
-package ua.axiom.controller.exceptions;
+package ua.axiom.controller.error.exceptions;
 
 import java.io.IOException;
 

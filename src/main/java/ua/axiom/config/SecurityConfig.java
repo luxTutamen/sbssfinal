@@ -1,4 +1,4 @@
-package ua.axiom.security;
+package ua.axiom.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import static ua.axiom.security.SecurityURIConfig.*;
+import static ua.axiom.config.SecurityURIConfig.*;
 
 @Configuration
 @EnableWebSecurity

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html th:fragment="baseTymelifeLinks" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head_base_data">
+    <meta charset="UTF-8">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <title th:text="#{sentence.login-page-desc}"></title>
+
+<body>
+
+<div th:include="~{layout/header.html::guest-header}"/>
+
+    <div class="container">
+        <div class="card col-lg-5 col-8">
+            <div class="card-header">
+                <span th:text="#{sentence.login-page-desc}"></span>
+            </div>
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading>">
+                        <h3><span th:text="#{sentence.login-appeal}"></span></h3>
+                    </div>
+
+                    <span class="alert alert-danger" th:each="error : ${errors}">
+                        <strong>
+                            <span th:text="#{word.error}"/>
+                        </strong>
+                        <span th:text="${error.errorMsg}"/>
+                    </span>
+
+                    <div class="panel-body">
+                        <!-- login form content -->
+                        <form method="POST" action="/login">
+                            <div class="form-group">
+                                <div><label for="exampleInputEmail1"></label></div>
+                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" th:placeholder="#{word.login}" name="login">
+                                <small id="emailHelp" class="form-text text-muted"><span th:text="#{sentence.confidentiality-promise}"></span></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1"></label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" th:placeholder="#{word.password}" name="password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary text-center"><span th:text="#{word.submit}"></span></button>
+                            <br>
+                        </form>
+                        <!--     register button -->
+                        <form method="GET" action="/register">
+                            <label><span th:text="#{word.or}"></span></label>
+                            <br>
+                            <button type="submit" class="btn btn-primary text-center" href="/register" th:text="#{word.register}"/>
+                        </form>
+                        <br>
+
+                        <!-- todo register-alert logout-alert : alert-danger, alert-warning  -->
+                        <span class="alert alert-danger" th:each="alert : ${alerts}">
+                            <div class="alert alert-danger" role="alert">
+                                This is a danger alert—check it out!
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

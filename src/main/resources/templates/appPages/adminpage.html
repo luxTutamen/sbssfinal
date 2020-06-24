@@ -35,7 +35,6 @@
     <title th:text="#{sentence.adminpage-description-description}"/>
 
 <body>
-
 <div th:include="~{layout/header.html::user-header}"/>
 
 <div class="container">
@@ -51,19 +50,19 @@
                     <form action="/adminpage/nextpage" method="post">ce
                         <button class="btn btn-light" type="submit" name="what" value="clientPage">next clientPage</button>
                     </form>
-                    <label class="col-1" th:text="Page: #{clientPage}"></label>
+                    <label class="col-1" th:text="Page: #{clientPage}"/>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        <div th:each="client : ${clients_list}">
-                            <li class="list-group-item">
-                                <p th:text="Name: $client.username}"></p>
-                                <p th:text="Balance: ${client.money}"></p>
-                                <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value="${client.money}">Ban</button>
-                                </form>
-                            </li>
-                        </div>
+                        <span th:text="#{clients_list}"/>
+                        <li class="list-group-item">
+                            <p th:text="name: #{username}"></p>
+                            <p>balance: {{money}}</p>
+                            <form method="post" action="adminpage/ban">
+                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
+                            </form>
+                        </li>
+                        {{/clients-list}}
                     </ul>
                 </div>
             </div>
@@ -79,19 +78,19 @@
                     <form action="/adminpage/nextpage" method="post">
                         <button class="btn btn-light" type="submit" name="what" value="driverPage">next driverPage</button>
                     </form>
-                    <label class="col-1" th:text="Page: ${driverPage}"></label>
+                    <label class="col-1">Page: {{driverPage}}</label>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        <div th:each="driver : drivers_list">
-                            <li class="list-group-item">
-                                <p th:text="Name: ${driver.username}}"/>
-                                <p th:text="Balance: ${driverbalance}"/>
-                                <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value="${driver.id}">ban</button>
-                                </form>
-                            </li>
-                        </div>
+                        {{#drivers-list}}
+                        <li class="list-group-item">
+                            <p>name: {{username}}</p>
+                            <p>balance: {{balance}}</p>
+                            <form method="post" action="adminpage/ban">
+                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
+                            </form>
+                        </li>
+                        {{/drivers-list}}
                     </ul>
                 </div>
             </div>
@@ -107,18 +106,18 @@
                     <form action="/adminpage/nextpage" method="post">
                         <button class="btn btn-light" type="submit" name="what" value="adminPage">next adminPage</button>
                     </form>
-                    <label class="col-1" th:text="Page: ${adminPage}"></label>
+                    <label class="col-1">Page: {{adminPage}}</label>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        <div th:each="admin : admins_list">
-                            <li class="list-group-item">
-                                <p th:text="${admin.username}"></p>
-                                <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value="${admin.id}">ban</button>
-                                </form>
-                            </li>
-                        </div>
+                        {{#admins-list}}
+                        <li class="list-group-item">
+                            <p>name: {{username}}</p>
+                            <form method="post" action="adminpage/ban">
+                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
+                            </form>
+                        </li>
+                        {{/admins-list}}
                     </ul>
                 </div>
             </div>

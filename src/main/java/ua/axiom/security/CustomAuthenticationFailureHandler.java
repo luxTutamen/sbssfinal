@@ -2,7 +2,7 @@ package ua.axiom.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import ua.axiom.controller.exceptions.IllegalCredentialsException;
+import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

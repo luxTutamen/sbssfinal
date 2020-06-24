@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.axiom.controller.exceptions.IllegalCredentialsException;
+import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;

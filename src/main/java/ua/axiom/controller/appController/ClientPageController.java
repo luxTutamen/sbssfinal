@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.controller.MustacheController;
+import ua.axiom.controller.ThymeleafController;
 import ua.axiom.model.Client;
 import ua.axiom.model.Order;
 import ua.axiom.model.UserLocale;
@@ -22,10 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 //  todo discount use
+//  todo thymeleaf use
 
 @Controller
 @RequestMapping("/clientpage")
-public class ClientPageController extends MustacheController<Client> {
+public class ClientPageController extends ThymeleafController<Client> {
     private LocalisationService localisationService;
     private GuiService guiService;
 
@@ -51,8 +54,8 @@ public class ClientPageController extends MustacheController<Client> {
     }
 
     @Override
-    protected ModelAndView formResponse(Map<String, Object> model) {
-        return new ModelAndView("appPages/clientpage", model);
+    protected ModelAndView formResponse(Model model) {
+        return new ModelAndView("appPages/clientpage", model.asMap());
     }
 
     @Override
@@ -61,50 +64,27 @@ public class ClientPageController extends MustacheController<Client> {
     }
 
     @Override
-    protected void fillUserSpecificData(Map<String, Object> model, Client client) {
-        model.put("balance", client.getMoney());
-        model.put("current-locale", client.getLocale());
-        model.put("client-balance", client.getMoney());
+    protected void fillUserSpecificData(Model model, Client client) {
+        model.addAttribute("balance", client.getMoney());
 
-        model.put("pending-orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));
-        model.put("taken-orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.TAKEN, client));
+        //  todo move outside
+        model.addAttribute("username", client.getUsername());
+        model.addAttribute("locales", UserLocale.values());
 
-        model.put("page", ordersPage + 1);
-        model.put("max-pages", orderRepository.countByClientAndStatus(client, Order.Status.PENDING));
+        model.addAttribute("current_locale", client.getLocale());
+        model.addAttribute("client_balance", client.getMoney());
+
+        model.addAttribute("pending_orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));
+        model.addAttribute("taken_orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.TAKEN, client));
+
+        model.addAttribute("order_history", orderRepository.findByStatusAndClient(PageRequest.of(0, 10), Order.Status.FINISHED, client));
+        //  model.put("new-order-details", Order.getOrderInputDescriptions());
+
+        model.addAttribute("page", ordersPage + 1);
+        model.addAttribute("max_pages", orderRepository.countByClientAndStatus(client, Order.Status.PENDING));
     }
 
-    @Override
-    protected void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale) {
-        guiService.populateModelWithNavbarData(model);
-
-        localisationService.setLocalisedMessages(
-                model,
-                userLocale,
-                "word.hello",
-                "word.menu",
-                "sentence.new-order",
-                "sentence.your-balance",
-                "sentence.cancel-order",
-                "sentence.promocodes",
-                "sentence.replenish-balance",
-                "sentence.sentence-confirm-msg",
-                "sentence.delete-account",
-                "info.username",
-                "word.from",
-                "word.to",
-                "word.class",
-                "word.fee",
-                "word.page",
-                "word.cancel",
-                "word.balance",
-                "sentence.your-orders",
-                "sentence.order-history"
-        );
-
-        model.put("order-history", orderRepository.findAll(PageRequest.of(0, 10)));
-        model.put("new-order-details", Order.getOrderInputDescriptions());
-    }
-
+    //  pagination controllers
     @PostMapping("/nextpage")
     public ModelAndView postNextOrderPage() {
         Client client = (Client)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -112,7 +92,7 @@ public class ClientPageController extends MustacheController<Client> {
             ordersPage++;
         }
 
-        return formResponse(new HashMap<>());
+        return formResponse(new ConcurrentModel());
     }
 
     @PostMapping("/prevpage")
@@ -122,7 +102,7 @@ public class ClientPageController extends MustacheController<Client> {
             ordersPage--;
         }
 
-        return formResponse(new HashMap<>());
+        return formResponse(new ConcurrentModel());
     }
 
     @PostMapping("/confirm")

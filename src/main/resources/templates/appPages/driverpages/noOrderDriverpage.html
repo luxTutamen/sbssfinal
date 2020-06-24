@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html th:fragment="baseTymelifeLinks" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head_base_data">
+    <meta charset="UTF-8">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <title th:text="#{sentence.driverpage-description-description}"/>
+
+<body>
+
+<div th:include="~{layout/header.html::user-header}"/>
+
+<div class="container">
+    <div class="row">
+        <div class="card col-4" style="width: 18rem;">
+            <div class="card-header">
+                <div th:if="${car}">
+                    <p th:text="#{word.class}: ${car.aClass}"/>
+                    <p th:text="#{word.car-model}: ${car.modelName}"/>
+                </div>
+                <p th:text="#{word.balance}: ${balance}}"/>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <a class="list-group-item" th:text="#{sentence.your-cars}" />
+                    <a class="list-group-item" th:text="#{word.withdraw}" />
+                    <a class="list-group-item" th:text="#{sentence.change-car}" />
+                    <a class="list-group-item" href="/driver/newCar">
+                        add car
+                    </a>
+                </ul>
+            </div>
+        </div>
+        <div class="card col-8">
+            <div class="card-header" th:text="#{sentence.accessible-orders}"/>
+            <div class="card-body">
+                <ul class="list-group">
+                    <div th:each="order : orders">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-4" th:text="#{word.from}: ${order.departure}"/>
+                                <div class="col-4" th:text="#{word.to}: ${destination}"/>
+                                <div class="col-4">
+                                    <form method="post" action="/driverpage/takeorder">
+                                        <button type="submit" class="btn btn-warning" th:value="${order.id}" name="orderId" th:text="#{sentence.take-order}"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
-import ua.axiom.controller.exceptions.IllegalCredentialsException;
+import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;

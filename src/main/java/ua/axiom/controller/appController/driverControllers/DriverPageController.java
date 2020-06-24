@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
-import ua.axiom.controller.exceptions.JustTakenException;
+import ua.axiom.controller.error.exceptions.JustTakenException;
 import ua.axiom.model.Driver;
 import ua.axiom.model.Order;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
-import ua.axiom.service.LocalisationService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/driverpage")
 public class DriverPageController extends MultiViewController {
     private GuiService guiService;
-    private LocalisationService localisationService;
 
     private OrderRepository orderRepository;
     private DriverRepository driverRepository;
@@ -37,14 +35,12 @@ public class DriverPageController extends MultiViewController {
             GuiService guiService,
             OrderRepository orderRepository,
             DriverRepository driverRepository,
-            LocalisationService localisationService,
             WithOrderDriverController withOrderDriverController,
             WithoutOrderDriverController withoutOrderDriverController
     ) {
         this.guiService = guiService;
         this.orderRepository = orderRepository;
         this.driverRepository = driverRepository;
-        this.localisationService = localisationService;
 
         super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, withOrderDriverController);
         super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, withoutOrderDriverController);
