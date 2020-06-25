@@ -93,9 +93,8 @@
                             data-toggle="dropdown"
                             aria-haspopup="true"
                             aria-expanded="false"
-                            th:inline="text">
-                        <span th:text="${current_locale}"/>
-                    </button>
+                            th:text="${current_locale}"
+                    />
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <div th:each="locale : ${locales}">
                             <input type="submit"

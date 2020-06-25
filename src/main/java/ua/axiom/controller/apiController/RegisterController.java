@@ -60,11 +60,11 @@ public class RegisterController {
     ) throws IllegalCredentialsException {
         //  refactor - move into service
         if(!password.matches(passwordPattern)) {
-            throw new IllegalCredentialsException("password doesn't match the requirements");
+            throw new IllegalCredentialsException();
         }
 
         if(!login.matches(usernamePattern)) {
-            throw new IllegalCredentialsException("username doesn't match the requirements");
+            throw new IllegalCredentialsException();
         }
 
         if(userRepository.findByUsername(login).isPresent()) {
@@ -84,7 +84,7 @@ public class RegisterController {
     private String handleException(IllegalCredentialsException exception) {
         Map<String, Object> model = new HashMap<>();
         model.put("error", true);
-        model.put("error-msg", exception.getDisplayMessage());
+        model.put("error", exception);
 
         return registerRequestMapping(model);
     }

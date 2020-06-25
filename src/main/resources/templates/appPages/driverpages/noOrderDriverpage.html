@@ -43,10 +43,17 @@
         <div class="card col-4" style="width: 18rem;">
             <div class="card-header">
                 <div th:if="${car}">
-                    <p th:text="#{word.class}: ${car.aClass}"/>
-                    <p th:text="#{word.car-model}: ${car.modelName}"/>
+                    <p>
+                        <span th:text="#{word.class}"/>
+                        <span>: </span>
+                        <span th:text="${car.aClass}"/>
+                    </p>
                 </div>
-                <p th:text="#{word.balance}: ${balance}}"/>
+                <p>
+                    <span th:text="#{word.balance}"/>
+                    <span>:</span>
+                    <span th:text="${balance}"/>
+                </p>
             </div>
             <div class="card-body">
                 <ul class="list-group">
@@ -63,11 +70,19 @@
             <div class="card-header" th:text="#{sentence.accessible-orders}"/>
             <div class="card-body">
                 <ul class="list-group">
-                    <div th:each="order : orders">
+                    <div th:each="order : ${orders}">
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-4" th:text="#{word.from}: ${order.departure}"/>
-                                <div class="col-4" th:text="#{word.to}: ${destination}"/>
+                                <div class="col-4">
+                                    <span th:text="#{word.from}"/>
+                                    <span>: </span>
+                                    <span th:text="${order.departure}"/>
+                                </div>
+                                <div class="col-4">
+                                    <span th:text="#{word.to}"/>
+                                    <span>: </span>
+                                    <span th:text="${order.destination}"/>
+                                </div>
                                 <div class="col-4">
                                     <form method="post" action="/driverpage/takeorder">
                                         <button type="submit" class="btn btn-warning" th:value="${order.id}" name="orderId" th:text="#{sentence.take-order}"/>

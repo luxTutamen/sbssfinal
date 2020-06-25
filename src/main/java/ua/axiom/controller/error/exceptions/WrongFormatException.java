@@ -1,14 +1,7 @@
 package ua.axiom.controller.error.exceptions;
 
-public class WrongFormatException extends LightException {
-    private String fieldName;
-
+public class WrongFormatException extends LightVerboseException {
     public WrongFormatException(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    @Override
-    public String getMessage() {
-        return "Field <" + fieldName + "> is of wrong format" + super.getMessage();
+        super( "Field <" + fieldName + "> is of wrong format");
     }
 }
