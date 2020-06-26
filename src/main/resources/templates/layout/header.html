@@ -85,27 +85,26 @@
         <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
         <!--    language select -->
         <div class="col-2">
-            <form action="/api/locale" method="post" target="dummyframe">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle"
-                            type="button"
-                            id="dropdownMenuButton"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            th:text="${current_locale}"
-                    />
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <div th:each="locale : ${locales}">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        th:text="${current_locale}"
+                />
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div th:each="locale : ${locales}">
+                        <form method="post" th:action="@{${#httpServletRequest.requestURI} + '?lang=' + ${locale.toUrlString()}}">
                             <input type="submit"
                                    class="dropdown-item"
                                    th:value="${locale}"
-                                   name="name"
-                                   onClick="window.location.reload();"/>
-                        </div>
+                            />
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
 
         </div>
         <!--  logout    -->

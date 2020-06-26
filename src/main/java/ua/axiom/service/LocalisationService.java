@@ -19,8 +19,8 @@ public class LocalisationService {
     public LocalisationService() {
         localeToDictionaryMap = new HashMap<>();
         try {
-            loadProperties("src/main/resources/properties/pagecontent_en_US.properties", UserLocale.ENG);
-            loadProperties("src/main/resources/properties/pagecontent_ua_UA.properties", UserLocale.UKR);
+            loadProperties("src/main/resources/properties/pagecontent_en.properties", UserLocale.ENG);
+            loadProperties("src/main/resources/properties/pagecontent_ua.properties", UserLocale.UKR);
         } catch (IOException ioe) {
             ioe.printStackTrace();
             System.exit(1);

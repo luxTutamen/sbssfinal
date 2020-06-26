@@ -7,7 +7,6 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.ThymeleafController;
 import ua.axiom.model.Driver;
 import ua.axiom.model.Order;
-import ua.axiom.model.UserLocale;
 import ua.axiom.repository.OrderRepository;
 
 @Component
