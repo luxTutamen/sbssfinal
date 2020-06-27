@@ -69,9 +69,7 @@ public class ClientPageController extends ThymeleafController<Client> {
 
         //  todo move outside
         model.addAttribute("username", client.getUsername());
-        model.addAttribute("locales", UserLocale.values());
 
-        model.addAttribute("current_locale", client.getLocale());
         model.addAttribute("client_balance", client.getMoney());
 
         model.addAttribute("pending_orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));

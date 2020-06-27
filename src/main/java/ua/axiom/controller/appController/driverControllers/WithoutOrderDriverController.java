@@ -27,7 +27,5 @@ public class WithoutOrderDriverController extends ThymeleafController<Driver> {
     protected void fillUserSpecificData(Model model, Driver user) {
         model.addAttribute("orders", orderRepository.findByCClassAndStatus(user.getCar().getAClass(), Order.Status.PENDING));
         model.addAttribute("balance", user.getBalance());
-        model.addAttribute("current_locale", user.getLocale());
-        model.addAttribute("car", user.getCar());
     }
 }

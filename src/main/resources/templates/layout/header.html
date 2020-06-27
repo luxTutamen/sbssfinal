@@ -33,6 +33,29 @@
             crossorigin="anonymous"></script>
 
 </head>
+    <body th:fragment="locale-menu">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    th:text="${current_locale}"
+            />
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div th:each="locale : ${locales}">
+                    <form method="post" th:action="@{${#httpServletRequest.requestURI} + '?lang=' + ${locale.toUrlString()}}">
+                        <input type="submit"
+                               class="dropdown-item"
+                               th:value="${locale}"
+                        />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+
     <!--    This header doesn't contain user-specific data  -->
     <body th:fragment="guest-header">
         <nav class="navbar navbar-dark bg-primary">
@@ -40,32 +63,10 @@
                 <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
                 <span th:text="#{word.company-name}"/>
             </a>
-            <div class="col-3"></div>
+            <div class="col-10"></div>
             <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
             <!--    language select -->
-            <div class="col-2">
-                <form action="/api/locale" method="post" target="dummyframe">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle"
-                                type="button"
-                                id="dropdownMenuButton"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                th:inline="text">
-                            <span th:text="#{current-locale}"/>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <div th:each="locale : ${locales}">
-                                <input type="submit"
-                                       class="dropdown-item"
-                                       value="{{toString}}"
-                                       name="name"
-                                       onClick="window.location.reload();"/>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+            <div class="col-1" th:include="~{layout/header.html::locale-menu}">
             </div>
         </nav>
     </body>
@@ -81,34 +82,14 @@
             <span th:text="#{sentence.logged-as}"/>
             <span th:text="${username}"/>
         </div>
-        <div class="col-3"></div>
+        <div class="col-5"></div>
         <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
         <!--    language select -->
-        <div class="col-2">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        th:text="${current_locale}"
-                />
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <div th:each="locale : ${locales}">
-                        <form method="post" th:action="@{${#httpServletRequest.requestURI} + '?lang=' + ${locale.toUrlString()}}">
-                            <input type="submit"
-                                   class="dropdown-item"
-                                   th:value="${locale}"
-                            />
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+        <div class="col-1">
+            <div th:include="~{layout/header.html::locale-menu}"/>
         </div>
         <!--  logout    -->
-        <div class="col-2">
+        <div class="col-1">
             <form action="#" th:action="@{/logout}" method="POST">
                 <button class="btn btn-info" type="submit">
                     <span th:text="#{word.logout}"/>

@@ -30,8 +30,6 @@ public class AuthorisedMainPageController extends MustacheController<User> {
     @Override
     protected void fillUserSpecificData(Map<String, Object> model, User user) {
         model.put("info.username", user.getUsername());
-        model.put("locales", UserLocale.values());
-        model.put("current-locale", user.getLocale());
 
         localisationService.setLocalisedMessages(
                 model,

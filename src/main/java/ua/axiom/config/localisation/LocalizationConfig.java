@@ -1,5 +1,6 @@
 package ua.axiom.config.localisation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +34,18 @@ public class LocalizationConfig implements WebMvcConfigurer {
         return slr;
     }
 
+
     @Bean
     public LocaleChangeInterceptor localeInterceptor() {
         LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
         localeInterceptor.setParamName("lang");
         return localeInterceptor;
+    }
+
+    @Bean
+    public LocalisationDataInterceptor localisationDataInterceptor() {
+        LocalisationDataInterceptor dataInterceptor = new LocalisationDataInterceptor(localeResolver());
+        return dataInterceptor;
     }
 
     @Bean
@@ -48,6 +56,7 @@ public class LocalizationConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeInterceptor());
+        registry.addInterceptor(localisationDataInterceptor());
     }
 
     @Override
