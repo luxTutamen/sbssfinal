@@ -6,11 +6,13 @@ import ua.axiom.controller.error.exceptions.NotEnoughMoneyException;
 import ua.axiom.model.Client;
 import ua.axiom.model.Driver;
 import ua.axiom.model.Order;
+import ua.axiom.model.User;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.apiservice.PriceService;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Random;
 
@@ -36,6 +38,7 @@ public class OrderService {
         this.priceService = priceService;
     }
 
+    @Transactional
     public void processNewOrder(Order order) throws NotEnoughMoneyException {
 
         BigDecimal price = priceService.getPrice(order);
@@ -53,21 +56,45 @@ public class OrderService {
         clientRepository.save(client);
     }
 
-    public void processFinishedOrder(long orderId) {
+    @Transactional
+    public void confirmByDriver(long orderId) {
         Order order = orderRepository.getOne(orderId);
-        Driver driver = (Driver) order.getDriver();
+        order.setConfirmedByDriver(true);
+        orderRepository.save(order);
 
-        if (order.isConfirmedByClient() && order.isConfirmedByDriver()) {
-            order.setStatus(Order.Status.FINISHED);
-        } else {
-            return;
+        if(order.isConfirmedByClient()) {
+            finishOrder(order);
         }
+    }
+
+    @Transactional
+    public void confirmByClient(long orderId) {
+        Order order = orderRepository.getOne(orderId);
+        order.setConfirmedByClient(true);
+        orderRepository.save(order);
+
+        if(order.isConfirmedByDriver()) {
+            finishOrder(order);
+        }
+    }
+
+    @Transactional
+    public void cancelOrder(long orderId) {
+
+        Order order = orderRepository.findById(orderId).get();
+        order.setStatus(Order.Status.FINISHED);
+        orderRepository.save(order);
+    }
+
+    private void finishOrder(Order order) {
+        Driver driver = (Driver) order.getDriver();
 
         driver.setBalance(driver.getBalance().add(order.getPrice()));
         driver.setCurrentOrder(null);
 
+        order.setStatus(Order.Status.FINISHED);
+
         driverRepository.save(driver);
         orderRepository.save(order);
-
     }
 }

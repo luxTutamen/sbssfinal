@@ -31,6 +31,7 @@ public abstract class User implements UserDetails {
 
     private boolean isBanned;
 
+    //  todo remove switch case
     public static User userFactory(String login, String password, String role, Object ... userSpecificData) throws RuntimeException {
         User user;
         switch (role) {

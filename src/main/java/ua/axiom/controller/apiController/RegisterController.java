@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
+import ua.axiom.controller.error.exceptions.UserAlreadyPresentException;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 import ua.axiom.repository.UserRepository;
@@ -58,7 +59,7 @@ public class RegisterController {
             @RequestParam String role,
             @RequestParam String locale
     ) throws IllegalCredentialsException {
-        //  refactor - move into service
+
         if(!password.matches(passwordPattern)) {
             throw new IllegalCredentialsException();
         }
@@ -67,6 +68,7 @@ public class RegisterController {
             throw new IllegalCredentialsException();
         }
 
+        //  todo into service!
         if(userRepository.findByUsername(login).isPresent()) {
             model.put("error", true);
             model.put("error-msg", localisationService.getLocalisedMessage("sentence.already-present-username", UserLocale.DEFAULT_LOCALE));
@@ -83,8 +85,15 @@ public class RegisterController {
     @ExceptionHandler({IllegalCredentialsException.class})
     private String handleException(IllegalCredentialsException exception) {
         Map<String, Object> model = new HashMap<>();
-        model.put("error", true);
-        model.put("error", exception);
+        model.put("error", exception.getSimpleMessage());
+
+        return registerRequestMapping(model);
+    }
+
+    @ExceptionHandler({UserAlreadyPresentException.class})
+    private String handleUserPresentException(UserAlreadyPresentException exception) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("error", exception.getSimpleMessage());
 
         return registerRequestMapping(model);
     }

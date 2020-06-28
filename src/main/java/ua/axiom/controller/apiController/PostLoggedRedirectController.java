@@ -9,6 +9,10 @@ import ua.axiom.PostLoggedRedirectConfiguration;
 import java.util.Collection;
 import java.util.Map;
 
+
+/**
+ * Redirects newly logged users according to their role
+ */
 @Controller
 @RequestMapping("/api/plrdr")
 public class PostLoggedRedirectController {
@@ -18,6 +22,5 @@ public class PostLoggedRedirectController {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         return "redirect:" + PostLoggedRedirectConfiguration.configuration.get(authorities.iterator().next());
-
     }
 }

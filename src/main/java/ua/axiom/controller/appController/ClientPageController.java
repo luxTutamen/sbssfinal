@@ -13,18 +13,13 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.ThymeleafController;
 import ua.axiom.model.Client;
 import ua.axiom.model.Order;
-import ua.axiom.model.UserLocale;
 import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.appservice.OrderService;
 import ua.axiom.service.appservice.PromoService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 //  todo discount use
-//  todo thymeleaf use
 
 @Controller
 @RequestMapping("/clientpage")
@@ -41,13 +36,11 @@ public class ClientPageController extends ThymeleafController<Client> {
     @Autowired
     public ClientPageController(
             LocalisationService localisationService,
-            OrderRepository orderRepository,
             OrderService orderService,
             PromoService promoService,
             GuiService guiService
     ) {
         this.localisationService = localisationService;
-        this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.promoService = promoService;
         this.guiService = guiService;
@@ -66,20 +59,29 @@ public class ClientPageController extends ThymeleafController<Client> {
     @Override
     protected void fillUserSpecificData(Model model, Client client) {
         model.addAttribute("balance", client.getMoney());
-
-        //  todo move outside
         model.addAttribute("username", client.getUsername());
-
-        model.addAttribute("client_balance", client.getMoney());
 
         model.addAttribute("pending_orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.PENDING, client));
         model.addAttribute("taken_orders", orderRepository.findByStatusAndClient(PageRequest.of(ordersPage, 4), Order.Status.TAKEN, client));
 
         model.addAttribute("order_history", orderRepository.findByStatusAndClient(PageRequest.of(0, 10), Order.Status.FINISHED, client));
-        //  model.put("new-order-details", Order.getOrderInputDescriptions());
 
         model.addAttribute("page", ordersPage + 1);
         model.addAttribute("max_pages", orderRepository.countByClientAndStatus(client, Order.Status.PENDING));
+    }
+
+    @PostMapping("/confirm")
+    private String confirmOrder(@RequestParam long orderId) {
+
+        orderService.confirmByClient(orderId);
+        return "redirect:/clientpage";
+    }
+
+    @PostMapping("/cancelorder")
+    private String cancelOrder(@RequestParam long orderId) {
+        orderService.cancelOrder(orderId);
+
+        return "redirect:/clientpage";
     }
 
     //  pagination controllers
@@ -101,29 +103,6 @@ public class ClientPageController extends ThymeleafController<Client> {
         }
 
         return formResponse(new ConcurrentModel());
-    }
-
-    @PostMapping("/confirm")
-    private String confirmOrder(@RequestParam long orderId) {
-        System.out.println("confirmation of order " + orderId);
-
-        Order currentOrder = orderRepository.getOne(orderId);
-        currentOrder.setConfirmedByClient(true);
-        orderRepository.save(currentOrder);
-
-        orderService.processFinishedOrder(orderId);
-
-        return "redirect:/clientpage";
-    }
-
-    @PostMapping("/cancelorder")
-    private String cancelOrder(@RequestParam long orderId) {
-
-        Order order = orderRepository.findById(orderId).get();
-        order.setStatus(Order.Status.FINISHED);
-        orderRepository.save(order);
-
-        return "redirect:/clientpage";
     }
 
 }

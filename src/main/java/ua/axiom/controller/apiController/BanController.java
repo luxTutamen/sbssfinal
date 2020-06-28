@@ -20,6 +20,7 @@ public class BanController {
 
     @PostMapping("/ban")
     public String banMapping(@RequestParam long bannedId) {
+        //  todo move into service
         User user = userRepository.getOne(bannedId);
         user.setBanned(true);
         userRepository.save(user);
