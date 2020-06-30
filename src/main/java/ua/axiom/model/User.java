@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -16,15 +14,11 @@ public abstract class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
     @Column(length = 40)
-    @NotBlank(message = "username is required")
     private String username;
 
-    @NotNull
     private String password;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(length = 4)
     private UserLocale locale;
