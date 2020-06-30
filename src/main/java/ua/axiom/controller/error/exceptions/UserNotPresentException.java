@@ -1,8 +1,8 @@
 package ua.axiom.controller.error.exceptions;
 
+import ua.axiom.controller.error.LightVerboseException;
+
 public class UserNotPresentException extends LightVerboseException {
 
-    public UserNotPresentException(String username) {
-        super("User with username <" + username + "> not found ");
-    }
+    public UserNotPresentException() { }
 }

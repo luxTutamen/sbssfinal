@@ -1,25 +1,25 @@
 package ua.axiom.controller.apiController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.util.ArrayUtils;
-import sun.security.util.ArrayUtil;
-import ua.axiom.controller.ThymeleafController;
+import ua.axiom.controller.error.LightVerboseExceptionFactory;
 import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
 import ua.axiom.controller.error.exceptions.UserAlreadyPresentException;
 import ua.axiom.model.Role;
 import ua.axiom.model.User;
+import ua.axiom.model.UserFactory;
 import ua.axiom.model.UserLocale;
-import ua.axiom.repository.UserRepository;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.apiservice.RegisterService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/register")
@@ -28,22 +28,25 @@ public class RegisterController {
     private final String usernamePattern;
     private final String passwordPattern;
 
-    private final List<Role> registrableRoles;
+    private final Set<Role> registrableRoles;
 
     private RegisterService registerService;
     private PasswordEncoder passwordEncoder;
     private LocalisationService localisationService;
+    private LightVerboseExceptionFactory exceptionFactory;
 
 
     @Autowired
     public RegisterController(
             PasswordEncoder passwordEncoder,
             LocalisationService localisationService,
-            RegisterService registerService
+            RegisterService registerService,
+            LightVerboseExceptionFactory exceptionFactory
     ) {
         this.passwordEncoder = passwordEncoder;
         this.localisationService = localisationService;
         this.registerService = registerService;
+        this.exceptionFactory = exceptionFactory;
 
         registrableRoles = getRegisterAccessibleRoles();
 
@@ -66,16 +69,28 @@ public class RegisterController {
             @RequestParam UserLocale locale
     ) throws IllegalCredentialsException, UserAlreadyPresentException {
 
+        if(!registrableRoles.contains(role)) {
+            throw exceptionFactory.createLocalisedException(
+                    IllegalCredentialsException::new,
+                    "errormsg.cannot-create-admin-account",
+                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
+        }
+
         if(!password.matches(passwordPattern)) {
-            throw new IllegalCredentialsException();
+            throw exceptionFactory.createLocalisedException(
+                    IllegalCredentialsException::new,
+                    "errormsg.password-not-matches-regex",
+                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
         }
 
         if(!login.matches(usernamePattern)) {
-            throw new IllegalCredentialsException();
+            throw exceptionFactory.createLocalisedException(
+                    IllegalCredentialsException::new,
+                    "errormsg.username-not-matches-regex",
+                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
         }
 
-        User newUser = User.userFactory(login, passwordEncoder.encode(password), role, locale);
-
+        User newUser = UserFactory.userFactory(login, passwordEncoder.encode(password), role, locale);
         registerService.registerNewUser(newUser);
 
         return "redirect:/";
@@ -99,12 +114,10 @@ public class RegisterController {
         return formResponse(model.asMap());
     }
 
-    private static List<Role> getRegisterAccessibleRoles() {
-        List<Role> result = Arrays.asList(Role.values());
-        result = new ArrayList<>(result);
-
-        result.remove(Role.ADMIN);
-
-        return result;
+    private static Set<Role> getRegisterAccessibleRoles() {
+        return Arrays
+                .stream(Role.values())
+                .filter(r -> r != Role.ADMIN && r != Role.GUEST)
+                .collect(Collectors.toSet());
     }
 }

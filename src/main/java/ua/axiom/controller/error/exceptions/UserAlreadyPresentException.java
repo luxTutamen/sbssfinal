@@ -1,8 +1,8 @@
 package ua.axiom.controller.error.exceptions;
 
+import ua.axiom.controller.error.LightVerboseException;
+
 public class UserAlreadyPresentException extends LightVerboseException {
 
-    public UserAlreadyPresentException() {
-        super("user with this username already present");
-    }
+    public UserAlreadyPresentException() { }
 }

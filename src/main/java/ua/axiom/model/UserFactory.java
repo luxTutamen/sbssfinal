@@ -16,6 +16,7 @@ public class UserFactory {
     }
 
     public static User userFactory(String login, String password, Role role, UserLocale locale, Object ... userSpecificData) throws RuntimeException {
+
         User user = constructors.get(role).get();
 
         user.setUsername(login);

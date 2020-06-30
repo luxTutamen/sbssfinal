@@ -1,5 +1,6 @@
 package ua.axiom.model;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public enum UserLocale {
@@ -9,9 +10,9 @@ public enum UserLocale {
 
     public static final UserLocale DEFAULT_LOCALE = ENG;
 
-    private Locale javaLocale;
+    private final Locale javaLocale;
 
-    private String urlString;
+    private final String urlString;
 
     UserLocale(Locale javaLocale, String urlString) {
         this.javaLocale = javaLocale;
@@ -24,6 +25,14 @@ public enum UserLocale {
 
     public Locale toJavaLocale() {
         return javaLocale;
+    }
+
+    public static UserLocale toLocaleFromSessionLocale(Locale locale) {
+        return Arrays
+                .stream(UserLocale.values())
+                .filter(llocale -> llocale.toJavaLocale().equals(locale))
+                .findAny()
+                .get();
     }
 
 }

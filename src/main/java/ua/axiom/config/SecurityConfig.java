@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import ua.axiom.security.CustomAuthenticationFailureHandler;
 
 import static ua.axiom.config.SecurityURIConfig.*;
 
@@ -23,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(
             UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder,
-            AuthenticationFailureHandler failureHandler
+            CustomAuthenticationFailureHandler failureHandler
     ) {
         this.userDetailsService = userDetailsService;
         this.failureHandler = failureHandler;
