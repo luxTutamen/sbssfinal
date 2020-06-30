@@ -72,24 +72,24 @@
                     </div>
                     <!--    role    -->
                     <div class="list-group-item">
-                        <input type="radio" name="role" value="CLIENT" checked>
-                        <label for="registerform">client</label>
-                        <br/>
-                        <input type="radio" name="role" value="DRIVER">
-                        <label for="registerform">driver</label>
-                        <br/>
-                        <input type="radio" name="role" value="ADMIN">
-                        <label for="registerform">admin</label>
+                        <div th:each="role : ${roles}">
+                            <input type="radio" name="role" th:value="${role}" checked>
+                            <label for="registerform" th:text="${role}"/>
+                            <br/>
+                        </div>
                     </div>
                     <div class="list-group-item">
                         <button value="login" type="submit" class="btn btn-primary">submit</button>
                     </div>
                 </form>
             </div>
-            <div th:if="${errors != null}">
+            <div th:if="${error != null}">
+                <div  class="alert alert-danger" role="alert" th:text="${error_msg}"/>
+                <!--
                 <div th:text="error : ${errors}">
                     <div class="alert alert-danger" role="alert" th:text="$error.getMessage"/>
                 </div>
+                -->
             </div>
         </div>
     </div>

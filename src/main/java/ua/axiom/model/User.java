@@ -31,35 +31,6 @@ public abstract class User implements UserDetails {
 
     private boolean isBanned;
 
-    //  todo remove switch case
-    public static User userFactory(String login, String password, String role, Object ... userSpecificData) throws RuntimeException {
-        User user;
-        switch (role) {
-            case ("CLIENT"):{
-                user = new Client();
-                break;
-            }
-            case ("DRIVER"): {
-                user = new Driver();
-                break;
-            }
-            case ("ADMIN"):{
-                user = new Admin();
-                break;
-            }
-            default: {
-                throw new RuntimeException("role string <" + role + "> doesn't name any role");
-            }
-        }
-
-        user.setUsername(login);
-        user.setPassword(password);
-
-        user.setNotNullableFields(userSpecificData);
-
-        return user;
-    }
-
     protected abstract void setNotNullableFields(Object ... data);
 
     @Override
