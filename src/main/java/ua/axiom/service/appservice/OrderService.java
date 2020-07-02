@@ -1,6 +1,8 @@
 package ua.axiom.service.appservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.axiom.controller.error.exceptions.NotEnoughMoneyException;
 import ua.axiom.model.Client;
@@ -14,6 +16,7 @@ import ua.axiom.service.apiservice.PriceService;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -36,6 +39,18 @@ public class OrderService {
         this.clientRepository = clientRepository;
         this.driverRepository = driverRepository;
         this.priceService = priceService;
+    }
+
+    public void newOrder(Order newOrder) {
+
+    }
+
+    public List<Order> findByStatusAndClient(Pageable pageable, Order.Status status, Client client) {
+        return orderRepository.findByStatusAndClient(pageable, status, client);
+    }
+
+    public long countByClientAndStatus(Client client, Order.Status status) {
+        return orderRepository.countByClientAndStatus(client, status);
     }
 
     @Transactional

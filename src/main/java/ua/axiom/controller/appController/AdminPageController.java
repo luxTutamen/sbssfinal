@@ -14,17 +14,16 @@ import ua.axiom.repository.AdminRepository;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.service.GuiService;
+import ua.axiom.service.appservice.AdminService;
 
 import java.util.Map;
 
 @Controller
 @RequestMapping("/adminpage")
 public class AdminPageController extends MustacheController<Admin> {
-    private AdminRepository adminRepository;
-    private ClientRepository clientRepository;
-    private DriverRepository driverRepository;
 
     private GuiService guiService;
+    private AdminService adminService;
 
     private int clientPage = 0;
     private int driverPage = 0;
@@ -32,15 +31,11 @@ public class AdminPageController extends MustacheController<Admin> {
 
     @Autowired
     public AdminPageController(
-            AdminRepository adminRepository,
-            ClientRepository clientRepository,
-            DriverRepository driverRepository,
+            AdminService adminService,
             GuiService guiService
     ) {
-        this.adminRepository = adminRepository;
-        this.clientRepository = clientRepository;
-        this.driverRepository = driverRepository;
         this.guiService = guiService;
+        this.adminService = adminService;
     }
 
     @Override
@@ -50,9 +45,9 @@ public class AdminPageController extends MustacheController<Admin> {
 
     @Override
     public void fillUserSpecificData(Map<String, Object> model, Admin user) {
-        model.put("clients-list", clientRepository.findAll(PageRequest.of(clientPage, 10)));
-        model.put("drivers-list", driverRepository.findAll(PageRequest.of(driverPage, 10)));
-        model.put("admins-list", adminRepository.findAll(PageRequest.of(adminPage, 10)));
+        model.put("clients-list", adminService.getClients(clientPage, 10));
+        model.put("drivers-list", adminService.getDrivers(driverPage, 10));
+        model.put("admins-list", adminService.getAdmins(adminPage, 10));
 
     }
 
@@ -66,6 +61,13 @@ public class AdminPageController extends MustacheController<Admin> {
 
     }
 
+    @PostMapping("/ban")
+    protected String banController(@RequestParam long idToBan) {
+        //  todo ban
+        return "redirect:/adminpage";
+    }
+
+    //  todo accept role, not string
     @PostMapping("/prevpage")
     public String prevPaginationPage(@RequestParam String what) {
         switch (what) {

@@ -14,10 +14,10 @@ import ua.axiom.model.Car;
 import ua.axiom.model.Client;
 import ua.axiom.model.Order;
 import ua.axiom.model.UserLocale;
-import ua.axiom.repository.ClientRepository;
-import ua.axiom.repository.DiscountRepository;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.LocalisationService;
+import ua.axiom.service.appservice.ClientService;
+import ua.axiom.service.appservice.DiscountService;
 import ua.axiom.service.appservice.OrderService;
 
 import java.util.Date;
@@ -26,29 +26,29 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/neworder")
-//  todo refactor
+//  todo extends thymeleaf
 public class NewOrderController {
     private LocalisationService localisationService;
     private GuiService guiService;
-    private OrderService orderService;
 
-    private ClientRepository clientRepository;
-    private DiscountRepository discountRepository;
+    private OrderService orderService;
+    private ClientService clientService;
+    private DiscountService discountService;
 
     @Autowired
     public NewOrderController(
-            ClientRepository clientRepository,
             LocalisationService localisationService,
-            DiscountRepository discountRepository,
             OrderService orderService,
+            DiscountService discountService,
+            ClientService clientService,
             GuiService guiService
     ) {
         this.localisationService = localisationService;
         this.guiService = guiService;
-        this.orderService = orderService;
 
-        this.clientRepository = clientRepository;
-        this.discountRepository = discountRepository;
+        this.orderService = orderService;
+        this.clientService = clientService;
+        this.discountService = discountService;
     }
 
     @RequestMapping
@@ -56,7 +56,7 @@ public class NewOrderController {
         Map<String, Object> model = new HashMap<>();
 
         Long id = ((Client) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
-        Client user = clientRepository.findById(id).get();
+        Client user = clientService.findById(id).get();
 
         fillUserSpecificContent(model, user);
         fillLocalisedContent(model, user.getLocale());
@@ -66,7 +66,7 @@ public class NewOrderController {
     }
 
     @PostMapping(name = "new-order")
-    public ModelAndView postNewOrder(
+    public String postNewOrder(
             @RequestParam String departure,
             @RequestParam String destination,
             @RequestParam String aClass
@@ -74,7 +74,7 @@ public class NewOrderController {
         Map<String, Object> model = new HashMap<>();
 
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        Client client = clientRepository.getOne(clientID);
+        Client client = clientService.findById(clientID).get();
 
         if (!departure.matches(localisationService.getRegex("location", client.getLocale())) ||
                 !destination.matches(localisationService.getRegex("location", client.getLocale()))) {
@@ -96,7 +96,30 @@ public class NewOrderController {
         fillLocalisedContent(model, client.getLocale());
         guiService.populateModelWithNavbarData(model);
 
-        return new ModelAndView("/appPages/neworder", model);
+        return "/appPages/neworder";
+    }
+
+    private void fillUserSpecificContent(Map<String, Object> model, Client client) {
+        model.put("new-order-details", Order.getOrderInputDescriptions());
+        model.put("car-classes", Car.Class.values());
+        model.put("client-balance", client.getMoney());
+        model.put("username", client.getUsername());
+        model.put("current-locale", client.getLocale());
+        model.put("promos-list", discountService.getAllDiscountsForClient(client));
+
+    }
+
+    private void fillLocalisedContent(Map<String, Object> model, UserLocale locale) {
+        localisationService.setLocalisedMessages(
+                model,
+                locale,
+                "sentence.new-order-page-desc",
+                "word.class",
+                "word.from",
+                "word.to",
+                "sentence.new-order-page-desc",
+                "sentence.new-order-request-msg"
+        );
     }
 
     @ExceptionHandler(NotEnoughMoneyException.class)
@@ -116,29 +139,4 @@ public class NewOrderController {
 
         return new ModelAndView("/appPages/neworder", model);
     }
-
-    private void fillUserSpecificContent(Map<String, Object> model, Client client) {
-        model.put("new-order-details", Order.getOrderInputDescriptions());
-        model.put("car-classes", Car.Class.values());
-        model.put("client-balance", client.getMoney());
-        model.put("username", client.getUsername());
-        model.put("current-locale", client.getLocale());
-        model.put("promos-list", discountRepository.getByClient(client));
-
-    }
-
-    private void fillLocalisedContent(Map<String, Object> model, UserLocale locale) {
-        localisationService.setLocalisedMessages(
-                model,
-                locale,
-                "sentence.new-order-page-desc",
-                "word.class",
-                "word.from",
-                "word.to",
-                "sentence.new-order-page-desc",
-                "sentence.new-order-request-msg"
-        );
-    }
-
-
 }

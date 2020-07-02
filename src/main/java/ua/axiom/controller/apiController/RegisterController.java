@@ -32,19 +32,16 @@ public class RegisterController {
 
     private RegisterService registerService;
     private PasswordEncoder passwordEncoder;
-    private LocalisationService localisationService;
     private LightVerboseExceptionFactory exceptionFactory;
-
 
     @Autowired
     public RegisterController(
             PasswordEncoder passwordEncoder,
-            LocalisationService localisationService,
             RegisterService registerService,
-            LightVerboseExceptionFactory exceptionFactory
-    ) {
+            LightVerboseExceptionFactory exceptionFactory,
+            LocalisationService localisationService
+            ) {
         this.passwordEncoder = passwordEncoder;
-        this.localisationService = localisationService;
         this.registerService = registerService;
         this.exceptionFactory = exceptionFactory;
 
@@ -99,7 +96,7 @@ public class RegisterController {
     @ExceptionHandler({IllegalCredentialsException.class})
     private ModelAndView handleException(IllegalCredentialsException exception, Model model) {
 
-        model.addAttribute("error", exception.getSimpleMessage());
+        model.addAttribute("error", true);
         model.addAttribute("error_msg", exception.getSimpleMessage());
 
         return formResponse(model.asMap());
@@ -109,7 +106,7 @@ public class RegisterController {
     private ModelAndView handleUserPresentException(UserAlreadyPresentException exception, Model model) {
 
         model.addAttribute("error", true);
-        model.addAttribute("error_msg", localisationService.getLocalisedMessage("sentence.already-present-username", UserLocale.DEFAULT_LOCALE));
+        model.addAttribute("error_msg", exception.getSimpleMessage());
 
         return formResponse(model.asMap());
     }

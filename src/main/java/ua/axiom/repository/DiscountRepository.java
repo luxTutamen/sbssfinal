@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
     List<Discount> getByClient(Client client);
+
+    long countByClient(Client client);
 }

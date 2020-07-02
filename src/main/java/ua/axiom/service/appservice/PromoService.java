@@ -9,10 +9,9 @@ import ua.axiom.repository.DiscountRepository;
 import java.util.Calendar;
 import java.util.Date;
 
-//  todo refactor
 @Service
 public class PromoService {
-    private static final long week = 1000 * 60 * 60 * 24 * 7;
+    private static final long SECS_IN_WEEK = 1000 * 60 * 60 * 24 * 7;
     private final Calendar calendar1 = Calendar.getInstance();
     private final Calendar calendar2 = Calendar.getInstance();
 
@@ -26,7 +25,11 @@ public class PromoService {
     public void onClientLoad(Client client) {
         Date currDate = new Date();
 
-        if(client.getLastDiscountGiven().getTime() < (currDate.getTime() - week)) {
+        if(discountRepository.countByClient(client) > 10) {
+            return;
+        }
+
+        if(client.getLastDiscountGiven().getTime() < (currDate.getTime() - SECS_IN_WEEK)) {
             discountRepository.save(new Discount(
                     client,
                     0.75F,
@@ -47,6 +50,4 @@ public class PromoService {
             client.setReceivedBDayPromoToday(false);
         }
     }
-
-
 }
