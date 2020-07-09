@@ -1,4 +1,4 @@
-package ua.axiom.controller.error;
+package ua.axiom.service.error;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class LightVerboseExceptionFactory {
 
     public <T extends LightVerboseException> T createLocalisedException(Supplier<T> exceptionSupplier, String messqge, UserLocale locale) {
         T exception = exceptionSupplier.get();
-        exception.setSimpleMessage(localisationService.getLocalisedMessage(messqge, locale));
+        exception.setShortMessage(localisationService.getLocalisedMessage(messqge, locale));
 
         return exception;
     }

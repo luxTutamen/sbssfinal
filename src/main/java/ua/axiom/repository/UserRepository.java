@@ -2,7 +2,7 @@ package ua.axiom.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.GrantedAuthority;
-import ua.axiom.controller.error.exceptions.UserNotPresentException;
+import ua.axiom.service.error.exceptions.UserNotPresentException;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 

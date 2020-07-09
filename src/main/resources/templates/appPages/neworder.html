@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html th:fragment="baseTymelifeLinks" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head_base_data">
+    <meta charset="UTF-8">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"
+          rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <title th:text="#{sentence.neworderpage-description}"/>
+
+<body>
+    <div th:include="~{layout/header.html::user-header}"/>
+
+    <div class="container">
+        <div class="row">
+            <div class="card col-4" style="width: 18rem;">
+                <div class="card-header">
+                    <p><div th:text="#{sentence.new-order-request-msg}"/></p>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                    <form method="POST" action="/api/neworder/order" name="new_order">
+                        <li class="list-group-item">
+                            <input type="type" name="departure" th:placeholder="#{word.from}"/>
+                        </li>
+                        <li class="list-group-item">
+                            <input type="text" name="destination" th:placeholder="#{word.to}"/>
+                        </li>
+                        <li class="dropdown list-group-item pagination-centered">
+                            <label th:text="#{word.class}"/>
+                            <div th:each="cclass : ${car_classes}">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="aClass" checked th:value="${cclass.toString()}" th:text="${cclass.toString()}"/>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item pagination-centered">
+                            <button type="submit" class="btn btn-primary" th:text="#{word.submit}"/>
+                        </li>
+                    </form>
+                        <div th:if="${error != null}">
+                            <li class="list-group-item">
+                                <div class="alert alert-danger" role="alert" th:text="${error}"/>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <!--    right part of the screen, balance and orders    -->
+            <div class="card col-8">
+                <div th:each="promo : ${promos_list}">
+                    <div class="card text-white bg-primary">
+                        <div class="card-header">Discount - <div th:text="${promo.multiplier}"/> percent off!</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <form action="/api/neworder/discount">
+                                    <button class="btn btn-secondary" type="submit" th:value="${promo.id}" name="discountId">
+                                        Use
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

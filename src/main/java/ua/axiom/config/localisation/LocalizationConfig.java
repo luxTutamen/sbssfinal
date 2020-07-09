@@ -1,6 +1,5 @@
 package ua.axiom.config.localisation;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +32,6 @@ public class LocalizationConfig implements WebMvcConfigurer {
         slr.setDefaultLocale(UserLocale.DEFAULT_LOCALE.toJavaLocale());
         return slr;
     }
-
 
     @Bean
     public LocaleChangeInterceptor localeInterceptor() {

@@ -1,38 +1,38 @@
 package ua.axiom.model;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public enum UserLocale {
-    ENG(Locale.ENGLISH, "en"),
-    UKR(new Locale("UA"), "ua")
+    ENG(Locale.ENGLISH),
+    UKR(new Locale("UA"))
     ;
 
     public static final UserLocale DEFAULT_LOCALE = ENG;
 
-    private final Locale javaLocale;
+    private static final Map<Locale, UserLocale> localeToUserLocaleMap;
 
-    private final String urlString;
-
-    UserLocale(Locale javaLocale, String urlString) {
-        this.javaLocale = javaLocale;
-        this.urlString = urlString;
+    static {
+        localeToUserLocaleMap = new HashMap<>();
+        for(UserLocale ulocale: UserLocale.values()) {
+            localeToUserLocaleMap.put(ulocale.javaLocale, ulocale);
+        }
     }
 
-    public String toUrlString() {
-        return urlString;
+    private final Locale javaLocale;
+
+    UserLocale(Locale javaLocale) {
+        this.javaLocale = javaLocale;
     }
 
     public Locale toJavaLocale() {
         return javaLocale;
     }
 
-    public static UserLocale toLocaleFromSessionLocale(Locale locale) {
-        return Arrays
-                .stream(UserLocale.values())
-                .filter(llocale -> llocale.toJavaLocale().equals(locale))
-                .findAny()
-                .get();
+    public static UserLocale toUserLocale(Locale locale) {
+        return localeToUserLocaleMap.get(locale);
     }
+
 
 }

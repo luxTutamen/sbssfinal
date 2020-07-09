@@ -1,5 +1,6 @@
-package ua.axiom.controller.error;
+package ua.axiom.controller.apiController;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.ThymeleafController;
 import ua.axiom.model.User;
 
+//  todo
+//  @Controller
 @RequestMapping("/error")
 public class ErrorController extends ThymeleafController<User> {
     @Override

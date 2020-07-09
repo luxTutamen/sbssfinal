@@ -33,6 +33,7 @@
             crossorigin="anonymous"></script>
 
     <title th:text="#{sentence.clientpage-description}"/>
+</head>
 
 <body>
     <div th:include="~{layout/header.html::user-header}"/>
@@ -57,9 +58,6 @@
             <div class="card col-8">
                 <div class="card-header">
                     <h1><span th:text="#{sentence.your-orders}"/></h1>
-                    <label>
-                        <span th:text="#{word.balance}"/> : <span th:text="${client_balance}"/>
-                    </label>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
@@ -67,16 +65,17 @@
                             <span th:each="order : ${pending_orders}">
                                 <div class="card text-white bg-primary">
                                     <div class="card-body">
-                                    <div class="row">
-                                        <label class="card-text col-3"><span th:text="#{word.from}"/>: <span th:text="${order.departure}"/></label>
-                                        <label class="card-text col-3"><span th:text="#{word.to}"/>: <span th:text="${order.destination}"/></label>
-                                        <label class="card-text col-3"><span th:text="#{word.class}"/>: <span th:text="${order.cClass}"/></label>
-                                        <label class="card-text col-3"><span th:text="#{word.fee}"/>: <span th:text="${order.price}"/></label>
-                                    </div>
-                                    <div class="row">
-                                        <form method="post" action="/clientpage/cancelorder">
-                                            <button type="submit" class="btn btn-warning" th:value value={{id}} name="orderId"><div th:text="#{word.cancel}"/></button>
-                                        </form>
+                                        <div class="row">
+                                            <label class="card-text col-3"><span th:text="#{word.from}"/>: <span th:text="${order.departure}"/></label>
+                                            <label class="card-text col-3"><span th:text="#{word.to}"/>: <span th:text="${order.destination}"/></label>
+                                            <label class="card-text col-3"><span th:text="#{word.class}"/>: <span th:text="${order.cClass}"/></label>
+                                            <label class="card-text col-3"><span th:text="#{word.fee}"/>: <span th:text="${order.price}"/></label>
+                                        </div>
+                                        <div class="row">
+                                            <form method="post" action="/clientpage/cancelorder">
+                                                <button type="submit" class="btn btn-warning" th:value="${order.id}" name="orderId"><div th:text="#{word.cancel}"/></button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </span>
@@ -92,7 +91,7 @@
                                         </div>
                                         <div class="row">
                                             <form method="post" action="/clientpage/confirm">
-                                                <button type="submit" class="btn btn-warning" value={{id}} name="orderId"><div th:text="#{sentence.sentence-confirm-msg}"/></button>
+                                                <button type="submit" class="btn btn-warning" th:value="${order.id}" name="orderId"><div th:text="#{sentence.sentence-confirm-msg}"/></button>
                                             </form>
                                         </div>
                                     </div>

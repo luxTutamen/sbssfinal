@@ -3,9 +3,9 @@ package ua.axiom.controller.appController;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+/*
 
-@Controller
-@RequestMapping("/error")
+//   todo delete
 public class CustomErrorController implements ErrorController {
     @RequestMapping
     public String error() {
@@ -17,3 +17,4 @@ public class CustomErrorController implements ErrorController {
         return "/error";
     }
 }
+*/

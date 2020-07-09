@@ -1,14 +1,13 @@
 package ua.axiom.service.appservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ua.axiom.controller.error.exceptions.NotEnoughMoneyException;
+import ua.axiom.service.error.exceptions.JustTakenException;
+import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 import ua.axiom.model.Client;
 import ua.axiom.model.Driver;
 import ua.axiom.model.Order;
-import ua.axiom.model.User;
 import ua.axiom.repository.ClientRepository;
 import ua.axiom.repository.DriverRepository;
 import ua.axiom.repository.OrderRepository;
@@ -41,10 +40,6 @@ public class OrderService {
         this.priceService = priceService;
     }
 
-    public void newOrder(Order newOrder) {
-
-    }
-
     public List<Order> findByStatusAndClient(Pageable pageable, Order.Status status, Client client) {
         return orderRepository.findByStatusAndClient(pageable, status, client);
     }
@@ -53,7 +48,21 @@ public class OrderService {
         return orderRepository.countByClientAndStatus(client, status);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = {JustTakenException.class})
+    public void takeOrder(long driverId, long orderId) throws JustTakenException {
+
+        Driver driver = driverRepository.findById(driverId).get();
+
+        Order validOrder = orderRepository.findById(orderId).orElseThrow(JustTakenException::new);
+
+        validOrder.setStatus(Order.Status.TAKEN);
+        validOrder.setDriver(driver);
+
+        driver.setCurrentOrder(validOrder);
+        driverRepository.save(driver);
+    }
+
+    @Transactional(rollbackOn = {NotEnoughMoneyException.class})
     public void processNewOrder(Order order) throws NotEnoughMoneyException {
 
         BigDecimal price = priceService.getPrice(order);
@@ -72,8 +81,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void confirmByDriver(long orderId) {
-        Order order = orderRepository.getOne(orderId);
+    public void confirmByDriver(long driverID) {
+        Driver driver = driverRepository.getOne(driverID);
+        Order order = driver.getCurrentOrder();
+
         order.setConfirmedByDriver(true);
         orderRepository.save(order);
 
@@ -93,11 +104,20 @@ public class OrderService {
         }
     }
 
-    @Transactional
-    public void cancelOrder(long orderId) {
+    @Transactional(rollbackOn = {JustTakenException.class})
+    public void cancelOrder(long orderId) throws JustTakenException {
 
         Order order = orderRepository.findById(orderId).get();
+
+        if(order.getStatus() == Order.Status.TAKEN) {
+            throw new JustTakenException();
+        }
+        Client client = (Client)order.getClient();
+
         order.setStatus(Order.Status.FINISHED);
+        client.setMoney(client.getMoney().add(order.getPrice()));
+
+        clientRepository.save(client);
         orderRepository.save(order);
     }
 

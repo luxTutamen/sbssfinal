@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.axiom.controller.error.exceptions.UserNotPresentException;
+import ua.axiom.service.error.exceptions.UserNotPresentException;
 import ua.axiom.model.Client;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;

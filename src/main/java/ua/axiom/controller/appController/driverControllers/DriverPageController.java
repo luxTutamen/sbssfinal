@@ -9,41 +9,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
-import ua.axiom.controller.error.exceptions.JustTakenException;
+import ua.axiom.service.error.exceptions.JustTakenException;
 import ua.axiom.model.Driver;
-import ua.axiom.model.Order;
-import ua.axiom.repository.DriverRepository;
-import ua.axiom.repository.OrderRepository;
 import ua.axiom.service.GuiService;
+import ua.axiom.service.appservice.DriverService;
+import ua.axiom.service.appservice.OrderService;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/driverpage")
 public class DriverPageController extends MultiViewController {
     private GuiService guiService;
-
-    private OrderRepository orderRepository;
-    private DriverRepository driverRepository;
-
-
+    private DriverService driverService;
+    private OrderService orderService;
 
     @Autowired
     public DriverPageController(
             GuiService guiService,
-            OrderRepository orderRepository,
-            DriverRepository driverRepository,
+            DriverService driverService,
+            OrderService orderService,
             WithOrderDriverController withOrderDriverController,
             WithoutOrderDriverController withoutOrderDriverController
     ) {
         this.guiService = guiService;
-        this.orderRepository = orderRepository;
-        this.driverRepository = driverRepository;
+        this.orderService = orderService;
+        this.driverService = driverService;
 
-        super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() != null, withOrderDriverController);
-        super.addController(() -> driverRepository.findById(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).get().getCurrentOrder() == null, withoutOrderDriverController);
+        super.addController(() -> driverService.hasOrder(), withOrderDriverController);
+        super.addController(() -> ! driverService.hasOrder(), withoutOrderDriverController);
     }
 
     @RequestMapping
@@ -51,52 +45,24 @@ public class DriverPageController extends MultiViewController {
         guiService.populateModelWithNavbarData(model);
 
         return super.getRequestMapping(new ConcurrentModel(model));
-
     }
 
-    //  todo service
     @PostMapping("/takeorder")
-    public ModelAndView takeOrderController(@RequestParam("orderId") long orderId) throws JustTakenException {
-        Map<String, Object> model = new HashMap<>();
-        guiService.populateModelWithNavbarData(model);
+    public String takeOrderController(@RequestParam("orderId") long orderId) throws JustTakenException {
 
-        long id = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        Driver driver = driverRepository.findById(id).get();
+        long driverId = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        orderService.takeOrder(driverId, orderId);
 
-        Optional<Order> takenOrder = orderRepository.findById(orderId);
-        Order validOrder = takenOrder.orElseThrow(JustTakenException::new);
-
-        validOrder.setStatus(Order.Status.TAKEN);
-        validOrder.setDriver(driver);
-        driver.setCurrentOrder(validOrder);
-        driverRepository.save(driver);
-
-        return new ModelAndView("redirect:/driverpage", model);
+        return "redirect:/driverpage";
     }
 
     //  todo service
     @PostMapping("/confirmation")
     public String confirmationPost() {
-        Map<String, Object> model = new HashMap<>();
-        guiService.populateModelWithNavbarData(model);
 
-        long id = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        long driverId = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
-        Order order = orderRepository.findByDriverAndStatus(driverRepository.getOne(id), Order.Status.TAKEN);
-        order.setConfirmedByDriver(true);
-        orderRepository.save(order);
-
-        Driver driver = driverRepository.findById(id).get();
-        driver.setCurrentOrder(null);
-        driverRepository.save(driver);
-
+        orderService.confirmByDriver(driverId);
         return "redirect:/driverpage";
     }
-
 }
-
-/*
-{orders} done
-{money}
-{car}
-*/

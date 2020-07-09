@@ -59,10 +59,7 @@
                 <ul class="list-group">
                     <a class="list-group-item" th:text="#{sentence.your-cars}" />
                     <a class="list-group-item" th:text="#{word.withdraw}" />
-                    <a class="list-group-item" th:text="#{sentence.change-car}" />
-                    <a class="list-group-item" href="/driver/newCar">
-                        add car
-                    </a>
+                    <a class="list-group-item" th:text="#{sentence.change-car}" href="/driver/newCar" />
                 </ul>
             </div>
         </div>
@@ -73,17 +70,22 @@
                     <div th:each="order : ${orders}">
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-3">
                                     <span th:text="#{word.from}"/>
                                     <span>: </span>
                                     <span th:text="${order.departure}"/>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <span th:text="#{word.to}"/>
                                     <span>: </span>
                                     <span th:text="${order.destination}"/>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
+                                    <span th:text="#{word.price}"/>
+                                    <span>: </span>
+                                    <span th:text="${order.getPrice()}"/>
+                                </div>
+                                <div class="col-3">
                                     <form method="post" action="/driverpage/takeorder">
                                         <button type="submit" class="btn btn-warning" th:value="${order.id}" name="orderId" th:text="#{sentence.take-order}"/>
                                     </form>

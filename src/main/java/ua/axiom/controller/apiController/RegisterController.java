@@ -6,11 +6,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.controller.error.LightVerboseExceptionFactory;
-import ua.axiom.controller.error.exceptions.IllegalCredentialsException;
-import ua.axiom.controller.error.exceptions.UserAlreadyPresentException;
+import ua.axiom.service.error.LightVerboseExceptionFactory;
+import ua.axiom.service.error.exceptions.IllegalCredentialsException;
+import ua.axiom.service.error.exceptions.IllegalDataFormatException;
+import ua.axiom.service.error.exceptions.UserAlreadyPresentException;
 import ua.axiom.model.Role;
 import ua.axiom.model.User;
 import ua.axiom.model.UserFactory;
@@ -18,7 +18,10 @@ import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.apiservice.RegisterService;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -33,6 +36,7 @@ public class RegisterController {
     private RegisterService registerService;
     private PasswordEncoder passwordEncoder;
     private LightVerboseExceptionFactory exceptionFactory;
+    private LocalisationService localisationService;
 
     @Autowired
     public RegisterController(
@@ -44,6 +48,7 @@ public class RegisterController {
         this.passwordEncoder = passwordEncoder;
         this.registerService = registerService;
         this.exceptionFactory = exceptionFactory;
+        this.localisationService = localisationService;
 
         registrableRoles = getRegisterAccessibleRoles();
 
@@ -64,27 +69,27 @@ public class RegisterController {
             @RequestParam String login,
             @RequestParam Role role,
             @RequestParam UserLocale locale
-    ) throws IllegalCredentialsException, UserAlreadyPresentException {
+    ) throws IllegalDataFormatException, UserAlreadyPresentException {
 
         if(!registrableRoles.contains(role)) {
             throw exceptionFactory.createLocalisedException(
-                    IllegalCredentialsException::new,
+                    () -> new IllegalDataFormatException(localisationService),
                     "errormsg.cannot-create-admin-account",
-                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
+                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
         }
 
         if(!password.matches(passwordPattern)) {
             throw exceptionFactory.createLocalisedException(
-                    IllegalCredentialsException::new,
+                    () -> new IllegalDataFormatException(localisationService),
                     "errormsg.password-not-matches-regex",
-                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
+                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
         }
 
         if(!login.matches(usernamePattern)) {
             throw exceptionFactory.createLocalisedException(
-                    IllegalCredentialsException::new,
+                    () -> new IllegalDataFormatException(localisationService),
                     "errormsg.username-not-matches-regex",
-                    UserLocale.toLocaleFromSessionLocale(LocaleContextHolder.getLocale()));
+                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
         }
 
         User newUser = UserFactory.userFactory(login, passwordEncoder.encode(password), role, locale);
@@ -97,7 +102,7 @@ public class RegisterController {
     private ModelAndView handleException(IllegalCredentialsException exception, Model model) {
 
         model.addAttribute("error", true);
-        model.addAttribute("error_msg", exception.getSimpleMessage());
+        model.addAttribute("error_msg", exception.getLocalizedMessage());
 
         return formResponse(model.asMap());
     }
@@ -106,7 +111,7 @@ public class RegisterController {
     private ModelAndView handleUserPresentException(UserAlreadyPresentException exception, Model model) {
 
         model.addAttribute("error", true);
-        model.addAttribute("error_msg", exception.getSimpleMessage());
+        model.addAttribute("error_msg", exception.getLocalizedMessage());
 
         return formResponse(model.asMap());
     }

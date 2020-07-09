@@ -15,6 +15,7 @@ import ua.axiom.model.Client;
 import ua.axiom.model.Order;
 import ua.axiom.service.appservice.OrderService;
 import ua.axiom.service.appservice.PromoService;
+import ua.axiom.service.error.exceptions.JustTakenException;
 
 //  todo discount use
 @Controller
@@ -66,7 +67,7 @@ public class ClientPageController extends ThymeleafController<Client> {
     }
 
     @PostMapping("/cancelorder")
-    private String cancelOrder(@RequestParam long orderId) {
+    private String cancelOrder(@RequestParam long orderId) throws JustTakenException {
 
         orderService.cancelOrder(orderId);
         return "redirect:/clientpage";

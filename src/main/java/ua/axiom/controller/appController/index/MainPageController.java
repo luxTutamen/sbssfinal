@@ -95,7 +95,6 @@ public class MainPageController extends MultiViewController implements Authentic
             ServletException {
         response.sendRedirect("/?error=true");
     }
-
 }
 
 //  todo error in ClientPage on pagination FIX

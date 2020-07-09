@@ -8,6 +8,7 @@ import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -40,10 +41,10 @@ public class AuthorisedMainPageController extends MustacheController<User> {
     }
 
     @Override
-    protected void fillLocalisedPageData(Map<String, Object> model, UserLocale user) {
+    protected void fillLocalisedPageData(Map<String, Object> model, UserLocale locale) {
         localisationService.setLocalisedMessages(
                 model,
-                user,
+                locale,
                 "word.logout",
                 "sentence.logged-welcome",
                 "sentence.logged-as",

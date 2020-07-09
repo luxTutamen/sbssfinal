@@ -1,85 +1,69 @@
 package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.controller.error.exceptions.IllegalDataFormatException;
-import ua.axiom.controller.error.exceptions.NotEnoughMoneyException;
-import ua.axiom.model.Car;
-import ua.axiom.model.Client;
-import ua.axiom.model.Order;
-import ua.axiom.model.UserLocale;
-import ua.axiom.service.GuiService;
+import ua.axiom.controller.ThymeleafController;
+import ua.axiom.service.error.exceptions.IllegalDataFormatException;
+import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
+import ua.axiom.model.*;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.appservice.ClientService;
 import ua.axiom.service.appservice.DiscountService;
 import ua.axiom.service.appservice.OrderService;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
-@RequestMapping("/api/neworder")
+@RequestMapping("/api/neworder/**")
 //  todo extends thymeleaf
-public class NewOrderController {
+public class NewOrderController extends ThymeleafController<Client> {
+
     private LocalisationService localisationService;
-    private GuiService guiService;
 
     private OrderService orderService;
     private ClientService clientService;
     private DiscountService discountService;
+
+    private Discount discountToUse;
 
     @Autowired
     public NewOrderController(
             LocalisationService localisationService,
             OrderService orderService,
             DiscountService discountService,
-            ClientService clientService,
-            GuiService guiService
+            ClientService clientService
     ) {
         this.localisationService = localisationService;
-        this.guiService = guiService;
 
         this.orderService = orderService;
         this.clientService = clientService;
         this.discountService = discountService;
     }
 
-    @RequestMapping
-    public ModelAndView orderRequest() {
-        Map<String, Object> model = new HashMap<>();
-
-        Long id = ((Client) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
-        Client user = clientService.findById(id).get();
-
-        fillUserSpecificContent(model, user);
-        fillLocalisedContent(model, user.getLocale());
-        guiService.populateModelWithNavbarData(model);
-
-        return new ModelAndView("/appPages/neworder", model);
-    }
-
-    @PostMapping(name = "new-order")
+    @PostMapping("/order")
     public String postNewOrder(
             @RequestParam String departure,
             @RequestParam String destination,
             @RequestParam String aClass
     ) throws NotEnoughMoneyException, IllegalDataFormatException {
-        Map<String, Object> model = new HashMap<>();
 
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        Client client = clientService.findById(clientID).get();
 
-        if (!departure.matches(localisationService.getRegex("location", client.getLocale())) ||
-                !destination.matches(localisationService.getRegex("location", client.getLocale()))) {
-            throw new IllegalDataFormatException();
+        if (!departure.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale()))) ||
+                !destination.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale())))) {
+            throw new IllegalDataFormatException(localisationService);
         }
+
+        Client client = clientService.findById(clientID).get();
 
         Order newOrder = Order.builder()
                 .date(new Date())
@@ -92,51 +76,47 @@ public class NewOrderController {
 
         orderService.processNewOrder(newOrder);
 
-        fillUserSpecificContent(model, client);
-        fillLocalisedContent(model, client.getLocale());
-        guiService.populateModelWithNavbarData(model);
-
-        return "/appPages/neworder";
+        return "redirect:/clientpage";
     }
 
-    private void fillUserSpecificContent(Map<String, Object> model, Client client) {
-        model.put("new-order-details", Order.getOrderInputDescriptions());
-        model.put("car-classes", Car.Class.values());
-        model.put("client-balance", client.getMoney());
-        model.put("username", client.getUsername());
-        model.put("current-locale", client.getLocale());
-        model.put("promos-list", discountService.getAllDiscountsForClient(client));
+    @PostMapping("/discount")
+    public String discountPost(@RequestParam long discountID) {
+        //  todo if already use discount
+        this.discountToUse = discountService.findOne(discountID);
 
+        return "redirect:/clientpage";
     }
 
-    private void fillLocalisedContent(Map<String, Object> model, UserLocale locale) {
-        localisationService.setLocalisedMessages(
-                model,
-                locale,
-                "sentence.new-order-page-desc",
-                "word.class",
-                "word.from",
-                "word.to",
-                "sentence.new-order-page-desc",
-                "sentence.new-order-request-msg"
-        );
+
+    @Override
+    protected ModelAndView formResponse(Model model) {
+        return new ModelAndView("appPages/neworder", model.asMap());
     }
+
+    @Override
+    protected void fillUserSpecificData(Model model, Client client) {
+        model.addAttribute("new_order_details", Order.getOrderInputDescriptions());
+        model.addAttribute("car_classes", Car.Class.values());
+        model.addAttribute("client_balance", client.getMoney());
+        model.addAttribute("username", client.getUsername());
+        model.addAttribute("promos_list", discountService.getAllDiscountsForClient(client));
+    }
+
 
     @ExceptionHandler(NotEnoughMoneyException.class)
-    public ModelAndView notEnoughMoneyException() {
-        Map<String, Object> model = orderRequest().getModel();
+    public ModelAndView notEnoughMoneyException(NotEnoughMoneyException neme, Model model) {
 
-        model.put("error", "Not enough money!");
+        //  todo get simple message or put exception inside
+        model.addAttribute("error", neme.getShortMessage());
 
-        return new ModelAndView("/appPages/neworder", model);
+        return serveRequest(new ConcurrentModel(model));
     }
 
     @ExceptionHandler(IllegalDataFormatException.class)
-    public ModelAndView illegalInputHandler() {
-        Map<String, Object> model = orderRequest().getModel();
+    public ModelAndView illegalInputHandler(IllegalDataFormatException idfe, Model model) {
 
-        model.put("error", "Illegal input format");
+        model.addAttribute("error", "Illegal input format");
 
-        return new ModelAndView("/appPages/neworder", model);
+        return serveRequest(new ConcurrentModel(model));
     }
 }

@@ -45,7 +45,7 @@
             />
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <div th:each="locale : ${locales}">
-                    <form method="post" th:action="@{${#httpServletRequest.requestURI} + '?lang=' + ${locale.toUrlString()}}">
+                    <form method="post" th:action="@{${#httpServletRequest.requestURI} + '?lang=' + ${locale.toJavaLocale().toString()}}">
                         <input type="submit"
                                class="dropdown-item"
                                th:value="${locale}"

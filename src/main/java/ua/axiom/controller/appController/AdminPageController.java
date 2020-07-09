@@ -1,7 +1,6 @@
 package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MustacheController;
 import ua.axiom.model.Admin;
 import ua.axiom.model.UserLocale;
-import ua.axiom.repository.AdminRepository;
-import ua.axiom.repository.ClientRepository;
-import ua.axiom.repository.DriverRepository;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.appservice.AdminService;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
