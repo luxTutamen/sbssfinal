@@ -1,10 +1,7 @@
 package ua.axiom.controller.appController.index;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
@@ -13,20 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
-import ua.axiom.model.UserLocale;
-import ua.axiom.service.LocalisationService;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
 import java.util.function.Supplier;
 
 @Controller
 @RequestMapping("/")
 //  todo remove FailureHandler
-public class MainPageController extends MultiViewController implements AuthenticationFailureHandler {
+public class MainPageController extends MultiViewController {
 
     private static final Supplier<Boolean> ANONYMOUS_VIEW_PREDICATE =
             () -> SecurityContextHolder
@@ -46,15 +36,11 @@ public class MainPageController extends MultiViewController implements Authentic
                                                 || a.toString().equals("CLIENT")
                                                 || a.toString().equals("ADMIN"); });
 
-    private LocalisationService localisationService;
-
     @Autowired
     public MainPageController(
-            LocalisationService localisationService,
             AnonymousMainPageController anonymousMainPageController,
             AuthorisedMainPageController authorisedMainPageController
     ) {
-        this.localisationService = localisationService;
 
         addController(ANONYMOUS_VIEW_PREDICATE, anonymousMainPageController);
         addController(LOGGED_VIEW_PREDICATE, authorisedMainPageController);
@@ -68,7 +54,7 @@ public class MainPageController extends MultiViewController implements Authentic
         return super.getRequestMapping(model);
     }
 
-    //  todo move out
+/*    //  todo move out
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ModelAndView exceptionHandler() {
         Map<String, Object> model = super
@@ -86,15 +72,12 @@ public class MainPageController extends MultiViewController implements Authentic
         );
 
         return new ModelAndView("index/anonymous", model);
-    }
+    }*/
 
-    //  todo move out
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws
-            IOException,
-            ServletException {
-        response.sendRedirect("/?error=true");
+    @ExceptionHandler({NullPointerException.class})
+    public ModelAndView nullPointerExceptionErrorHandling(Model model) {
+        model.addAttribute("error", "Usr not found");
+
+        return super.getRequestMapping(model);
     }
 }
-
-//  todo error in ClientPage on pagination FIX

@@ -4,7 +4,6 @@ import ua.axiom.service.error.LightVerboseException;
 
 public class NotEnoughMoneyException extends LightVerboseException {
 
-
     public NotEnoughMoneyException() {
     }
 

@@ -11,6 +11,7 @@ import ua.axiom.model.Order;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSortingRepository<Order, Long> {
+
     List<Order> findByStatusAndClient(Order.Status status, Client client);
 
     List<Order> findByStatusAndClient(Pageable pageable, Order.Status status, Client client);

@@ -60,7 +60,7 @@ public class NewOrderController extends ThymeleafController<Client> {
 
         if (!departure.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale()))) ||
                 !destination.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale())))) {
-            throw new IllegalDataFormatException(localisationService);
+            throw new IllegalDataFormatException();
         }
 
         Client client = clientService.findById(clientID).get();
@@ -107,7 +107,7 @@ public class NewOrderController extends ThymeleafController<Client> {
     public ModelAndView notEnoughMoneyException(NotEnoughMoneyException neme, Model model) {
 
         //  todo get simple message or put exception inside
-        model.addAttribute("error", neme.getShortMessage());
+        model.addAttribute("error", neme.getShortMessage(localisationService));
 
         return serveRequest(new ConcurrentModel(model));
     }

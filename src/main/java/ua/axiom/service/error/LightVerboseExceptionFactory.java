@@ -7,6 +7,7 @@ import ua.axiom.service.LocalisationService;
 
 import java.util.function.Supplier;
 
+/*
 @Service
 public class LightVerboseExceptionFactory {
     private LocalisationService localisationService;
@@ -23,3 +24,4 @@ public class LightVerboseExceptionFactory {
         return exception;
     }
 }
+*/

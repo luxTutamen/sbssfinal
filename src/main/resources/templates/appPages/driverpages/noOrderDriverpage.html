@@ -58,9 +58,14 @@
             <div class="card-body">
                 <ul class="list-group">
                     <a class="list-group-item" th:text="#{sentence.your-cars}" />
-                    <a class="list-group-item" th:text="#{word.withdraw}" />
+                    <a class="list-group-item" th:text="#{word.withdraw}" href="driverpage/withdraw"/>
                     <a class="list-group-item" th:text="#{sentence.change-car}" href="/driver/newCar" />
                 </ul>
+                <div th:if="${error != null}">
+                    <div class="alert-danger">
+                        <span th:text="#{%{error}}"/>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card col-8">

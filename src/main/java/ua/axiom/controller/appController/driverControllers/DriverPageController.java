@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.service.error.exceptions.JustTakenException;
@@ -14,6 +12,7 @@ import ua.axiom.model.Driver;
 import ua.axiom.service.GuiService;
 import ua.axiom.service.appservice.DriverService;
 import ua.axiom.service.appservice.OrderService;
+import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 
 import java.util.Map;
 
@@ -61,8 +60,15 @@ public class DriverPageController extends MultiViewController {
     public String confirmationPost() {
 
         long driverId = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-
         orderService.confirmByDriver(driverId);
+
         return "redirect:/driverpage";
     }
+
+    @GetMapping("/withdraw")
+    public String withDrawController() throws NotEnoughMoneyException {
+        driverService.withdrawMoney(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        return "redirect:/" + "driverpage";
+    }
+
 }

@@ -1,26 +1,23 @@
 package ua.axiom.controller.apiController;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.service.error.LightVerboseExceptionFactory;
-import ua.axiom.service.error.exceptions.IllegalCredentialsException;
-import ua.axiom.service.error.exceptions.IllegalDataFormatException;
-import ua.axiom.service.error.exceptions.UserAlreadyPresentException;
 import ua.axiom.model.Role;
 import ua.axiom.model.User;
 import ua.axiom.model.UserFactory;
 import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.apiservice.RegisterService;
+import ua.axiom.service.error.LightVerboseException;
+import ua.axiom.service.error.exceptions.FormInputException;
+import ua.axiom.service.error.exceptions.GeneralRegisterException;
+import ua.axiom.service.error.exceptions.UserAlreadyPresentException;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,38 +25,35 @@ import java.util.stream.Collectors;
 @RequestMapping("/register")
 public class RegisterController {
     //  todo move out
-    private final String usernamePattern;
-    private final String passwordPattern;
+    private final String USERNAME_REGEX_PATTERN;
+    private final String PASSWORD_REGEX_PATTERN;
 
     private final Set<Role> registrableRoles;
 
     private RegisterService registerService;
     private PasswordEncoder passwordEncoder;
-    private LightVerboseExceptionFactory exceptionFactory;
     private LocalisationService localisationService;
 
     @Autowired
     public RegisterController(
             PasswordEncoder passwordEncoder,
             RegisterService registerService,
-            LightVerboseExceptionFactory exceptionFactory,
             LocalisationService localisationService
-            ) {
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.registerService = registerService;
-        this.exceptionFactory = exceptionFactory;
         this.localisationService = localisationService;
 
         registrableRoles = getRegisterAccessibleRoles();
 
-        usernamePattern = localisationService.getRegex("username", UserLocale.DEFAULT_LOCALE);
-        passwordPattern = localisationService.getRegex("password", UserLocale.DEFAULT_LOCALE);
+        USERNAME_REGEX_PATTERN = localisationService.getRegex("username", UserLocale.DEFAULT_LOCALE);
+        PASSWORD_REGEX_PATTERN = localisationService.getRegex("password", UserLocale.DEFAULT_LOCALE);
     }
 
     @GetMapping
-    protected ModelAndView formResponse(Map<String, Object> model) {
-        model.put("roles", getRegisterAccessibleRoles());
-        return new ModelAndView("appPages/register", model);
+    protected ModelAndView formResponse(Model model) {
+        model.addAttribute("roles", getRegisterAccessibleRoles());
+        return new ModelAndView("appPages/register", model.asMap());
     }
 
     @PostMapping
@@ -69,27 +63,14 @@ public class RegisterController {
             @RequestParam String login,
             @RequestParam Role role,
             @RequestParam UserLocale locale
-    ) throws IllegalDataFormatException, UserAlreadyPresentException {
+    ) throws LightVerboseException, UserAlreadyPresentException {
 
-        if(!registrableRoles.contains(role)) {
-            throw exceptionFactory.createLocalisedException(
-                    () -> new IllegalDataFormatException(localisationService),
-                    "errormsg.cannot-create-admin-account",
-                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
+        if (!registrableRoles.contains(role)) {
+            throw new GeneralRegisterException();
         }
 
-        if(!password.matches(passwordPattern)) {
-            throw exceptionFactory.createLocalisedException(
-                    () -> new IllegalDataFormatException(localisationService),
-                    "errormsg.password-not-matches-regex",
-                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
-        }
-
-        if(!login.matches(usernamePattern)) {
-            throw exceptionFactory.createLocalisedException(
-                    () -> new IllegalDataFormatException(localisationService),
-                    "errormsg.username-not-matches-regex",
-                    UserLocale.toUserLocale(LocaleContextHolder.getLocale()));
+        if (!password.matches(PASSWORD_REGEX_PATTERN) | !login.matches(USERNAME_REGEX_PATTERN)) {
+            throw new FormInputException();
         }
 
         User newUser = UserFactory.userFactory(login, passwordEncoder.encode(password), role, locale);
@@ -98,22 +79,16 @@ public class RegisterController {
         return "redirect:/";
     }
 
-    @ExceptionHandler({IllegalCredentialsException.class})
-    private ModelAndView handleException(IllegalCredentialsException exception, Model model) {
-
-        model.addAttribute("error", true);
-        model.addAttribute("error_msg", exception.getLocalizedMessage());
-
-        return formResponse(model.asMap());
+    @ExceptionHandler(FormInputException.class)
+    public ModelAndView exception(FormInputException exception, Model model) {
+        model.addAttribute("error", exception.getShortMessage(localisationService));
+        return formResponse(model);
     }
 
     @ExceptionHandler({UserAlreadyPresentException.class})
     private ModelAndView handleUserPresentException(UserAlreadyPresentException exception, Model model) {
-
-        model.addAttribute("error", true);
-        model.addAttribute("error_msg", exception.getLocalizedMessage());
-
-        return formResponse(model.asMap());
+        model.addAttribute("error", exception.getShortMessage(localisationService));
+        return formResponse(model);
     }
 
     private static Set<Role> getRegisterAccessibleRoles() {

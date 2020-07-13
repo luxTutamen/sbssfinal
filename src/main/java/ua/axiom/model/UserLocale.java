@@ -1,5 +1,7 @@
 package ua.axiom.model;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +34,10 @@ public enum UserLocale {
 
     public static UserLocale toUserLocale(Locale locale) {
         return localeToUserLocaleMap.get(locale);
+    }
+
+    public static UserLocale getContextLocale() {
+        return toUserLocale(LocaleContextHolder.getLocale());
     }
 
 

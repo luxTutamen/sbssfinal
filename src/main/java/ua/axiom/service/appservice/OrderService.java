@@ -3,6 +3,7 @@ package ua.axiom.service.appservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ua.axiom.model.Car;
 import ua.axiom.service.error.exceptions.JustTakenException;
 import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 import ua.axiom.model.Client;
@@ -46,6 +47,10 @@ public class OrderService {
 
     public long countByClientAndStatus(Client client, Order.Status status) {
         return orderRepository.countByClientAndStatus(client, status);
+    }
+
+    public List<Order> findByCClassAndStatus(Pageable pageable, Car.Class cclass, Order.Status status) {
+        return orderRepository.findByCClassAndStatus(cclass, status);
     }
 
     @Transactional(rollbackOn = {JustTakenException.class})
