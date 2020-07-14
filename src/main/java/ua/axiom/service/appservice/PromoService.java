@@ -32,7 +32,7 @@ public class PromoService {
         if(client.getLastDiscountGiven().getTime() < (currDate.getTime() - SECS_IN_WEEK)) {
             discountRepository.save(new Discount(
                     client,
-                    0.75F,
+                    75,
                     Discount.DiscountType.RANDOM
             ));
             client.setLastDiscountGiven(new Date());
@@ -42,7 +42,7 @@ public class PromoService {
         calendar2.setTimeInMillis(client.getBirthDate().getTime());
 
         if(!client.isReceivedBDayPromoToday() && calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)) {
-            discountRepository.save(new Discount(client, 0.5F, Discount.DiscountType.B_DAY));
+            discountRepository.save(new Discount(client, 50, Discount.DiscountType.B_DAY));
             client.setReceivedBDayPromoToday(true);
         }
 

@@ -3,14 +3,13 @@ package ua.axiom.model.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @Data
 public class RegisterFormDto {
-    @Pattern(regexp="{regex.password}")
+    @NotNull
     private String password;
 
-    @Pattern(regexp="{regex.login}")
+    @NotNull
     private String login;
 
     @NotNull

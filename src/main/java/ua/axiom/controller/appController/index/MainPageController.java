@@ -54,26 +54,6 @@ public class MainPageController extends MultiViewController {
         return super.getRequestMapping(model);
     }
 
-/*    //  todo move out
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ModelAndView exceptionHandler() {
-        Map<String, Object> model = super
-                .getRequestMapping(new ConcurrentModel())
-                .getModel();
-
-        model.put("error", true);
-        model.put("register-alert", true);
-
-        localisationService.setLocalisedMessages(
-                model,
-                UserLocale.DEFAULT_LOCALE,
-                "word.error",
-                "sentence.wrong-credential-msg"
-        );
-
-        return new ModelAndView("index/anonymous", model);
-    }*/
-
     @ExceptionHandler({NullPointerException.class})
     public ModelAndView nullPointerExceptionErrorHandling(Model model) {
         model.addAttribute("error", "Usr not found");

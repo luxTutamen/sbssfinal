@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ua.axiom.model.Client;
 import ua.axiom.service.apiservice.ReplenishMoneyService;
 
-//  todo add service
 @Controller
 @RequestMapping("/api/replenish")
 public class ReplenishMoneyController {

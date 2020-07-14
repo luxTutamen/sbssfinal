@@ -53,6 +53,9 @@ public class Order {
     @NotNull
     private String destination;
 
+    @OneToOne(targetEntity = Discount.class, fetch = FetchType.EAGER)
+    private Discount discount;
+
     private boolean confirmedByClient;
 
     private boolean confirmedByDriver;
@@ -75,5 +78,4 @@ public class Order {
             this.type = type;
         }
     }
-
 }

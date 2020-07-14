@@ -1,7 +1,6 @@
 package ua.axiom.controller;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -19,15 +18,17 @@ public abstract class MultiViewController {
 
     /**
      * Adds new controller
-     * @param useCase controller is used, if this is true
+     *
+     * @param useCase    controller is used, if this is true
      * @param controller the controller itself, consumes Model, so chains of an controllers can be used
      */
-    protected void addController(Supplier<Boolean> useCase,  Function<Model, ModelAndView> controller) {
+    protected void addController(Supplier<Boolean> useCase, Function<Model, ModelAndView> controller) {
         requestMapping.put(useCase, controller);
     }
 
     /**
      * Consumes model, and returns ModelAndView with data from Model and also data, provided by controller
+     *
      * @param model with data from previous controller
      * @return ModelAndView with data and pattern template
      */
@@ -38,6 +39,7 @@ public abstract class MultiViewController {
 
     /**
      * Gets one controller from "requestMapping", based on predicate
+     *
      * @return the only Controller, that fits the predicate requirements
      */
     private Function<Model, ModelAndView> getViewController() {

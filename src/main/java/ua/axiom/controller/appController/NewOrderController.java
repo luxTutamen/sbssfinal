@@ -1,7 +1,6 @@
 package ua.axiom.controller.appController;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
@@ -12,26 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.ThymeleafController;
-import ua.axiom.service.error.exceptions.IllegalDataFormatException;
-import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 import ua.axiom.model.*;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.appservice.ClientService;
 import ua.axiom.service.appservice.DiscountService;
 import ua.axiom.service.appservice.OrderService;
+import ua.axiom.service.error.exceptions.IllegalDataFormatException;
+import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 
 import java.util.Date;
 
 @Controller
 @RequestMapping("/api/neworder/**")
-//  todo extends thymeleaf
 public class NewOrderController extends ThymeleafController<Client> {
-
-    private LocalisationService localisationService;
 
     private OrderService orderService;
     private ClientService clientService;
     private DiscountService discountService;
+
+    private LocalisationService localisationService;
 
     private Discount discountToUse;
 
@@ -58,8 +56,8 @@ public class NewOrderController extends ThymeleafController<Client> {
 
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
-        if (!departure.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale()))) ||
-                !destination.matches(localisationService.getRegex("location", UserLocale.toUserLocale(LocaleContextHolder.getLocale())))) {
+        if (!departure.matches(localisationService.getRegex("location", UserLocale.getContextLocale())) ||
+                !destination.matches(localisationService.getRegex("location", UserLocale.getContextLocale()))) {
             throw new IllegalDataFormatException();
         }
 
@@ -70,6 +68,7 @@ public class NewOrderController extends ThymeleafController<Client> {
                 .departure(departure)
                 .destination(destination)
                 .client(client)
+                .discount(discountToUse)
                 .status(Order.Status.PENDING)
                 .cClass(Car.Class.valueOf(aClass))
                 .build();
@@ -81,12 +80,10 @@ public class NewOrderController extends ThymeleafController<Client> {
 
     @PostMapping("/discount")
     public String discountPost(@RequestParam long discountID) {
-        //  todo if already use discount
-        this.discountToUse = discountService.findOne(discountID);
 
+        this.discountToUse = discountService.findOne(discountID);
         return "redirect:/clientpage";
     }
-
 
     @Override
     protected ModelAndView formResponse(Model model) {
@@ -102,20 +99,10 @@ public class NewOrderController extends ThymeleafController<Client> {
         model.addAttribute("promos_list", discountService.getAllDiscountsForClient(client));
     }
 
-
-    @ExceptionHandler(NotEnoughMoneyException.class)
+    @ExceptionHandler({NotEnoughMoneyException.class, IllegalDataFormatException.class})
     public ModelAndView notEnoughMoneyException(NotEnoughMoneyException neme, Model model) {
 
-        //  todo get simple message or put exception inside
         model.addAttribute("error", neme.getShortMessage(localisationService));
-
-        return serveRequest(new ConcurrentModel(model));
-    }
-
-    @ExceptionHandler(IllegalDataFormatException.class)
-    public ModelAndView illegalInputHandler(IllegalDataFormatException idfe, Model model) {
-
-        model.addAttribute("error", "Illegal input format");
 
         return serveRequest(new ConcurrentModel(model));
     }

@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
-    //  todo move out
     private final String USERNAME_REGEX_PATTERN;
     private final String PASSWORD_REGEX_PATTERN;
 

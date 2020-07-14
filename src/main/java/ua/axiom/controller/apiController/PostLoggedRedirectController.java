@@ -9,7 +9,6 @@ import ua.axiom.PostLoggedRedirectConfiguration;
 import java.util.Collection;
 import java.util.Map;
 
-
 /**
  * Redirects newly logged users according to their role
  */

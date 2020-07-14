@@ -42,8 +42,7 @@ public class LocalizationConfig implements WebMvcConfigurer {
 
     @Bean
     public LocalisationDataInterceptor localisationDataInterceptor() {
-        LocalisationDataInterceptor dataInterceptor = new LocalisationDataInterceptor(localeResolver());
-        return dataInterceptor;
+        return new LocalisationDataInterceptor(localeResolver());
     }
 
     @Bean

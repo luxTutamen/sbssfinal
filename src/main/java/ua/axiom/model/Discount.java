@@ -5,28 +5,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Discount {
-    public Discount(Client client, float v, DiscountType random) {
-        this.client = client;
-        this.multiplier = v;
-        this.type = random;
-    }
-
     public enum DiscountType{B_DAY, RANDOM}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    private int discountPercentage;
+
+    private DiscountType type;
+
     @ManyToOne
     private Client client;
 
-    private float multiplier;
+    public Discount(Client client, int discountPercentage, DiscountType random) {
+        this.client = client;
+        this.discountPercentage = discountPercentage;
+        this.type = random;
+    }
 
-    private DiscountType type;
+    public BigDecimal getMultiplier() {
+        return new BigDecimal(discountPercentage / 100.F);
+    }
+
 }

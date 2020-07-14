@@ -19,6 +19,7 @@ import java.util.function.Function;
  * @param <T>
  */
 @Service
+@Deprecated
 public abstract class MustacheController <T extends User> implements Function<Model, ModelAndView> {
 
     @Autowired

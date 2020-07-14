@@ -44,25 +44,34 @@
             <div class="card">
                 <div class="card-header">
                     <p>clients </p>
-                    <form action="/adminpage/prevpage" method="post">
-                        <button class="btn btn-light" type="submit" name="what" value="clientPage">prev clientPage</button>
-                    </form>
-                    <form action="/adminpage/nextpage" method="post">ce
-                        <button class="btn btn-light" type="submit" name="what" value="clientPage">next clientPage</button>
-                    </form>
-                    <label class="col-1" th:text="Page: #{clientPage}"/>
+                    <div class="row">
+                        <form action="/adminpage/prevpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="CLIENT">Previous page</button>
+                        </form>
+                        <form action="/adminpage/nextpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="CLIENT">Next page</button>
+                        </form>
+                    </div>
+                    <div>
+                        <span>Page: </span>
+                        <span th:text="${clientPage}"/>
+                    </div>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        <span th:text="#{clients_list}"/>
-                        <li class="list-group-item">
-                            <p th:text="name: #{username}"></p>
-                            <p>balance: {{money}}</p>
-                            <form method="post" action="adminpage/ban">
-                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
-                            </form>
-                        </li>
-                        {{/clients-list}}
+                        <div th:each="client : ${clients_list}">
+                            <li class="list-group-item">
+                                <span>
+                                    <label>name: </label>
+                                    <label th:text="${client.username}"/>
+                                    <label>Balance: </label>
+                                    <label th:text="${client.getMoney()}"></label>
+                                </span>
+                                <form method="post" action="adminpage/ban">
+                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${client.id}>ban</button>
+                                </form>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -72,25 +81,34 @@
             <div class="card">
                 <div class="card-header">
                     <p>drivers</p>
-                    <form action="/adminpage/prevpage" method="post">
-                        <button class="btn btn-light" type="submit" name="what" value="driverPage">prev driverPage</button>
-                    </form>
-                    <form action="/adminpage/nextpage" method="post">
-                        <button class="btn btn-light" type="submit" name="what" value="driverPage">next driverPage</button>
-                    </form>
-                    <label class="col-1">Page: {{driverPage}}</label>
+                    <div class="row">
+                        <form action="/adminpage/prevpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="DRIVER">Previous page</button>
+                        </form>
+                        <form action="/adminpage/nextpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="DRIVER">Next page</button>
+                        </form>
+                    </div>
+                    <div>
+                        <span>Page: </span>
+                        <span th:text="${driverPage}"/>
+                    </div>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        {{#drivers-list}}
-                        <li class="list-group-item">
-                            <p>name: {{username}}</p>
-                            <p>balance: {{balance}}</p>
-                            <form method="post" action="adminpage/ban">
-                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
-                            </form>
-                        </li>
-                        {{/drivers-list}}
+                        <div th:each="driver : ${drivers_list}">
+                            <li class="list-group-item">
+                                <span>
+                                    <label>name: </label>
+                                    <label th:text="${driver.username}"/>
+                                    <label>Balance: </label>
+                                    <label th:text="${driver.getBalance()}"></label>
+                                </span>
+                                <form method="post" action="adminpage/ban">
+                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${driver.id}>ban</button>
+                                </form>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -100,24 +118,32 @@
             <div class="card">
                 <div class="card-header">
                     <p>admins</p>
-                    <form action="/adminpage/prevpage" method="post">
-                        <button class="btn btn-light" type="submit" name="what" value="adminPage">prev adminPage</button>
-                    </form>
-                    <form action="/adminpage/nextpage" method="post">
-                        <button class="btn btn-light" type="submit" name="what" value="adminPage">next adminPage</button>
-                    </form>
-                    <label class="col-1">Page: {{adminPage}}</label>
+                    <div class="row">
+                        <form action="/adminpage/prevpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="ADMIN">Previous page</button>
+                        </form>
+                        <form action="/adminpage/nextpage" method="post">
+                            <button class="btn btn-light" type="submit" name="role" value="ADMIN">Next page</button>
+                        </form>
+                    </div>
+                    <div>
+                        <span>Page: </span>
+                        <span th:text="${adminPage}"/>
+                    </div>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                        {{#admins-list}}
-                        <li class="list-group-item">
-                            <p>name: {{username}}</p>
-                            <form method="post" action="adminpage/ban">
-                                <button class="btm btn-danger" type="submit" name="bannedId" value={{id}}>ban</button>
-                            </form>
-                        </li>
-                        {{/admins-list}}
+                        <div th:each="admin : ${admins_list}">
+                            <li class="list-group-item">
+                                <span>
+                                    <label>name: </label>
+                                    <label th:text="${admin.username}"/>
+                                </span>
+                                <form method="post" action="adminpage/ban">
+                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${admin.id}>ban</button>
+                                </form>
+                            </li>
+                        </div>
                     </ul>
                 </div>
             </div>
