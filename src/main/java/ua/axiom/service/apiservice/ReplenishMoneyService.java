@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.axiom.model.Client;
 import ua.axiom.repository.ClientRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Service
@@ -16,6 +17,7 @@ public class ReplenishMoneyService {
         this.clientRepository = clientRepository;
     }
 
+    @Transactional
     public void replenish(long id) {
         Client client = clientRepository.getOne(id);
         client.setMoney(client.getMoney().add(new BigDecimal("1000.00")));

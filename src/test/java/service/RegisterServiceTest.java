@@ -58,7 +58,8 @@ public class RegisterServiceTest {
             Assert.fail();
         }
 
-        verify(userRepository, times(1));
+        verify(userRepository, times(1)).exists(any());
+        verify(userRepository, times(1)).save(any());
 
     }
 
@@ -74,5 +75,4 @@ public class RegisterServiceTest {
         registerServices.registerNewUser(formDto);
         registerServices.registerNewUser(formDto);
     }
-
 }
