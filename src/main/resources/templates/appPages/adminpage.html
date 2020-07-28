@@ -68,7 +68,10 @@
                                     <label th:text="${client.getMoney()}"></label>
                                 </span>
                                 <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${client.id}>ban</button>
+                                    <button class="btn btn-danger" type="submit" name="bannedId" th:value=${client.id}>ban</button>
+                                </form>
+                                <form action="/adminpage/promote" method="post">
+                                    <button class="btn btn-alert" type="submit" name="promotedId" th:value="${client.id}">promote</button>
                                 </form>
                             </li>
                         </div>
@@ -105,7 +108,10 @@
                                     <label th:text="${driver.getBalance()}"></label>
                                 </span>
                                 <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${driver.id}>ban</button>
+                                    <button class="btn btn-danger" type="submit" name="bannedId" th:value=${driver.id}>ban</button>
+                                </form>
+                                <form action="/adminpage/promote" method="post">
+                                    <button class="btn btn-alert" type="submit" name="promotedId" th:value="${driver.id}">promote</button>
                                 </form>
                             </li>
                         </div>
@@ -140,7 +146,7 @@
                                     <label th:text="${admin.username}"/>
                                 </span>
                                 <form method="post" action="adminpage/ban">
-                                    <button class="btm btn-danger" type="submit" name="bannedId" th:value=${admin.id}>ban</button>
+                                    <button class="btn btn-danger" type="submit" name="bannedId" th:value=${admin.id}>ban</button>
                                 </form>
                             </li>
                         </div>

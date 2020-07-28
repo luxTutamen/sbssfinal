@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Discount {
@@ -24,10 +25,10 @@ public class Discount {
     @ManyToOne
     private Client client;
 
-    public Discount(Client client, int discountPercentage, DiscountType random) {
+    public Discount(Client client, int discountPercentage, DiscountType discountType) {
         this.client = client;
         this.discountPercentage = discountPercentage;
-        this.type = random;
+        this.type = discountType;
     }
 
     public BigDecimal getMultiplier() {

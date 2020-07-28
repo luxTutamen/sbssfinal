@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import ua.axiom.controller.MustacheController;
 import ua.axiom.controller.ThymeleafController;
 import ua.axiom.model.Admin;
 import ua.axiom.model.Role;
-import ua.axiom.model.UserLocale;
-import ua.axiom.service.GuiService;
 import ua.axiom.service.appservice.AdminService;
 
 import java.util.HashMap;
@@ -22,17 +19,14 @@ import java.util.Map;
 @RequestMapping("/adminpage")
 public class AdminPageController extends ThymeleafController<Admin> {
 
-    private GuiService guiService;
     private AdminService adminService;
 
     private Map<Role, Integer> pageInfo = new HashMap<>();
 
     @Autowired
     public AdminPageController(
-            AdminService adminService,
-            GuiService guiService
+            AdminService adminService
     ) {
-        this.guiService = guiService;
         this.adminService = adminService;
 
         for (Role role : Role.values()) {
@@ -41,8 +35,8 @@ public class AdminPageController extends ThymeleafController<Admin> {
     }
 
     @Override
-    protected ModelAndView formResponse(Model model) {
-        model.addAttribute("clientPage",  pageInfo.get(Role.CLIENT) + 1);
+    public ModelAndView formResponse(Model model) {
+        model.addAttribute("clientPage", pageInfo.get(Role.CLIENT) + 1);
         model.addAttribute("driverPage", pageInfo.get(Role.DRIVER) + 1);
         model.addAttribute("adminPage", pageInfo.get(Role.ADMIN) + 1);
 
@@ -54,11 +48,19 @@ public class AdminPageController extends ThymeleafController<Admin> {
     }
 
     @Override
-    public void fillUserSpecificData(Model model, Admin user) { }
+    public void fillUserSpecificData(Model model, Admin user) {
+    }
 
     @PostMapping("/ban")
-    protected String banController(@RequestParam long idToBan) {
+    public String banController(@RequestParam long idToBan) {
         //  todo ban
+        return "redirect:/adminpage";
+    }
+
+    @PostMapping("/promote")
+    public String promoteController(@RequestParam long promoteId) {
+        adminService.promoteUser(promoteId);
+
         return "redirect:/adminpage";
     }
 
@@ -66,7 +68,7 @@ public class AdminPageController extends ThymeleafController<Admin> {
     public String prevPaginationPage(@RequestParam Role role) {
         Integer currentPage = pageInfo.get(role);
 
-        if(currentPage <= 0) {
+        if (currentPage <= 0) {
             return "redirect:/adminpage";
         }
 

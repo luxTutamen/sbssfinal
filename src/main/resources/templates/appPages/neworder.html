@@ -78,13 +78,16 @@
             <div class="card col-8">
                 <div th:each="promo : ${promos_list}">
                     <div class="card text-white bg-primary">
-                        <div class="card-header">Discount - <div th:text="${promo.multiplier}"/> percent off!</div>
+                        <div class="card-header">
+                            <span th:text="#{word.discount}"/>
+                            <span> - </span>
+                            <span th:text="${promo.getDiscountPercentage()}"/>
+                            <span> %</span>
+                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <form action="/api/neworder/discount">
-                                    <button class="btn btn-secondary" type="submit" th:value="${promo.id}" name="discountId">
-                                        Use
-                                    </button>
+                                    <button class="btn btn-secondary" type="submit" th:value="${promo.getId()}" name="discountId" th:text="#{word.use}"/>
                                 </form>
                             </div>
                         </div>

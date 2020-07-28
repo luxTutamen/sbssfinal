@@ -3,11 +3,14 @@ package ua.axiom.service.appservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import ua.axiom.model.*;
+import ua.axiom.model.Admin;
+import ua.axiom.model.Client;
+import ua.axiom.model.Driver;
+import ua.axiom.model.User;
 import ua.axiom.repository.AdminRepository;
 import ua.axiom.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -45,11 +48,26 @@ public class AdminService {
         return adminRepository.findAll(PageRequest.of(page, size)).getContent();
     }
 
+    @Transactional
     public void banUser(long userId) {
         User user = userRepository.findById(userId).get();
 
         user.setBanned(true);
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void promoteUser(long userId) {
+        User user = userRepository.findById(userId).get();
+
+        Admin newAdmin = new Admin();
+        newAdmin.setId(user.getId());
+        newAdmin.setUsername(user.getUsername());
+        newAdmin.setPassword(user.getPassword());
+
+        userRepository.delete(user);
+
+        adminRepository.save(newAdmin);
     }
 }

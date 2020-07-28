@@ -1,7 +1,9 @@
 package ua.axiom.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -9,13 +11,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Data
+@SuperBuilder
 @Entity
 @Table(name = "ADMINS")
-@NoArgsConstructor
 public class Admin extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    public Admin() {}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

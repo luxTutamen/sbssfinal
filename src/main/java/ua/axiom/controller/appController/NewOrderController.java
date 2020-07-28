@@ -96,14 +96,12 @@ public class NewOrderController extends ThymeleafController<Client> {
         model.addAttribute("car_classes", Car.Class.values());
         model.addAttribute("client_balance", client.getMoney());
         model.addAttribute("username", client.getUsername());
-        model.addAttribute("promos_list", discountService.getAllDiscountsForClient(client));
+        model.addAttribute("promos_list", discountService.getSomeDiscountsForClient(client));
     }
 
     @ExceptionHandler({NotEnoughMoneyException.class, IllegalDataFormatException.class})
     public ModelAndView notEnoughMoneyException(NotEnoughMoneyException neme, Model model) {
 
-        model.addAttribute("error", neme.getShortMessage(localisationService));
-
-        return serveRequest(new ConcurrentModel(model));
+        return serveRequest(new ConcurrentModel(model), neme.getShortMessage(localisationService));
     }
 }

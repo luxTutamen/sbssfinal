@@ -2,6 +2,7 @@ package ua.axiom.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,6 +14,7 @@ import java.util.Collections;
 
 @Data
 @Entity
+@SuperBuilder
 @NoArgsConstructor
 @Table(name = "DRIVERS")
 public class Driver extends User {

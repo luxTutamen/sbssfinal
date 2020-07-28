@@ -1,17 +1,15 @@
 package ua.axiom.controller.apiController;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.thymeleaf.exceptions.TemplateInputException;
 
-@Controller
-@RequestMapping("/error")
+@ControllerAdvice
 public class ErrorController {
 
-    @GetMapping
+    @ExceptionHandler({Throwable.class, TemplateInputException.class})
     public String formResponse() {
-        return "apiPages/error";
+        return "redirect/:405";
     }
-
 
 }

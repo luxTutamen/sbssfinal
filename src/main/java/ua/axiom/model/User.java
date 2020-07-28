@@ -1,12 +1,17 @@
 package ua.axiom.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@SuperBuilder
+@AllArgsConstructor
 @Table(name = "UUSERS")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User implements UserDetails {
@@ -26,6 +31,8 @@ public abstract class User implements UserDetails {
     private boolean isBanned;
 
     protected abstract void setNotNullableFields(Object ... data);
+
+    public User() {}
 
     @Override
     public String getPassword() {

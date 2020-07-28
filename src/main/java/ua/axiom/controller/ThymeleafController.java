@@ -3,6 +3,7 @@ package ua.axiom.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.model.User;
@@ -16,7 +17,7 @@ public abstract class ThymeleafController <T extends User> implements Function<M
 
     @Override
     public final ModelAndView apply(Model model) {
-        return serveRequest(model);
+        return serveRequest(model, null);
     }
 
     /**
@@ -47,16 +48,23 @@ public abstract class ThymeleafController <T extends User> implements Function<M
      */
     protected abstract void fillUserSpecificData(Model model, @Nullable T user);
 
+    protected void fillErrorData(Model model, String error) {
+        model.addAttribute("error", error);
+    }
+
     /**
      * processes request.  Containing class must be annotated with @RequestMapping with specific URI!
      * @param model to put data into
      * @return ModelAndView with model, filled with localised data, and View as a specific Mustache template path
      */
     @RequestMapping
-    public final ModelAndView serveRequest(Model model) {
+    public final ModelAndView serveRequest(Model model, @PathVariable(required = false) String e) {
         T user = getPersistedUser();
 
         fillUserSpecificData(model, user);
+        if(e != null && !e.equals("null")) {
+            fillErrorData(model, e);
+        }
         processRequest(user);
 
         return formResponse(model);

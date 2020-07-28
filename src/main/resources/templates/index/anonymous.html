@@ -81,11 +81,9 @@
                         <br>
 
                         <!-- todo register-alert logout-alert : alert-danger, alert-warning  -->
-                        <span class="alert alert-danger" th:each="alert : ${alerts}">
-                            <div class="alert alert-danger" role="alert">
-                                This is a danger alert—check it out!
-                            </div>
-                        </span>
+                        <div th:if="${error != null && error != false}">
+                            <div class="alert alert-danger" role="alert" th:text="#{error.general-error-msg}"/>
+                        </div>
                     </div>
                 </div>
             </div>

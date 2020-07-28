@@ -40,7 +40,7 @@ public class AnonymousMainPageController extends ThymeleafController<User> {
         return null;
     }
 
-    @ExceptionHandler(IllegalDataFormatException.class)
+    /*@ExceptionHandler(IllegalDataFormatException.class)
     public ModelAndView exception(Model model) {
         model.addAttribute("error", localisationService.getLocalisedMessage( "sentence.wrong-credentials", UserLocale.DEFAULT_LOCALE));
         return super.serveRequest(model);
@@ -50,6 +50,6 @@ public class AnonymousMainPageController extends ThymeleafController<User> {
     public ModelAndView authExceptionController(Model model) {
         model.addAttribute("error", "wrong credentials");
         return super.serveRequest(model);
-    }
+    }*/
 
 }

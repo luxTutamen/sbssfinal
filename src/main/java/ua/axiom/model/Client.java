@@ -3,6 +3,7 @@ package ua.axiom.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 
 @Data
 @Entity
+@SuperBuilder
 @Table(name = "CLIENTS")
 @NoArgsConstructor
 @AllArgsConstructor
