@@ -18,14 +18,14 @@ public class TestModelEntitiesCreator {
     public final static long ORDER_ID = 5L;
     public final static long DISCOUNT_ID = 6L;
 
-    public final static String DEFAULT_PASSWORD = "1234567890as";
-    public final static String DEFAULT_CAR_MODEL = "DefaultCarModel";
-    public final static BigDecimal DEFAULT_MONEY = new BigDecimal("5000.00");
+    public static final String DEFAULT_PASSWORD = "1234567890as";
+    public static final  String DEFAULT_CAR_MODEL = "DefaultCarModel";
+    public static final  BigDecimal DEFAULT_MONEY = new BigDecimal("5000.00");
     public static final String DEFAULT_DEPARTURE = "Kyiv";
     public static final String DEFAULT_DESTINATION = "Mykolaiv";
     public static final String DEFAULT_ORDER_PRICE = "766.00";
 
-    static Admin getAdmin() {
+    public static Admin getAdmin() {
         return Admin.builder()
                 .id(ADMIN_ID)
                 .username(getUsername(Admin.class))
@@ -35,7 +35,7 @@ public class TestModelEntitiesCreator {
                 .build();
     }
 
-    static List<Admin> getAdminList() {
+    public static List<Admin> getAdminList() {
         return Collections.singletonList(getAdmin());
     }
 

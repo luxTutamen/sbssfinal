@@ -1,27 +1,26 @@
-package ua.axiom.testing;
+package ua.axiom.testing.answers;
 
 import org.mockito.ArgumentMatcher;
 import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import ua.axiom.model.*;
 import ua.axiom.repository.*;
-import ua.axiom.service.error.exceptions.UnsupportedOperationOnMockObjectAnswer;
-import ua.axiom.testing.answers.DatabaseSaveAnswer;
+import ua.axiom.testing.DatabaseSaveAnswer;
 
-import java.io.Serializable;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
+import static ua.axiom.testing.TestModelEntitiesCreator.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.longThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static ua.axiom.testing.TestModelEntitiesCreator.*;
 
 
 @TestConfiguration
 public class RepositoryMocksProvider {
 
+    @Bean
     public static AdminRepository getAdminRepositoryMock() {
         AdminRepository repository = mock(AdminRepository.class);
 
@@ -38,8 +37,9 @@ public class RepositoryMocksProvider {
         return repository;
     }
 
+    @Bean
     public static CarRepository getCarRepositoryMock() {
-        CarRepository repository = mock(CarRepository.class, new UnsupportedOperationOnMockObjectAnswer());
+        CarRepository repository = mock(CarRepository.class);
 
         ArgumentMatcher<Long> carExistsByIdMatcher = i -> i == CAR_ID;
         Answer<Car> statefulRepositoryMockAnswer = new DatabaseSaveAnswer<>(new HashSet<>(getCarList()), Car::getModelName);
@@ -55,6 +55,7 @@ public class RepositoryMocksProvider {
 
     }
 
+    @Bean
     public static ClientRepository getClientRepositoryMock() {
         ClientRepository repository = mock(ClientRepository.class);
 
@@ -71,6 +72,7 @@ public class RepositoryMocksProvider {
         return repository;
     }
 
+    @Bean
     public static DiscountRepository getDiscountRepositoryMock() {
         //  DiscountRepository repository = mock(DiscountRepository.class, new UnsupportedOperationOnMockObjectAnswer());
         DiscountRepository repository = mock(DiscountRepository.class);
@@ -89,6 +91,7 @@ public class RepositoryMocksProvider {
 
     }
 
+    @Bean
     public static DriverRepository getDriverRepositoryMock() {
         DriverRepository repository = mock(DriverRepository.class);
 
@@ -105,8 +108,9 @@ public class RepositoryMocksProvider {
         return repository;
     }
 
+    @Bean
     public static OrderRepository getOrderRepositoryMock() {
-        OrderRepository repository = mock(OrderRepository.class, new UnsupportedOperationOnMockObjectAnswer());
+        OrderRepository repository = mock(OrderRepository.class);
 
         ArgumentMatcher<Long> discountExistsByIdMatcher = i -> i == DRIVER_ID;
         Answer<Order> statefulRepositoryMockAnswer = new DatabaseSaveAnswer<>(new HashSet<>(getOrdersList()), Order::getId);
@@ -121,6 +125,7 @@ public class RepositoryMocksProvider {
         return repository;
     }
 
+    @Bean
     public static UserRepository getUserRepositoryMock() {
         UserRepository repository = mock(UserRepository.class);
 

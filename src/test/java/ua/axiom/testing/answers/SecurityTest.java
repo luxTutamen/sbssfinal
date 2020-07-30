@@ -1,4 +1,4 @@
-package ua.axiom.testing;
+package ua.axiom.testing.answers;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package service;
+package ua.axiom.testing.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,17 +16,16 @@ import ua.axiom.model.UserLocale;
 import ua.axiom.model.dto.RegisterFormDto;
 import ua.axiom.repository.UserRepository;
 import ua.axiom.security.PasswordEncoderProvider;
+import ua.axiom.testing.DatabaseExistsAnswer;
+import ua.axiom.testing.DatabaseSaveAnswer;
 import ua.axiom.service.apiservice.RegisterService;
 import ua.axiom.service.error.exceptions.UserAlreadyPresentException;
-import ua.axiom.testing.answers.DatabaseExistsAnswer;
-import ua.axiom.testing.answers.DatabaseSaveAnswer;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static ua.axiom.testing.TestModelEntitiesCreator.*;
 import static org.mockito.Mockito.*;
-import static ua.axiom.testing.TestModelEntitiesCreator.DEFAULT_PASSWORD;
-import static ua.axiom.testing.TestModelEntitiesCreator.getUsername;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = PasswordEncoderProvider.class)

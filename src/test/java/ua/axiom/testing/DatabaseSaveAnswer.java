@@ -1,8 +1,7 @@
-package ua.axiom.testing.answers;
+package ua.axiom.testing;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.data.domain.Example;
 
 import java.util.Collections;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package service;
+package ua.axiom.testing.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import ua.axiom.service.apiservice.ReplenishMoneyService;
 
 import static org.mockito.ArgumentMatchers.longThat;
 import static org.mockito.Mockito.when;
-import static ua.axiom.testing.TestModelEntitiesCreator.getClient;
+import static ua.axiom.testing.TestModelEntitiesCreator.*;
 
 @RunWith(SpringRunner.class)
 public class ReplenishMoneyServiceTest {

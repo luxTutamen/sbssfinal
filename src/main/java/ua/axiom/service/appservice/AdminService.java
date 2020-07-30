@@ -15,13 +15,12 @@ import java.util.List;
 
 @Service
 public class AdminService {
-    //  todo move into service
+
     private ClientService clientService;
     private DriverService driverService;
     private AdminRepository adminRepository;
 
     private UserRepository userRepository;
-
 
     @Autowired
     public AdminService(

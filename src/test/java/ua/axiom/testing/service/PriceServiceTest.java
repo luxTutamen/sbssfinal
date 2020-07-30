@@ -1,4 +1,4 @@
-package service;
+package ua.axiom.testing.service;
 
 import org.junit.Assert;
 import org.junit.Test;

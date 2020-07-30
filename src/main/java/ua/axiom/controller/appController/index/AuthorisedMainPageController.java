@@ -8,7 +8,6 @@ import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
 import ua.axiom.service.LocalisationService;
 
-import java.util.Locale;
 import java.util.Map;
 
 @Service

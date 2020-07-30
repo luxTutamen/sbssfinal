@@ -19,7 +19,7 @@ public class Admin extends User {
     public Admin() {}
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return Collections.singletonList(Role.ADMIN);
     }
 

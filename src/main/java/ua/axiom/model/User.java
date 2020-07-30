@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Data
 @Entity
@@ -63,4 +65,7 @@ public abstract class User implements UserDetails {
     public boolean isEnabled() {
         return !isBanned;
     }
+
+    @Override
+    public abstract Collection<Role> getAuthorities();
 }

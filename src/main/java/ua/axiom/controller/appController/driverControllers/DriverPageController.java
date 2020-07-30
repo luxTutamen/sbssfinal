@@ -55,7 +55,7 @@ public class DriverPageController extends MultiViewController {
         return "redirect:/driverpage";
     }
 
-    //  todo service
+    //  todo ua.axiom.service
     @PostMapping("/confirmation")
     public String confirmationPost() {
 

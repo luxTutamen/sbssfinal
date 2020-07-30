@@ -1,4 +1,4 @@
-package controller;
+package ua.axiom.testing.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,8 @@ import ua.axiom.service.error.LightVerboseException;
 import java.util.Collections;
 
 import static org.mockito.Mockito.verify;
-import static ua.axiom.testing.TestModelEntitiesCreator.DEFAULT_PASSWORD;
-import static ua.axiom.testing.TestModelEntitiesCreator.getUsername;
+import static ua.axiom.testing.TestModelEntitiesCreator.*;
+
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {PasswordEncoderProvider.class} )

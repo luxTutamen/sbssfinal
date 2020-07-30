@@ -30,7 +30,7 @@ public class Driver extends User {
     private BigDecimal balance;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return Collections.singletonList(Role.DRIVER);
     }
 

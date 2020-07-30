@@ -1,4 +1,4 @@
-package controller;
+package ua.axiom.testing.controller;
 
 import org.springframework.web.client.RestTemplate;
 

@@ -39,7 +39,7 @@ public class Client extends User {
     private boolean receivedBDayPromoToday;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<Role> getAuthorities() {
         return Collections.singletonList(Role.CLIENT);
     }
 
