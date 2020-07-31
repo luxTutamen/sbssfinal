@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .anyRequest().authenticated()
                 .and()
                     .formLogin()
-                        .loginProcessingUrl("/")
+                        .loginProcessingUrl("/login")
                         .passwordParameter("password")
                         .usernameParameter("login")
                         .successForwardUrl("/api/plrdr")

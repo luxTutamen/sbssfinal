@@ -33,7 +33,9 @@
             crossorigin="anonymous"></script>
 
 </head>
+
     <body th:fragment="locale-menu">
+        <!--<iframe name="dummyframe" id="dummyframe" style="display: none;"/>-->
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle"
                     type="button"
@@ -63,41 +65,44 @@
                 <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
                 <span th:text="#{word.company-name}"/>
             </a>
+
             <div class="col-10"></div>
-            <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
             <!--    language select -->
-            <div class="col-1" th:include="~{layout/header.html::locale-menu}">
+            <div class="col-1">
+                <div th:include="~{layout/header.html::locale-menu}"/>
             </div>
         </nav>
     </body>
 
 
     <body th:fragment="user-header">
-    <nav class="navbar navbar-dark bg-primary">
-        <a class="navbar-brand" th:href="@{/}">
-            <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
-            <span th:text="#{word.company-name}"/>
-        </a>
-        <div class="col-3" th:inline="text">
-            <span th:text="#{sentence.logged-as}"/>
-            <span th:text="${username}"/>
-        </div>
-        <div class="col-5"></div>
-        <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-        <!--    language select -->
-        <div class="col-1">
-            <div th:include="~{layout/header.html::locale-menu}"/>
-        </div>
-        <!--  logout    -->
-        <div class="col-1">
-            <form action="#" th:action="@{/logout}" method="POST">
-                <button class="btn btn-info" type="submit">
-                    <span th:text="#{word.logout}"/>
-                </button>
-            </form>
-        </div>
-    </nav>
+        <nav class="navbar navbar-dark bg-primary">
+            <a class="navbar-brand" th:href="@{/}">
+                <img src="./resources/logo.png" height="50px" class="d-inline-block align-top" alt="">
+                <span th:text="#{word.company-name}"/>
+            </a>
 
+            <div class="col-3" th:inline="text">
+                <span th:text="#{sentence.logged-as}"/>
+                <span th:text="${username}"/>
+            </div>
+
+            <div class="col-5"></div>
+
+            <!--    language select -->
+            <div class="col-1">
+                <div th:include="~{layout/header.html::locale-menu}"/>
+            </div>
+            <!--  logout    -->
+            <div class="col-1">
+                <form action="#" th:action="@{/logout}" method="POST">
+                    <button class="btn btn-info" type="submit">
+                        <span th:text="#{word.logout}"/>
+                    </button>
+                </form>
+            </div>
+        </nav>
     </body>
 
 </html>
