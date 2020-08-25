@@ -48,7 +48,7 @@ public class OrdersHistoryController extends MustacheController<Client> {
 
     @Override
     protected void fillLocalisedPageData(Map<String, Object> model, UserLocale userLocale) {
-        guiService.populateModelWithNavbarData(model);
+        //`guiService.populateModelWithNavbarData(model);
 
         localisationService.setLocalisedMessages(
                 model,

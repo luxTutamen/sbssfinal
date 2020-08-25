@@ -38,63 +38,65 @@
     <div th:include="~{layout/header.html::user-header}"/>
 
     <div class="container">
-        <div class="row">
-            <div class="card col-4" style="width: 18rem;">
-                <div class="card-header">
-                    <p><div th:text="#{sentence.new-order-request-msg}"/></p>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                    <form method="POST" action="/api/neworder/order" name="new_order">
-                        <li class="list-group-item">
-                            <input type="type" name="departure" th:placeholder="#{word.from}"/>
-                        </li>
-                        <li class="list-group-item">
-                            <input type="text" name="destination" th:placeholder="#{word.to}"/>
-                        </li>
-                        <li class="dropdown list-group-item pagination-centered">
-                            <label th:text="#{word.class}"/>
-                            <div th:each="cclass : ${car_classes}">
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="aClass" checked th:value="${cclass.toString()}" th:text="${cclass.toString()}"/>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item pagination-centered">
-                            <button type="submit" class="btn btn-primary" th:text="#{word.submit}"/>
-                        </li>
-                    </form>
-                        <div th:if="${error != null}">
+        <form method="POST" action="/api/neworder/order" name="new_order">
+            <div class="row">
+                <div class="card col-4" style="width: 18rem;">
+                    <div class="card-header">
+                        <p><div th:text="#{sentence.new-order-request-msg}"/></p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+
                             <li class="list-group-item">
-                                <div class="alert alert-danger" role="alert" th:text="${error}"/>
+                                <input type="type" name="departure" th:placeholder="#{word.from}"/>
                             </li>
-                        </div>
-                    </ul>
+                            <li class="list-group-item">
+                                <input type="text" name="destination" th:placeholder="#{word.to}"/>
+                            </li>
+                            <li class="dropdown list-group-item pagination-centered">
+                                <label th:text="#{word.class}"/>
+                                <div th:each="cclass : ${car_classes}">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="aClass" checked th:value="${cclass.toString()}" th:text="${cclass.toString()}"/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item pagination-centered">
+                                <button type="submit" class="btn btn-primary" th:text="#{word.submit}"/>
+                            </li>
+
+                            <div th:if="${error != null}">
+                                <li class="list-group-item">
+                                    <div class="alert alert-danger" role="alert" th:text="${error}"/>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <!--    right part of the screen, balance and orders    -->
-            <div class="card col-8">
-                <div th:each="promo : ${promos_list}">
-                    <div class="card text-white bg-primary">
-                        <div class="card-header">
-                            <span th:text="#{word.discount}"/>
-                            <span> - </span>
-                            <span th:text="${promo.getDiscountPercentage()}"/>
-                            <span> %</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <form action="/api/neworder/discount">
-                                    <button class="btn btn-secondary" type="submit" th:value="${promo.getId()}" name="discountId" th:text="#{word.use}"/>
-                                </form>
+                <!--    right part of the screen, balance and orders    -->
+                <div class="card col-8">
+                    <div th:each="promo : ${promos_list}">
+                        <div class="card text-white bg-primary">
+                            <div class="card-header">
+                                <span th:text="#{word.discount}"/>
+                                <span> - </span>
+                                <span th:text="${promo.getDiscountPercentage()}"/>
+                                <span> %</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+
+                                        <input type="radio" th:value="${promo.getId()}" name="discountId" th:text="#{word.use}"/>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 
 </body>

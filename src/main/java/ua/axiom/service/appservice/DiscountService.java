@@ -8,12 +8,13 @@ import ua.axiom.model.Discount;
 import ua.axiom.repository.DiscountRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DiscountService {
-    private DiscountRepository discountRepository;
+    private final DiscountRepository discountRepository;
 
-    private static PageRequest DISCOUNT_PAGE_REQUEST = PageRequest.of(0, 10);
+    private static final PageRequest DISCOUNT_PAGE_REQUEST = PageRequest.of(0, 5);
 
     @Autowired
     public DiscountService(DiscountRepository discountRepository) {

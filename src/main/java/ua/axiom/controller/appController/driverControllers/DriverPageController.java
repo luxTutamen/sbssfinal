@@ -41,7 +41,7 @@ public class DriverPageController extends MultiViewController {
 
     @RequestMapping
     public ModelAndView getDriverPage(Map<String, Object> model) {
-        guiService.populateModelWithNavbarData(model);
+        //  guiService.populateModelWithNavbarData(model);
 
         return super.getRequestMapping(new ConcurrentModel(model));
     }

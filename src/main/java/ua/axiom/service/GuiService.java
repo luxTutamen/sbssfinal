@@ -17,7 +17,7 @@ public class GuiService {
         this.localisationService = localisationService;
     }
 
-    public void populateModelWithNavbarData(Map<String, Object> model) {
+    /*public void populateModelWithNavbarData(Map<String, Object> model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         localisationService.setLocalisedMessages(
@@ -34,5 +34,5 @@ public class GuiService {
         model.put("username", user.getUsername());
         model.put("current-locale", user.getLocale());
         model.put("locales", UserLocale.values());
-    }
+    }*/
 }

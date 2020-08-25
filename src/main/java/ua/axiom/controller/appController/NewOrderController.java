@@ -20,6 +20,7 @@ import ua.axiom.service.error.exceptions.IllegalDataFormatException;
 import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/neworder/**")
@@ -30,8 +31,6 @@ public class NewOrderController extends ThymeleafController<Client> {
     private DiscountService discountService;
 
     private LocalisationService localisationService;
-
-    private Discount discountToUse;
 
     @Autowired
     public NewOrderController(
@@ -51,7 +50,8 @@ public class NewOrderController extends ThymeleafController<Client> {
     public String postNewOrder(
             @RequestParam String departure,
             @RequestParam String destination,
-            @RequestParam String aClass
+            @RequestParam String aClass,
+            @RequestParam Long discountId
     ) throws NotEnoughMoneyException, IllegalDataFormatException {
 
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
@@ -62,26 +62,20 @@ public class NewOrderController extends ThymeleafController<Client> {
         }
 
         Client client = clientService.findById(clientID).get();
+        Optional<Discount> discountToUse = discountId == null ? Optional.empty() : Optional.of(discountService.findOne(discountId));
 
         Order newOrder = Order.builder()
                 .date(new Date())
                 .departure(departure)
                 .destination(destination)
                 .client(client)
-                .discount(discountToUse)
+                .discount(discountToUse.get())
                 .status(Order.Status.PENDING)
                 .cClass(Car.Class.valueOf(aClass))
                 .build();
 
         orderService.processNewOrder(newOrder);
 
-        return "redirect:/clientpage";
-    }
-
-    @PostMapping("/discount")
-    public String discountPost(@RequestParam long discountID) {
-
-        this.discountToUse = discountService.findOne(discountID);
         return "redirect:/clientpage";
     }
 

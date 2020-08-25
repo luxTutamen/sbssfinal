@@ -5,6 +5,7 @@ import ua.axiom.model.Discount;
 import ua.axiom.model.Order;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -15,13 +16,12 @@ public class PriceService {
         BigDecimal price = BigDecimal.valueOf(random.nextLong() % 500L + 500L);
         price = price.multiply(new BigDecimal(order.getCClass().multiplier));
 
-        Discount discount = order.getDiscount();
-        if(discount == null) {
+
+        Optional<Discount> discount = order.getDiscount();
+        if(!discount.isPresent()) {
             return price;
         }
 
-        price = price.multiply(discount.getMultiplier());
-
-        return price;
+        return price.multiply(discount.get().getMultiplier());
     }
 }

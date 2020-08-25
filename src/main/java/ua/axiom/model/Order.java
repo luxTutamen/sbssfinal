@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Entity
@@ -77,5 +78,9 @@ public class Order {
             this.name = name;
             this.type = type;
         }
+    }
+
+    public Optional<Discount> getDiscount() {
+        return Optional.ofNullable(discount);
     }
 }
