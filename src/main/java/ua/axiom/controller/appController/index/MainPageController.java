@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
+import ua.axiom.controller.error.CustomAuthenticationException;
+import ua.axiom.security.CustomAuthenticationFailureHandler;
 
 import java.util.function.Supplier;
 
@@ -56,6 +58,13 @@ public class MainPageController extends MultiViewController {
 
     @ExceptionHandler({NullPointerException.class})
     public ModelAndView nullPointerExceptionErrorHandling(Model model) {
+        model.addAttribute("error", "Usr not found");
+
+        return super.getRequestMapping(model);
+    }
+
+    @ExceptionHandler({CustomAuthenticationException.class})
+    public ModelAndView customExceptionErrorHandling(Model model) {
         model.addAttribute("error", "Usr not found");
 
         return super.getRequestMapping(model);

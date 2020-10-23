@@ -53,20 +53,6 @@ public class OrderService {
         return orderRepository.findByCClassAndStatus(cclass, status);
     }
 
-    @Transactional(rollbackOn = {JustTakenException.class})
-    public void takeOrder(long driverId, long orderId) throws JustTakenException {
-
-        Driver driver = driverRepository.findById(driverId).get();
-
-        Order validOrder = orderRepository.findById(orderId).orElseThrow(JustTakenException::new);
-
-        validOrder.setStatus(Order.Status.TAKEN);
-        validOrder.setDriver(driver);
-
-        driver.setCurrentOrder(validOrder);
-        driverRepository.save(driver);
-    }
-
     @Transactional(rollbackOn = {NotEnoughMoneyException.class})
     public void processNewOrder(Order order) throws NotEnoughMoneyException {
 
@@ -74,7 +60,7 @@ public class OrderService {
 
         Client client = (Client) order.getClient();
 
-        if (price.compareTo(client.getMoney()) == 1) {
+        if (price.compareTo(client.getMoney()) > 0) {
             throw new NotEnoughMoneyException();
         }
 

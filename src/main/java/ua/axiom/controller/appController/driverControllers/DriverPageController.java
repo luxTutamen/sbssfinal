@@ -17,21 +17,20 @@ import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/driverpage")
+@RequestMapping("/" + DriverPageController.VIEW)
 public class DriverPageController extends MultiViewController {
-    private GuiService guiService;
-    private DriverService driverService;
-    private OrderService orderService;
+    public final static String VIEW = "driverpage";
+
+    private final DriverService driverService;
+    private final OrderService orderService;
 
     @Autowired
     public DriverPageController(
-            GuiService guiService,
             DriverService driverService,
             OrderService orderService,
             WithOrderDriverController withOrderDriverController,
             WithoutOrderDriverController withoutOrderDriverController
     ) {
-        this.guiService = guiService;
         this.orderService = orderService;
         this.driverService = driverService;
 
@@ -50,25 +49,25 @@ public class DriverPageController extends MultiViewController {
     public String takeOrderController(@RequestParam("orderId") long orderId) throws JustTakenException {
 
         long driverId = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        orderService.takeOrder(driverId, orderId);
+        driverService.takeOrder(driverId, orderId);
 
-        return "redirect:/driverpage";
+        return "redirect:/" + VIEW;
     }
 
-    //  todo ua.axiom.service
     @PostMapping("/confirmation")
     public String confirmationPost() {
 
         long driverId = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         orderService.confirmByDriver(driverId);
 
-        return "redirect:/driverpage";
+        return "redirect:/" + VIEW;
     }
 
     @GetMapping("/withdraw")
     public String withDrawController() throws NotEnoughMoneyException {
+
         driverService.withdrawMoney(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-        return "redirect:/" + "driverpage";
+        return "redirect:/" + VIEW;
     }
 
 }

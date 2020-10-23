@@ -20,4 +20,6 @@ public class LocalisationDataInterceptor implements HandlerInterceptor {
         request.setAttribute("locales", UserLocale.values());
         request.setAttribute("current_locale", localeResolver.resolveLocale(request).getDisplayLanguage());
     }
+
+
 }

@@ -1,15 +1,19 @@
 package ua.axiom.controller.appController.index;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.ThymeleafController;
+import ua.axiom.controller.error.CustomAuthenticationException;
 import ua.axiom.model.User;
-
+import ua.axiom.model.UserLocale;
+import ua.axiom.security.CustomAuthenticationFailureHandler;
 import ua.axiom.service.LocalisationService;
+import ua.axiom.service.error.exceptions.IllegalCredentialsException;
 
 @Component
 @ControllerAdvice
@@ -37,16 +41,17 @@ public class AnonymousMainPageController extends ThymeleafController<User> {
         return null;
     }
 
-    /*@ExceptionHandler(IllegalDataFormatException.class)
+    @ExceptionHandler(CustomAuthenticationException.class)
     public ModelAndView exception(Model model) {
         model.addAttribute("error", localisationService.getLocalisedMessage( "sentence.wrong-credentials", UserLocale.DEFAULT_LOCALE));
-        return super.serveRequest(model);
+        return super.serveRequest(model, null);
     }
+
 
     @ExceptionHandler({InternalAuthenticationServiceException.class, IllegalCredentialsException.class})
     public ModelAndView authExceptionController(Model model) {
         model.addAttribute("error", "wrong credentials");
-        return super.serveRequest(model);
-    }*/
+        return super.serveRequest(model, null);
+    }
 
 }

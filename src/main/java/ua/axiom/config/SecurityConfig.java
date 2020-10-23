@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(USER_ENDPOINTS).hasAuthority("CLIENT")
                         .antMatchers(ADMIN_ENDPOINTS).hasAuthority("ADMIN")
                         .antMatchers(GUEST_ENDPOINTS).permitAll()
-                        .antMatchers("/public/resources/**").permitAll()
+                        .antMatchers("/resources/**").permitAll()
                         .anyRequest().authenticated()
                 .and()
                     .formLogin()
@@ -68,6 +68,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("SELECT username, password, true FROM UUSERS WHERE username=?")
                 .passwordEncoder(passwordEncoder);
     }
-
-
 }

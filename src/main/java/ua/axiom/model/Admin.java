@@ -1,18 +1,18 @@
 package ua.axiom.model;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
 
 @Data
 @SuperBuilder
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "ADMINS")
 public class Admin extends User {
 

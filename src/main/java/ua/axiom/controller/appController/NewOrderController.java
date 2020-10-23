@@ -46,12 +46,13 @@ public class NewOrderController extends ThymeleafController<Client> {
         this.discountService = discountService;
     }
 
+    //  todo use DTO
     @PostMapping("/order")
     public String postNewOrder(
             @RequestParam String departure,
             @RequestParam String destination,
             @RequestParam String aClass,
-            @RequestParam Long discountId
+            @RequestParam(required = false) Long discountId
     ) throws NotEnoughMoneyException, IllegalDataFormatException {
 
         long clientID = ((Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
@@ -62,17 +63,18 @@ public class NewOrderController extends ThymeleafController<Client> {
         }
 
         Client client = clientService.findById(clientID).get();
-        Optional<Discount> discountToUse = discountId == null ? Optional.empty() : Optional.of(discountService.findOne(discountId));
+        Discount discountToUse = discountId == null ? null : discountService.findOne(discountId);
 
         Order newOrder = Order.builder()
                 .date(new Date())
                 .departure(departure)
                 .destination(destination)
                 .client(client)
-                .discount(discountToUse.get())
+                .discount(discountToUse)
                 .status(Order.Status.PENDING)
                 .cClass(Car.Class.valueOf(aClass))
                 .build();
+
 
         orderService.processNewOrder(newOrder);
 

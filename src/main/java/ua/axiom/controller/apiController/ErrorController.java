@@ -8,7 +8,9 @@ import org.thymeleaf.exceptions.TemplateInputException;
 public class ErrorController {
 
     @ExceptionHandler({Throwable.class, TemplateInputException.class})
-    public String formResponse() {
+    public String formResponse(Throwable t) {
+        //  todo log
+        System.err.println(t);
         return "redirect/:405";
     }
 

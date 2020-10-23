@@ -9,6 +9,7 @@ import ua.axiom.model.Driver;
 import ua.axiom.model.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSortingRepository<Order, Long> {
 
@@ -25,6 +26,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSo
     List<Order> findByCClass(Car.Class cClass);
 
     List<Order> findByCClassAndStatus(Car.Class cClass, Order.Status status);
+
+    Optional<Order> findByIdAndStatus(Long id, Order.Status status);
 
     long countByClientAndStatus(Client client, Order.Status status);
 }

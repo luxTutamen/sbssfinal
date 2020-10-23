@@ -17,14 +17,14 @@ import ua.axiom.service.appservice.OrderService;
 import ua.axiom.service.appservice.PromoService;
 import ua.axiom.service.error.exceptions.JustTakenException;
 
-//  todo discount use
 @Controller
 @RequestMapping("/clientpage")
 public class ClientPageController extends ThymeleafController<Client> {
 
-    private OrderService orderService;
-    private PromoService promoService;
+    private final OrderService orderService;
+    private final PromoService promoService;
 
+    //  todo refactor
     private int ordersPage = 0;
 
     @Autowired

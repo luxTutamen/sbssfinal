@@ -46,12 +46,15 @@ public class Order {
     private Date date;
 
     @NotNull
+    @Column(nullable = false)
     private Car.Class cClass;
 
     @NotNull
+    @Column(nullable = false)
     private String departure;
 
     @NotNull
+    @Column(nullable = false)
     private String destination;
 
     @OneToOne(targetEntity = Discount.class, fetch = FetchType.EAGER)
