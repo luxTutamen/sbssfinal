@@ -5,8 +5,7 @@ import ua.axiom.service.error.LightVerboseException;
 public class JustTakenException extends LightVerboseException {
 
     @Override
-    public String getMessageName() {
+    public String getViewMessageName() {
         return "errormsg.order-was-taken";
     }
-
 }

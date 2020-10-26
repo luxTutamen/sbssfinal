@@ -61,9 +61,9 @@
                     <a class="list-group-item" th:text="#{word.withdraw}" href="driverpage/withdraw"/>
                     <a class="list-group-item" th:text="#{sentence.change-car}" href="/driver/newCar" />
                 </ul>
-                <div th:if="${error != null}">
+                <div th:if="${error == true}">
                     <div class="alert-danger">
-                        <span th:text="#{%{error}}"/>
+                        <span th:text="#{%{exception}}"/>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 import ua.axiom.controller.MultiViewController;
 import ua.axiom.service.error.exceptions.JustTakenException;
@@ -14,9 +16,11 @@ import ua.axiom.service.appservice.DriverService;
 import ua.axiom.service.appservice.OrderService;
 import ua.axiom.service.error.exceptions.NotEnoughMoneyException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+/*@ControllerAdvice*/
 @RequestMapping("/" + DriverPageController.VIEW)
 public class DriverPageController extends MultiViewController {
     public final static String VIEW = "driverpage";
@@ -66,8 +70,21 @@ public class DriverPageController extends MultiViewController {
     @GetMapping("/withdraw")
     public String withDrawController() throws NotEnoughMoneyException {
 
-        driverService.withdrawMoney(((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+        Driver driver = ((Driver) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        driverService.withdrawMoney(driver.getId());
         return "redirect:/" + VIEW;
+    }
+
+    @ExceptionHandler(NotEnoughMoneyException.class)
+    private ModelAndView withdrawMoneyException(NotEnoughMoneyException e) {
+
+        Map<String, Object> model = new HashMap<>();
+
+        model.put("error", true);
+        model.put("exception", e.getMessage());
+
+        return new ModelAndView("redirect:/" + VIEW, model);
     }
 
 }

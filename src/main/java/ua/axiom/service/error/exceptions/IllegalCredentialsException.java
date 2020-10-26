@@ -5,7 +5,7 @@ import ua.axiom.service.error.LightVerboseException;
 public class IllegalCredentialsException extends LightVerboseException {
 
     @Override
-    public String getMessageName() {
+    public String getViewMessageName() {
         return "errormsg.illegal-credentials";
     }
 }

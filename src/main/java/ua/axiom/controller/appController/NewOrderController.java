@@ -98,6 +98,6 @@ public class NewOrderController extends ThymeleafController<Client> {
     @ExceptionHandler({NotEnoughMoneyException.class, IllegalDataFormatException.class})
     public ModelAndView notEnoughMoneyException(NotEnoughMoneyException neme, Model model) {
 
-        return serveRequest(new ConcurrentModel(model), neme.getShortMessage(localisationService));
+        return serveRequest(new ConcurrentModel(model), neme.getViewMessageName());
     }
 }

@@ -11,7 +11,6 @@ import ua.axiom.controller.ThymeleafController;
 import ua.axiom.controller.error.CustomAuthenticationException;
 import ua.axiom.model.User;
 import ua.axiom.model.UserLocale;
-import ua.axiom.security.CustomAuthenticationFailureHandler;
 import ua.axiom.service.LocalisationService;
 import ua.axiom.service.error.exceptions.IllegalCredentialsException;
 
